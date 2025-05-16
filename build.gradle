@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id("io.qameta.allure") version "2.12.0"
 }
 
 group = 'org.testlib'
@@ -11,17 +10,11 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation("com.codeborne:selenide:7.9.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.0-M3")
-    testImplementation("io.qameta.allure:allure-junit5:2.29.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.0-M2")
+    testImplementation("com.codeborne:selenide:7.8.1")
 }
 
-test {
+tasks.test {
     useJUnitPlatform()
-            {
-                includeEngines('junit-jupiter')
-            }
 }
