@@ -9,9 +9,17 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    junitPlatformVersion = '1.10.2'  // Определите версию здесь
+    junitJupiterVersion = '5.13.0-M2'
+}
+
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.0-M2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
+    testImplementation("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:${junitPlatformVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:${junitPlatformVersion}") // Явно добавьте engine runtime
     testImplementation("com.codeborne:selenide:7.8.1")
 }
 

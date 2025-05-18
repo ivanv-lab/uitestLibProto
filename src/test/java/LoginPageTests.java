@@ -1,28 +1,31 @@
 import com.codeborne.selenide.*;
-import io.qameta.allure.Description;
+import jdk.jfr.Description;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.impl.Html.text;
+import static com.codeborne.selenide.Selenide.open;
 
 public class LoginPageTests {
 
-    SelenideDriver driver;
     SelenideElement loginInput=$x(".//input[@id='login']");
     SelenideElement passwordInput=$x(".//input[@id='password']");
     SelenideElement submitButton=$x(".//button[@id='button_auth']");
     SelenideElement alert=$x(".//div[contains(@class,'alert')]/span");
     SelenideElement changeLanguageButton=$x(".//div[label[@for='language']]//input");
 
+    @BeforeAll
+    static void setup(){
+        Configuration.browser = "chrome";
+        Configuration.baseUrl = "http://192.168.128.191/acui/login";
+        Configuration.headless = false;
+    }
+
     @BeforeEach
     void goToAddress(){
-        SelenideConfig config=new SelenideConfig();
-        config.browser("chrome");
-        config.baseUrl("http://192.168.128.191/acui/login");
-        config.headless(false);
-        driver=new SelenideDriver(config);
+        open(Configuration.baseUrl);
     }
 
     @Test
