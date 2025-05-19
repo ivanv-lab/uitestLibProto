@@ -18,6 +18,7 @@ public class LoginPageTests extends BasePage {
     By passwordInput=By.xpath(".//input[@id='password']");
     By submitButton=By.xpath(".//button[@id='button_auth']");
     By changeLanguageButton=By.xpath(".//div[label[@for='language']]//input");
+    By topUserText=By.xpath(".//span[contains(@class,'top-user')]");
 
     @BeforeAll
     static void setup(){
@@ -103,7 +104,7 @@ public class LoginPageTests extends BasePage {
         sendKeys(loginInput,"admin@admin.com");
         sendKeys(passwordInput,"Admin");
         click(submitButton);
-        Thread.sleep(500);
-        assertEquals("http://192.168.128.191/acui/dashboard",getCurrentUrl());
+        waitForElementVisible(topUserText,5);
+        assertEquals(getText(topUserText),"admin@admin.com");
     }
 }

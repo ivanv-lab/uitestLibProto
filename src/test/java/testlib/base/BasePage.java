@@ -31,7 +31,7 @@ public class BasePage {
     }
 
     public String getText(By locator){
-        return find(locator).getValue();
+        return find(locator).getText();
     }
 
     public String getCurrentUrl(){
@@ -42,20 +42,16 @@ public class BasePage {
         return title();
     }
 
-    public long waiting(int timeout){
-        return timeout*1000;
-    }
-
     public void waitForElementVisible(By locator, int timeout) throws InterruptedException {
-        find(locator).shouldBe(visible).wait(waiting(timeout));
+        find(locator).shouldBe(visible,Duration.ofSeconds(timeout));
     }
 
     public void waitForElementClickable(By locator, int timeout) throws InterruptedException {
-        find(locator).shouldBe(clickable).wait(waiting(timeout));
+        find(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
     }
 
     public void waitForElementPresent(By locator, int timeout) throws InterruptedException {
-        find(locator).shouldBe(checked).wait(waiting(timeout));
+        find(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
     public String getAlertText(){
