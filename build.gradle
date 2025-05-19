@@ -1,26 +1,40 @@
 plugins {
     id 'java'
+    id("io.qameta.allure") version "2.11.2"
+    id 'java-library'
+    id 'application'
 }
 
 group = 'org.testlib'
 version = '1.0-SNAPSHOT'
+
+configurations {
+    testCompile
+}
 
 repositories {
     mavenCentral()
 }
 
 ext {
-    junitPlatformVersion = '1.10.2'  // Определите версию здесь
+    junitPlatformVersion = '1.10.2'
     junitJupiterVersion = '5.13.0-M2'
 }
 
 dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
     testImplementation("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
     testRuntimeOnly("org.junit.platform:junit-platform-commons:${junitPlatformVersion}")
-    testRuntimeOnly("org.junit.platform:junit-platform-engine:${junitPlatformVersion}") // Явно добавьте engine runtime
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:${junitPlatformVersion}")
     testImplementation("com.codeborne:selenide:7.8.1")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17 // Или другую версию
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.test {

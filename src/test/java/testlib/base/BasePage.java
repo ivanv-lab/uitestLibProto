@@ -7,6 +7,7 @@ import org.openqa.selenium.Cookie;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.title;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
@@ -16,7 +17,7 @@ public class BasePage {
         Selenide.open(url);
     }
 
-    public SelenideElement $(By locator){
+    public SelenideElement find(By locator){
         return $(locator);
     }
 
@@ -25,12 +26,12 @@ public class BasePage {
     }
 
     public void sendKeys(By locator, String text){
-        $(locator).clear();
-        $(locator).sendKeys(text);
+        find(locator).clear();
+        find(locator).sendKeys(text);
     }
 
     public String getText(By locator){
-        return $(locator).getValue();
+        return find(locator).getValue();
     }
 
     public String getCurrentUrl(){
@@ -41,33 +42,34 @@ public class BasePage {
         return title();
     }
 
-    private long waiting(int timeout){
+    public long waiting(int timeout){
         return timeout*1000;
     }
 
     public void waitForElementVisible(By locator, int timeout) throws InterruptedException {
-        $(locator).shouldBe(visible).wait(waiting(timeout));
+        find(locator).shouldBe(visible).wait(waiting(timeout));
     }
 
     public void waitForElementClickable(By locator, int timeout) throws InterruptedException {
-        $(locator).shouldBe(clickable).wait(waiting(timeout));
+        find(locator).shouldBe(clickable).wait(waiting(timeout));
     }
 
     public void waitForElementPresent(By locator, int timeout) throws InterruptedException {
-        $(locator).shouldBe(checked).wait(waiting(timeout));
+        find(locator).shouldBe(checked).wait(waiting(timeout));
     }
 
     public String getAlertText(){
-       return $(By.xpath(".//div[contains(@class,'alert')]/span")).getValue();
+       String alertText= find(By.xpath(".//div[contains(@class,'alert')]/span")).getText();
+       return alertText;
     }
 
     public void acceptAlert(){
-        $(By.xpath(".//div[contains(@class,'alert')]/button[@id='ok-button']"))
+        find(By.xpath(".//div[contains(@class,'alert')]/button[@id='ok-button']"))
                 .click();
     }
 
     public void dismissAlert(){
-        $(By.xpath(".//div[contains(@class,'alert')]/button[@id='no-button']"))
+        find(By.xpath(".//div[contains(@class,'alert')]/button[@id='no-button']"))
                 .click();
     }
 
@@ -85,5 +87,13 @@ public class BasePage {
         String value=getCookie(name);
         WebDriverRunner.getWebDriver().manage()
                 .deleteCookie(new Cookie(name,value));
+    }
+
+    public void deleteAllCookies(){
+        Selenide.clearBrowserCookies();
+    }
+
+    public void deleteBrowserStorage(){
+        Selenide.clearBrowserLocalStorage();
     }
 }
