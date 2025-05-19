@@ -1,12 +1,9 @@
 package tests.ui.adm;
 
-import com.codeborne.selenide.Configuration;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.By;
-import testlib.base.BasePage;
+import testlib.base.adm.BasePage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
