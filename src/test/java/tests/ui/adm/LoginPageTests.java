@@ -2,16 +2,17 @@ package tests.ui.adm;
 
 import com.codeborne.selenide.Configuration;
 import jdk.jfr.Description;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openqa.selenium.By;
 import testlib.base.BasePage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Тестирование страницы логина ADM")
+@Tag("login-tests-class")
 public class LoginPageTests extends BasePage {
 
     By loginInput=By.xpath(".//input[@id='login']");
@@ -20,25 +21,8 @@ public class LoginPageTests extends BasePage {
     By changeLanguageButton=By.xpath(".//div[label[@for='language']]//input");
     By topUserText=By.xpath(".//span[contains(@class,'top-user')]");
 
-    @BeforeAll
-    static void setup(){
-        Configuration.browser = "chrome";
-        Configuration.baseUrl = "http://192.168.128.191";
-        Configuration.headless = false;
-    }
-
-    @BeforeEach
-    void goToAddress(){
-        open(Configuration.baseUrl+"/acui/login");
-    }
-
-    @AfterEach
-    void afterTest(){
-        deleteAllCookies();
-        deleteBrowserStorage();
-    }
-
     @Test
+    @Tag("login-tests")
     @Description("Только логин")
     void loginOnly(){
 
@@ -49,6 +33,7 @@ public class LoginPageTests extends BasePage {
     }
 
     @Test
+    @Tag("login-tests")
     @Description("Только пароль")
     void passwordOnly(){
 
@@ -59,6 +44,7 @@ public class LoginPageTests extends BasePage {
     }
 
     @Test
+    @Tag("login-tests")
     @Description("Неверный логин")
     void invalidLogin(){
 
@@ -70,6 +56,7 @@ public class LoginPageTests extends BasePage {
     }
 
     @Test
+    @Tag("login-tests")
     @Description("Неверный пароль")
     void invalidPassword(){
 
@@ -81,6 +68,7 @@ public class LoginPageTests extends BasePage {
     }
 
     @Test
+    @Tag("login-tests")
     @Description("Проверка смены языка на Английский и Русский")
     void changeLanguage(){
 
@@ -98,6 +86,7 @@ public class LoginPageTests extends BasePage {
     }
 
     @Test
+    @Tag("login-tests")
     @Description("Проверка успешной авторизации")
     void successLogin() throws InterruptedException {
 

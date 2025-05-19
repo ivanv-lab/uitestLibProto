@@ -1,6 +1,10 @@
 package testlib.base;
 
 import com.codeborne.selenide.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 
@@ -85,11 +89,38 @@ public class BasePage {
                 .deleteCookie(new Cookie(name,value));
     }
 
-    public void deleteAllCookies(){
+    private void deleteAllCookies(){
         Selenide.clearBrowserCookies();
     }
 
-    public void deleteBrowserStorage(){
+    private void deleteBrowserStorage(){
         Selenide.clearBrowserLocalStorage();
+    }
+
+    private static void closeBrowser(){
+        Selenide.closeWebDriver();
+    }
+
+    @BeforeAll
+    static void setup(){
+        Configuration.browser = "chrome";
+        Configuration.baseUrl = "http://192.168.128.191";
+        Configuration.headless = false;
+    }
+
+    @BeforeEach
+    void goToAddress(){
+        open(Configuration.baseUrl+"/acui/login");
+    }
+
+    @AfterEach
+    void afterTest(){
+        deleteAllCookies();
+        deleteBrowserStorage();
+    }
+
+    @AfterAll
+    static void afterTests(){
+        closeBrowser();
     }
 }
