@@ -98,11 +98,12 @@ public class LoginPageTests extends BasePage {
 
     @Test
     @Description("Проверка успешной авторизации")
-    void successLogin(){
+    void successLogin() throws InterruptedException {
 
         sendKeys(loginInput,"admin@admin.com");
         sendKeys(passwordInput,"Admin");
         click(submitButton);
+        Thread.sleep(500);
         assertEquals("http://192.168.128.191/acui/dashboard",getCurrentUrl());
     }
 }
