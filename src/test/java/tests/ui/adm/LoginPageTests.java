@@ -1,32 +1,27 @@
 package tests.ui.adm;
 
-import jdk.jfr.Description;
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import testlib.base.adm.BasePage;
+import testlib.base.adm.login.LoginPage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Тестирование страницы логина ADM")
 @Tag("login-tests-class")
-public class LoginPageTests extends BasePage {
+public class LoginPageTests extends LoginPage {
 
-    By loginInput=By.xpath(".//input[@id='login']");
-    By passwordInput=By.xpath(".//input[@id='password']");
-    By submitButton=By.xpath(".//button[@id='button_auth']");
-    By changeLanguageButton=By.xpath(".//div[label[@for='language']]//input");
-    By topUserText=By.xpath(".//span[contains(@class,'top-user')]");
+    LoginPage loginPage=new LoginPage();
 
     @Test
     @Tag("login-tests")
     @Description("Только логин")
     void loginOnly(){
 
-        sendKeys(loginInput,"admin@admin.com");
-        click(submitButton);
+        setLogin("admin@admin.com");
+        clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.", getAlertText());
     }
 
     @Test
@@ -34,10 +29,10 @@ public class LoginPageTests extends BasePage {
     @Description("Только пароль")
     void passwordOnly(){
 
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
+        setPassword("Admin");
+        clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.", getAlertText());
     }
 
     @Test
@@ -45,11 +40,11 @@ public class LoginPageTests extends BasePage {
     @Description("Неверный логин")
     void invalidLogin(){
 
-        sendKeys(loginInput,"qweqwe");
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
+        setLogin("qweqwe");
+        setPassword("Admin");
+        clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.", getAlertText());
     }
 
     @Test
@@ -57,27 +52,25 @@ public class LoginPageTests extends BasePage {
     @Description("Неверный пароль")
     void invalidPassword(){
 
-        sendKeys(loginInput,"admin@admin.com");
-        sendKeys(passwordInput,"qweqwe");
-        click(submitButton);
+        setLogin("admin@admin.com");
+        setPassword("qweqwe");
+        clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.", getAlertText());
     }
 
     @Test
     @Tag("login-tests")
     @Description("Проверка смены языка на Английский и Русский")
-    void changeLanguage(){
+    void changeLanguageTest(){
 
-        click(changeLanguageButton);
-        click(By.xpath(".//button[div/span[contains(.,'English')]]"));
-        click(submitButton);
+        loginPage.changeLanguage();
+        clickSubmitButton();
         assertEquals("It is impossible to log in.\n" +
                 "Incorrect login / password.",getAlertText());
 
-        click(changeLanguageButton);
-        click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
-        click(submitButton);
+        loginPage.changeLanguage();
+        clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
                 "Неправильный логин/пароль.",getAlertText());
     }
@@ -87,10 +80,10 @@ public class LoginPageTests extends BasePage {
     @Description("Проверка успешной авторизации")
     void successLogin() throws InterruptedException {
 
-        sendKeys(loginInput,"admin@admin.com");
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
-        waitForElementVisible(topUserText,5);
-        assertEquals(getText(topUserText),"admin@admin.com");
+        setLogin("admin@admin.com");
+        setPassword("Admin");
+        clickSubmitButton();
+        waitForElementVisible(By.xpath(".//span[@class='top-user-link']"),5);
+        assertEquals(getTopUserText(),"admin@admin.com");
     }
 }

@@ -15,7 +15,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.title;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
-public class BasePage {
+public abstract class BasePage {
 
     public void open(String url){
         Selenide.open(url);
@@ -37,6 +37,8 @@ public class BasePage {
     public String getText(By locator){
         return find(locator).getText();
     }
+
+    public String getValue(By locator){return find(locator).getValue();}
 
     public String getCurrentUrl(){
         return url();
@@ -87,40 +89,5 @@ public class BasePage {
         String value=getCookie(name);
         WebDriverRunner.getWebDriver().manage()
                 .deleteCookie(new Cookie(name,value));
-    }
-
-    private void deleteAllCookies(){
-        Selenide.clearBrowserCookies();
-    }
-
-    private void deleteBrowserStorage(){
-        Selenide.clearBrowserLocalStorage();
-    }
-
-    private static void closeBrowser(){
-        Selenide.closeWebDriver();
-    }
-
-    @BeforeAll
-    static void setup(){
-        Configuration.browser = "chrome";
-        Configuration.baseUrl = "http://192.168.128.191";
-        Configuration.headless = false;
-    }
-
-    @BeforeEach
-    void goToAddress(){
-        open(Configuration.baseUrl+"/acui/login");
-    }
-
-    @AfterEach
-    void afterTest(){
-        deleteAllCookies();
-        deleteBrowserStorage();
-    }
-
-    @AfterAll
-    static void afterTests(){
-        closeBrowser();
     }
 }
