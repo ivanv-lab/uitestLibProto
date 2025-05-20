@@ -3,93 +3,88 @@ package tests.ui.adm;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import testlib.base.AdminBaseTest;
+import testlib.base.BaseTest;
 import testlib.base.adm.BasePage;
+import testlib.pages.login.LoginPage;
 
+import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Тестирование страницы логина ADM")
 @Tag("login-tests-class")
-public class LoginPageTests extends BasePage {
+public class LoginPageTests extends AdminBaseTest {
 
-    By loginInput=By.xpath(".//input[@id='login']");
-    By passwordInput=By.xpath(".//input[@id='password']");
-    By submitButton=By.xpath(".//button[@id='button_auth']");
-    By changeLanguageButton=By.xpath(".//div[label[@for='language']]//input");
-    By topUserText=By.xpath(".//span[contains(@class,'top-user')]");
+    private LoginPage loginPage=new LoginPage();
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Только логин")
     void loginOnly(){
 
-        sendKeys(loginInput,"admin@admin.com");
-        click(submitButton);
+        loginPage.setLogin("admin@admin.com");
+        loginPage.clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.", loginPage.getAlertText());
     }
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Только пароль")
     void passwordOnly(){
 
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
+        loginPage.setPassword("Admin");
+        loginPage.clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.",loginPage.getAlertText());
     }
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Неверный логин")
     void invalidLogin(){
 
-        sendKeys(loginInput,"qweqwe");
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
+        loginPage.login("qweqwe","Admin");
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.",loginPage.getAlertText());
     }
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Неверный пароль")
     void invalidPassword(){
 
-        sendKeys(loginInput,"admin@admin.com");
-        sendKeys(passwordInput,"qweqwe");
-        click(submitButton);
+        loginPage.login("admin@admin.com","qweqwe");
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.",loginPage.getAlertText());
     }
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Проверка смены языка на Английский и Русский")
-    void changeLanguage(){
+    void changeLanguageTest(){
 
-        click(changeLanguageButton);
-        click(By.xpath(".//button[div/span[contains(.,'English')]]"));
-        click(submitButton);
+        loginPage.changeLanguage();
         assertEquals("It is impossible to log in.\n" +
-                "Incorrect login / password.",getAlertText());
+                "Incorrect login / password.",loginPage.getAlertText());
 
-        click(changeLanguageButton);
-        click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
-        click(submitButton);
+        loginPage.changeLanguage();
         assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",getAlertText());
+                "Неправильный логин/пароль.",loginPage.getAlertText());
     }
 
     @Test
     @Tag("login-tests")
+    @Tag("no-login")
     @Description("Проверка успешной авторизации")
     void successLogin() throws InterruptedException {
 
-        sendKeys(loginInput,"admin@admin.com");
-        sendKeys(passwordInput,"Admin");
-        click(submitButton);
-        waitForElementVisible(topUserText,5);
-        assertEquals(getText(topUserText),"admin@admin.com");
+        loginPage.login("admin@admin.com","Admin");
+        assertEquals(loginPage.returnTopUserText(),"admin@admin.com");
     }
 }

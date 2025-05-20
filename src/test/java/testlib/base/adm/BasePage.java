@@ -1,12 +1,8 @@
 package testlib.base.adm;
 
 import com.codeborne.selenide.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
+import testlib.base.BaseTest;
 
 import java.time.Duration;
 
@@ -15,7 +11,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.title;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
-public class BasePage {
+public abstract class BasePage extends BaseTest {
 
     public void open(String url){
         Selenide.open(url);
@@ -37,6 +33,8 @@ public class BasePage {
     public String getText(By locator){
         return find(locator).getText();
     }
+
+    public String getValue(By locator){ return find(locator).getValue();}
 
     public String getCurrentUrl(){
         return url();
@@ -71,56 +69,5 @@ public class BasePage {
     public void dismissAlert(){
         find(By.xpath(".//div[contains(@class,'alert')]/button[@id='no-button']"))
                 .click();
-    }
-
-    public void setCookie(String name, String value){
-        WebDriverRunner.getWebDriver().manage()
-                .addCookie(new Cookie(name,value));
-    }
-
-    public String getCookie(String name){
-        return  WebDriverRunner.getWebDriver()
-                .manage().getCookieNamed(name).getValue();
-    }
-
-    public void deleteCookie(String name){
-        String value=getCookie(name);
-        WebDriverRunner.getWebDriver().manage()
-                .deleteCookie(new Cookie(name,value));
-    }
-
-    private void deleteAllCookies(){
-        Selenide.clearBrowserCookies();
-    }
-
-    private void deleteBrowserStorage(){
-        Selenide.clearBrowserLocalStorage();
-    }
-
-    private static void closeBrowser(){
-        Selenide.closeWebDriver();
-    }
-
-    @BeforeAll
-    static void setup(){
-        Configuration.browser = "chrome";
-        Configuration.baseUrl = "http://192.168.128.191";
-        Configuration.headless = false;
-    }
-
-    @BeforeEach
-    void goToAddress(){
-        open(Configuration.baseUrl+"/acui/login");
-    }
-
-    @AfterEach
-    void afterTest(){
-        deleteAllCookies();
-        deleteBrowserStorage();
-    }
-
-    @AfterAll
-    static void afterTests(){
-        closeBrowser();
     }
 }
