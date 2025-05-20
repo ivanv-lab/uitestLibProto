@@ -1,8 +1,13 @@
 package testlib.base.adm;
 
+import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.codeborne.selenide.Selenide.$$x;
 
 public class Navbar extends BasePage{
 
@@ -23,10 +28,18 @@ public class Navbar extends BasePage{
     }
 
     public List<String> getSections(){
-
+        return  $$x((section+"/a/p"))
+                .shouldHave(CollectionCondition.sizeGreaterThan(0))
+                .asFixedIterable().stream()
+                .map(SelenideElement::getText)
+                .collect(Collectors.toList());
     }
 
     public List<String> getSubSections(String section){
-
+        return $$x((section+"[a/p[contains(.,'"+section+"')]]//li//span[@class='sidebar-normal']"))
+                .shouldHave(CollectionCondition.sizeGreaterThan(0))
+                .asFixedIterable().stream()
+                .map(SelenideElement::getText)
+                .collect(Collectors.toList());
     }
 }

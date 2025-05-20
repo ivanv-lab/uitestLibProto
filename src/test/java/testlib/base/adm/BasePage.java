@@ -13,6 +13,10 @@ import static com.codeborne.selenide.WebDriverRunner.url;
 
 public abstract class BasePage extends BaseTest {
 
+    private Navbar navbar=new Navbar();
+
+    public Navbar getNavbar(){ return navbar;}
+
     public void open(String url){
         Selenide.open(url);
     }
