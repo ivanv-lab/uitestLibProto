@@ -2,11 +2,9 @@ package tests.ui.adm;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import testlib.base.AdminBaseTest;
-import testlib.base.BaseTest;
-import testlib.base.adm.BasePage;
+import testlib.base.adm.AdminBaseTest;
 import testlib.pages.login.LoginPage;
+import testlib.utils.handlers.PropertyHandler;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,10 +68,12 @@ public class LoginPageTests extends AdminBaseTest {
     void changeLanguageTest(){
 
         loginPage.changeLanguage();
+        loginPage.clickSubmitButton();
         assertEquals("It is impossible to log in.\n" +
                 "Incorrect login / password.",loginPage.getAlertText());
 
         loginPage.changeLanguage();
+        loginPage.clickSubmitButton();
         assertEquals("Невозможно авторизоваться.\n" +
                 "Неправильный логин/пароль.",loginPage.getAlertText());
     }
@@ -84,7 +84,7 @@ public class LoginPageTests extends AdminBaseTest {
     @Description("Проверка успешной авторизации")
     void successLogin() throws InterruptedException {
 
-        loginPage.login("admin@admin.com","Admin");
+        loginPage.login(PropertyHandler.getProperty("admin.login"),PropertyHandler.getProperty("admin.password"));
         assertEquals(loginPage.returnTopUserText(),"admin@admin.com");
     }
 }

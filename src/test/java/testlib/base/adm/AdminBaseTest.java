@@ -1,12 +1,12 @@
-package testlib.base;
+package testlib.base.adm;
 
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
-import testlib.base.adm.Navbar;
+import testlib.pages.login.LoginPage;
+import testlib.utils.handlers.PropertyHandler;
 
 import static com.codeborne.selenide.Configuration.baseUrl;
-import static com.codeborne.selenide.Selenide.$x;
 
 public class AdminBaseTest extends BaseTest {
 
@@ -14,16 +14,14 @@ public class AdminBaseTest extends BaseTest {
     void conditionalLogin(TestInfo testInfo) throws InterruptedException {
         if(!testInfo.getTags().contains("no-login")){
 
-            Selenide.open("http://"+baseUrl + "/acui/login");
-            $x(".//input[@id='login']").sendKeys("admin@admin.com");
-            $x(".//input[@id='password']").sendKeys("Admin");
-            $x(".//button[@id='button_auth']").click();
+            LoginPage loginPage=new LoginPage();
+            loginPage.login(PropertyHandler.getProperty("admin.login"),
+                    PropertyHandler.getProperty("admin.password"));
 
             Navbar navbar=new Navbar();
             navbar.openSidebar();
-
         } else{
-            Selenide.open("http://"+baseUrl + "/acui/login");
+            Selenide.open("http://" + baseUrl + "/acui/login");
         }
     }
 }

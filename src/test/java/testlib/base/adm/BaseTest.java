@@ -1,4 +1,4 @@
-package testlib.base;
+package testlib.base.adm;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
