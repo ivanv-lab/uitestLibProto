@@ -1,12 +1,11 @@
 package tests.ui.adm;
 
-import jdk.jfr.Description;
+import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import testlib.base.adm.BasePage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Тестирование страницы логина ADM")
 @Tag("login-tests-class")
