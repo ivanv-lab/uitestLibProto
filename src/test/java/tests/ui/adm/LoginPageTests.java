@@ -6,7 +6,6 @@ import testlib.base.adm.AdminBaseTest;
 import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
 
-import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Тестирование страницы логина ADM")
@@ -82,7 +81,7 @@ public class LoginPageTests extends AdminBaseTest {
     @Tag("login-tests")
     @Tag("no-login")
     @Description("Проверка успешной авторизации")
-    void successLogin() throws InterruptedException {
+    void successLogin() {
 
         loginPage.login(PropertyHandler.getProperty("admin.login"),PropertyHandler.getProperty("admin.password"));
         assertEquals(loginPage.returnTopUserText(),"admin@admin.com");
