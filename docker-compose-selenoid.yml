@@ -1,0 +1,102 @@
+version: "3.9"
+
+services:
+  test-runner-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenoid-1
+    environment:
+      SELENOID_HOST: selenoid-1
+      SELENOID_PORT: 4444
+    volumes:
+      - ./src/test/java:/app/src/test/java
+    command: ["sleep", "infinity"]
+
+  selenoid-1:
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./selenoid/config:/etc/selenoid
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
+      OVERRIDE_MAX_SESSIONS: 4
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
+
+  test-runner-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenoid-2
+    environment:
+      SELENOID_HOST: selenoid-2
+      SELENOID_PORT: 4444
+    volumes:
+      - ./src/test/java:/app/src/test/java
+    command: ["sleep", "infinity"]
+
+  selenoid-2:
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4445:4444"
+    volumes:
+      - ./selenoid/config:/etc/selenoid
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
+      OVERRIDE_MAX_SESSIONS: 4
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
+
+  test-runner-3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenoid-3
+    environment:
+      SELENOID_HOST: selenoid-3
+      SELENOID_PORT: 4444
+    volumes:
+      - ./src/test/java:/app/src/test/java
+    command: ["sleep", "infinity"]
+
+  selenoid-3:
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4446:4444"
+    volumes:
+      - ./selenoid/config:/etc/selenoid
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
+      OVERRIDE_MAX_SESSIONS: 4
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
+
+  test-runner-4:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenoid-4
+    environment:
+      SELENOID_HOST: selenoid-4
+      SELENOID_PORT: 4444
+    volumes:
+      - ./src/test/java:/app/src/test/java
+    command: ["sleep", "infinity"]
+
+  selenoid-4:
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4447:4444"
+    volumes:
+      - ./selenoid/config:/etc/selenoid
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
+      OVERRIDE_MAX_SESSIONS: 4
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
