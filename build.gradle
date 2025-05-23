@@ -39,6 +39,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+tasks.withType(Test){
+    maxParallelForks=4
+}
+
 tasks.test {
     useJUnitPlatform()
     systemProperty("junit.jupiter.execution.parallel.enabled",true)
