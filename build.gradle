@@ -47,3 +47,10 @@ tasks.test {
     useJUnitPlatform()
     systemProperty("junit.jupiter.execution.parallel.enabled",true)
 }
+
+task runAutoTests(type:Test){
+
+    def basePath="java/tests"
+    def modulePaths=[]
+    modulePaths << basePath
+}
