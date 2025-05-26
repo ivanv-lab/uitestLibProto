@@ -55,4 +55,12 @@ tasks.withType(JavaCompile) {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed") // Отображаем результаты тестов
+    }
+    maxParallelForks=4
+    forkEvery = 100
+
+    systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
+    systemProperty 'junit.jupiter.execution.parallel.config.fixed.max-pool-size', 20
 }
