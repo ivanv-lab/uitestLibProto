@@ -18,8 +18,8 @@ public abstract class BaseTest {
 
         if (selenoidHost != null && selenoidPort != null) {
             Configuration.remote = "http://" + selenoidHost + ":" + selenoidPort + "/wd/hub";
-            Configuration.browser = "chrome"; // Или другой браузер
-            Configuration.headless = true; // Или false
+            Configuration.browser = PropertyHandler.getProperty("browser"); // Или другой браузер
+            Configuration.headless = Boolean.parseBoolean(PropertyHandler.getProperty("headless")); // Или false
             // Другие настройки Selenide
             System.out.println("Selenoid URL: " + Configuration.remote);
         } else {
