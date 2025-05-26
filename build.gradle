@@ -40,17 +40,13 @@ java {
 }
 
 tasks.withType(Test){
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed") // Отображаем результаты тестов
+    }
     maxParallelForks=4
 }
 
 tasks.test {
     useJUnitPlatform()
-    systemProperty("junit.jupiter.execution.parallel.enabled",true)
-}
-
-task runAutoTests(type:Test){
-
-    def basePath="java/tests"
-    def modulePaths=[]
-    modulePaths << basePath
 }

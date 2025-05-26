@@ -19,7 +19,7 @@ public class AdminBaseTest extends BaseTest {
             Navbar navbar=new Navbar();
             navbar.openSidebar();
         } else{
-            Selenide.open("http://" + PropertyHandler.getProperty("base.URL") + "/acui/login");
+            Selenide.open( PropertyHandler.getProperty("base.URL") + "/acui/login");
         }
     }
 }

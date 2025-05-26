@@ -13,6 +13,11 @@ services:
     volumes:
       - ./src/test/java:/app/src/test/java
     command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 3G
 
   selenoid-1:
     image: aerokube/selenoid:latest-release
@@ -38,6 +43,11 @@ services:
     volumes:
       - ./src/test/java:/app/src/test/java
     command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 3G
 
   selenoid-2:
     image: aerokube/selenoid:latest-release
@@ -63,6 +73,11 @@ services:
     volumes:
       - ./src/test/java:/app/src/test/java
     command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 3G
 
   selenoid-3:
     image: aerokube/selenoid:latest-release
@@ -88,6 +103,11 @@ services:
     volumes:
       - ./src/test/java:/app/src/test/java
     command: ["sleep", "infinity"]
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 3G
 
   selenoid-4:
     image: aerokube/selenoid:latest-release

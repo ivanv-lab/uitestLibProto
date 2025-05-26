@@ -4,4 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["gradle", "test"] # Команда запуска тестов
+ENV JAVA_TOOL_OPTIONS "-Dfile.encoding=UTF-8"
+
+CMD ["gradle", "test", "-Dfile.encoding=UTF-8"]
+
