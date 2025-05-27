@@ -10,7 +10,7 @@ run_tests_on_selenoid() {
   SELENOID_URL=$1
   echo "Running tests on $SELENOID_URL"
   # Передаем Selenoid URL как системное свойство
-  ./gradlew test -Dselenoid.url="$SELENOID_URL" --tests "*"
+  ../gradlew test -Dselenoid.url="$SELENOID_URL" --tests "*"
   # TODO: Обработка результатов тестов и вывод
 }
 

@@ -126,8 +126,6 @@ services:
     build:
       context: ./host  # Папка с Dockerfile для хост-контейнера
       dockerfile: Dockerfile
-    ports:
-      - "5444:4444"   # Пробрасываем порт одного из Selenoid
     environment:
       HOST_ID: 1
     volumes:
@@ -139,8 +137,6 @@ services:
     build:
       context: ./host
       dockerfile: Dockerfile
-    ports:
-      - "5445:4444" # Другой порт
     environment:
       HOST_ID: 2
     volumes:
@@ -151,8 +147,6 @@ services:
     build:
       context: ./host
       dockerfile: Dockerfile
-    ports:
-      - "5446:4444" # Другой порт
     environment:
       HOST_ID: 3
     volumes:
@@ -163,8 +157,6 @@ services:
     build:
       context: ./host
       dockerfile: Dockerfile
-    ports:
-      - "5447:4444" # Другой порт
     environment:
       HOST_ID: 4
     volumes:
@@ -188,5 +180,7 @@ services:
           cpus: '2'
           memory: 4G
     environment:
-      SELENOID_URLS: "http://localhost:5444/wd/hub,http://localhost:5445/wd/hub,http://localhost:5446/wd/hub,http://localhost:5447/wd/hub"
+      SELENOID_URLS: "http://host-1:4441/wd/hub,http://host-2:4442/wd/hub,http://host-3:4443/wd/hub,http://host-4:4444/wd/hub"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     #command: [ "./run_tests.sh" ]

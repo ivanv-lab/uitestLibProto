@@ -17,7 +17,7 @@ public abstract class BaseTest {
         if (selenoidUrl != null) {
             Configuration.remote = selenoidUrl;
             Configuration.browser = "chrome"; // Или другой браузер
-            Configuration.headless = true;  // Или false
+            Configuration.headless = false;  // Или false
         } else {
             System.err.println("Selenoid URL is not set!");
         }
