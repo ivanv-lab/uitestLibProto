@@ -170,3 +170,23 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: ["./start_selenoid.sh"]
+
+  test-orchestrator:
+    build:
+      context: ./test-orchestrator
+      dockerfile: Dockerfile
+    depends_on:
+      - host-1
+      - host-2
+      - host-3
+      - host-4
+    volumes:
+      - ./test-results:/app/test-results # Монтируем том для хранения результатов
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    environment:
+      SELENOID_URLS: "http://localhost:5444/wd/hub,http://localhost:5445/wd/hub,http://localhost:5446/wd/hub,http://localhost:5447/wd/hub"
+    #command: [ "./run_tests.sh" ]
