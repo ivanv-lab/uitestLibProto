@@ -128,6 +128,8 @@ services:
       dockerfile: Dockerfile
     environment:
       HOST_ID: 1
+    ports:
+      - "5451:4441"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     # command: ["sleep", "infinity"] # Для ручного запуска selenoid
@@ -139,6 +141,8 @@ services:
       dockerfile: Dockerfile
     environment:
       HOST_ID: 2
+    ports:
+      - "5452:4442"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: ["./start_selenoid.sh"]
@@ -149,6 +153,8 @@ services:
       dockerfile: Dockerfile
     environment:
       HOST_ID: 3
+    ports:
+      - "5453:4443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: ["./start_selenoid.sh"]
@@ -159,6 +165,8 @@ services:
       dockerfile: Dockerfile
     environment:
       HOST_ID: 4
+    ports:
+      - "5454:4444"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: ["./start_selenoid.sh"]
@@ -180,7 +188,7 @@ services:
           cpus: '2'
           memory: 4G
     environment:
-      SELENOID_URLS: "http://host-1:4441/wd/hub,http://host-2:4442/wd/hub,http://host-3:4443/wd/hub,http://host-4:4444/wd/hub"
+      SELENOID_URLS: "http://host-1:5451/wd/hub,http://host-2:5452/wd/hub,http://host-3:5453/wd/hub,http://host-4:5454/wd/hub"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     #command: [ "./run_tests.sh" ]
