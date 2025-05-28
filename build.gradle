@@ -35,16 +35,16 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17 // Или другую версию
+    sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType(Test){
     useJUnitPlatform()
     testLogging {
-        events("passed", "skipped", "failed") // Отображаем результаты тестов
+        events("passed", "skipped", "failed")
     }
-    maxParallelForks=4
+    systemProperty 'systemProp.file.encoding', 'UTF-8'
 }
 
 tasks.withType(JavaCompile) {
@@ -58,9 +58,4 @@ tasks.test {
     testLogging {
         events("passed", "skipped", "failed") // Отображаем результаты тестов
     }
-    maxParallelForks=4
-    forkEvery = 100
-
-    systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
-    systemProperty 'junit.jupiter.execution.parallel.config.fixed.max-pool-size', 6
 }

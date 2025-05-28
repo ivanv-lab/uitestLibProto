@@ -3,6 +3,7 @@ package testlib.base.adm;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
+import org.junit.platform.engine.support.hierarchical.ParallelExecutionConfiguration;
 import testlib.utils.handlers.PropertyHandler;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -13,16 +14,6 @@ public abstract class BaseTest {
     @BeforeAll
     void setupSelenide(){
 
-//        String selenoidUrl = System.getProperty("selenoid.url");
-//        if (selenoidUrl != null) {
-//            Configuration.remote = selenoidUrl;
-//            Configuration.browser = "chrome"; // Или другой браузер
-//            Configuration.headless = true;  // Или false
-//            Configuration.screenshots=true;
-//        } else {
-//            System.err.println("Selenoid URL is not set!");
-//        }
-
         String selenoidHost = System.getenv("SELENOID_HOST");
         String selenoidPort = System.getenv("SELENOID_PORT");
 
@@ -30,7 +21,6 @@ public abstract class BaseTest {
             Configuration.remote = "http://" + selenoidHost + ":" + selenoidPort + "/wd/hub";
             Configuration.browser = PropertyHandler.getProperty("browser"); // Или другой браузер
             Configuration.headless = Boolean.parseBoolean(PropertyHandler.getProperty("headless")); // Или false
-            // Другие настройки Selenide
             System.out.println("Selenoid URL: " + Configuration.remote);
         } else {
             System.out.println("Selenoid не настроен. Запуск локально.");

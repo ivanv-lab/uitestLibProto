@@ -1,194 +1,27 @@
-#version: "3.9"
-#
-#services:
-#  test-runner-1:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - selenoid-1
-#    environment:
-#      SELENOID_HOST: selenoid-1
-#      SELENOID_PORT: 4444
-#    volumes:
-#      - ./src/test/java:/app/src/test/java
-#    command: ["sleep", "infinity"]
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '2'
-#          memory: 3G
-#
-#  selenoid-1:
-#    image: aerokube/selenoid:latest-release
-#    ports:
-#      - "4444:4444"
-#    volumes:
-#      - ./selenoid/config:/etc/selenoid
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#    environment:
-#      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
-#      OVERRIDE_MAX_SESSIONS: 4
-#    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
-#
-#  test-runner-2:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - selenoid-2
-#    environment:
-#      SELENOID_HOST: selenoid-2
-#      SELENOID_PORT: 4444
-#    volumes:
-#      - ./src/test/java:/app/src/test/java
-#    command: ["sleep", "infinity"]
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '2'
-#          memory: 3G
-#
-#  selenoid-2:
-#    image: aerokube/selenoid:latest-release
-#    ports:
-#      - "4445:4444"
-#    volumes:
-#      - ./selenoid/config:/etc/selenoid
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#    environment:
-#      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
-#      OVERRIDE_MAX_SESSIONS: 4
-#    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
-#
-#  test-runner-3:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - selenoid-3
-#    environment:
-#      SELENOID_HOST: selenoid-3
-#      SELENOID_PORT: 4444
-#    volumes:
-#      - ./src/test/java:/app/src/test/java
-#    command: ["sleep", "infinity"]
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '2'
-#          memory: 3G
-#
-#  selenoid-3:
-#    image: aerokube/selenoid:latest-release
-#    ports:
-#      - "4446:4444"
-#    volumes:
-#      - ./selenoid/config:/etc/selenoid
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#    environment:
-#      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
-#      OVERRIDE_MAX_SESSIONS: 4
-#    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
-#
-#  test-runner-4:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - selenoid-4
-#    environment:
-#      SELENOID_HOST: selenoid-4
-#      SELENOID_PORT: 4444
-#    volumes:
-#      - ./src/test/java:/app/src/test/java
-#    command: ["sleep", "infinity"]
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '2'
-#          memory: 3G
-#
-#  selenoid-4:
-#    image: aerokube/selenoid:latest-release
-#    ports:
-#      - "4447:4444"
-#    volumes:
-#      - ./selenoid/config:/etc/selenoid
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#    environment:
-#      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
-#      OVERRIDE_MAX_SESSIONS: 4
-#    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "4"]
-
 services:
-  host-1:
-    build:
-      context: ./host  # Папка с Dockerfile для хост-контейнера
-      dockerfile: Dockerfile
-    environment:
-      HOST_ID: 1
-    ports:
-      - "5451:4441"
+  selenoid:
+    image: aerokube/selenoid:latest-release
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    # command: ["sleep", "infinity"] # Для ручного запуска selenoid
-    command: ["./start_selenoid.sh"] # Запускаем скрипт для запуска selenoid
-
-  host-2:
-    build:
-      context: ./host
-      dockerfile: Dockerfile
+      - "${PWD}/selenoid/etc:/etc/selenoid"
+      - "${PWD}/selenoid/work/selenoid/video:/opt/selenoid/video"
+      - "${PWD}/selenoid/logs:/opt/selenoid/logs"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
-      HOST_ID: 2
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/opt/selenoid/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-save-all-logs", "-log-output-dir", "/opt/selenoid/logs"]
     ports:
-      - "5452:4442"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: ["./start_selenoid.sh"]
+      - "4444:4444"
+    network_mode: bridge
+    container_name: selenoid
 
-  host-3:
-    build:
-      context: ./host
-      dockerfile: Dockerfile
-    environment:
-      HOST_ID: 3
-    ports:
-      - "5453:4443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: ["./start_selenoid.sh"]
-
-  host-4:
-    build:
-      context: ./host
-      dockerfile: Dockerfile
-    environment:
-      HOST_ID: 4
-    ports:
-      - "5454:4444"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: ["./start_selenoid.sh"]
-
-  test-orchestrator:
-    build:
-      context: .
-      dockerfile: Dockerfile-test-orchestrator
+  selenoid-ui:
+    image: "aerokube/selenoid-ui:latest-release"
+    network_mode: bridge
+    links:
+      - selenoid
     depends_on:
-      - host-1
-      - host-2
-      - host-3
-      - host-4
-    volumes:
-      - ./test-results:/app/test-results # Монтируем том для хранения результатов
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 4G
-    environment:
-      SELENOID_URLS: "http://host-1:5451/wd/hub,http://host-2:5452/wd/hub,http://host-3:5453/wd/hub,http://host-4:5454/wd/hub"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: [ "./run_tests.sh" ]
+      - selenoid
+    ports:
+      - "9090:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+    container_name: selenoid_ui
