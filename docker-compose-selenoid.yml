@@ -173,8 +173,8 @@ services:
 
   test-orchestrator:
     build:
-      context: ./test-orchestrator
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile-test-orchestrator
     depends_on:
       - host-1
       - host-2
@@ -191,4 +191,4 @@ services:
       SELENOID_URLS: "http://host-1:5451/wd/hub,http://host-2:5452/wd/hub,http://host-3:5453/wd/hub,http://host-4:5454/wd/hub"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    #command: [ "./run_tests.sh" ]
+    command: [ "./run_tests.sh" ]

@@ -1,4 +1,4 @@
-FROM gradle:8.7.0-jdk17
+FROM gradle:7.4.0-jdk17
 
 WORKDIR /app
 
@@ -8,9 +8,6 @@ COPY . .
 # Раскомментируйте, если нужно загрузить зависимости при построении образа
 # RUN gradle dependencies
 
-# Копируем скрипт запуска тестов
-COPY run_tests.sh .
-COPY gradlew .
 RUN chmod +x run_tests.sh
 
 # Запускаем тесты
