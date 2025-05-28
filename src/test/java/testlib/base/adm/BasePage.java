@@ -20,20 +20,30 @@ public abstract class BasePage extends BaseTest {
         return $(locator);
     }
 
-    public void click(By locator){
+    public void click(By locator) {
+        waitForElementVisible(locator, 5);
+        waitForElementClickable(locator, 5);
         $(locator).click(ClickOptions.usingJavaScript());
     }
 
-    public void sendKeys(By locator, String text){
+    public void sendKeys(By locator, String text) {
+        waitForElementVisible(locator, 5);
+        waitForElementClickable(locator, 5);
         find(locator).clear();
         find(locator).sendKeys(text);
     }
 
-    public String getText(By locator){
+    public String getText(By locator)  {
+        waitForElementVisible(locator, 5);
+        waitForElementClickable(locator, 5);
         return find(locator).getText();
     }
 
-    public String getValue(By locator){ return find(locator).getValue();}
+    public String getValue(By locator) {
+        waitForElementVisible(locator, 5);
+        waitForElementClickable(locator, 5);
+        return find(locator).getValue();
+    }
 
     public String getCurrentUrl(){
         return url();
@@ -43,21 +53,23 @@ public abstract class BasePage extends BaseTest {
         return title();
     }
 
-    public void waitForElementVisible(By locator, int timeout) throws InterruptedException {
+    public void waitForElementVisible(By locator, int timeout) {
         find(locator).shouldBe(visible,Duration.ofSeconds(timeout));
     }
 
-    public void waitForElementClickable(By locator, int timeout) throws InterruptedException {
+    public void waitForElementClickable(By locator, int timeout) {
         find(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
     }
 
-    public void waitForElementPresent(By locator, int timeout) throws InterruptedException {
+    public void waitForElementPresent(By locator, int timeout) {
         find(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
-    public String getAlertText(){
-       String alertText= find(By.xpath(".//div[contains(@class,'alert')]/span")).getText();
-       return alertText;
+    public String getAlertText() {
+        waitForElementVisible(By.xpath(".//div[contains(@class,'alert')]/span"), 5);
+        waitForElementClickable(By.xpath(".//div[contains(@class,'alert')]/span"), 5);
+        String alertText = find(By.xpath(".//div[contains(@class,'alert')]/span")).getText();
+        return alertText;
     }
 
     public void acceptAlert(){

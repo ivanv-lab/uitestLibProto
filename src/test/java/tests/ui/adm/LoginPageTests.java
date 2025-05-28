@@ -2,6 +2,8 @@ package tests.ui.adm;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import testlib.base.adm.AdminBaseTest;
 import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
@@ -10,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Тестирование страницы логина ADM")
 @Tag("login-tests-class")
+@Execution(ExecutionMode.CONCURRENT)
 public class LoginPageTests extends AdminBaseTest {
 
     private LoginPage loginPage=new LoginPage();

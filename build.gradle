@@ -62,5 +62,5 @@ tasks.test {
     forkEvery = 100
 
     systemProperty 'junit.jupiter.execution.parallel.enabled', 'true'
-    systemProperty 'junit.jupiter.execution.parallel.config.fixed.max-pool-size', 20
+    systemProperty 'junit.jupiter.execution.parallel.config.fixed.max-pool-size', 6
 }
