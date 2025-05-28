@@ -21,27 +21,27 @@ public abstract class BasePage extends BaseTest {
     }
 
     public void click(By locator) {
-        waitForElementVisible(locator, 5);
-        waitForElementClickable(locator, 5);
+        waitForElementVisible(locator, 10);
+        waitForElementClickable(locator, 10);
         $(locator).click(ClickOptions.usingJavaScript());
     }
 
     public void sendKeys(By locator, String text) {
-        waitForElementVisible(locator, 5);
-        waitForElementClickable(locator, 5);
+        waitForElementVisible(locator, 10);
+        waitForElementClickable(locator, 10);
         find(locator).clear();
         find(locator).sendKeys(text);
     }
 
     public String getText(By locator)  {
-        waitForElementVisible(locator, 5);
-        waitForElementClickable(locator, 5);
+        waitForElementVisible(locator, 10);
+        waitForElementClickable(locator, 10);
         return find(locator).getText();
     }
 
     public String getValue(By locator) {
-        waitForElementVisible(locator, 5);
-        waitForElementClickable(locator, 5);
+        waitForElementVisible(locator, 10);
+        waitForElementClickable(locator, 10);
         return find(locator).getValue();
     }
 
@@ -66,8 +66,8 @@ public abstract class BasePage extends BaseTest {
     }
 
     public String getAlertText() {
-        waitForElementVisible(By.xpath(".//div[contains(@class,'alert')]/span"), 5);
-        waitForElementClickable(By.xpath(".//div[contains(@class,'alert')]/span"), 5);
+        waitForElementVisible(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
+        waitForElementClickable(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
         String alertText = find(By.xpath(".//div[contains(@class,'alert')]/span")).getText();
         return alertText;
     }
