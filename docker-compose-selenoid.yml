@@ -1,27 +1,15 @@
+version: "3.9"
 services:
-  selenoid:
-    image: aerokube/selenoid:latest-release
+  test-orchestrator:
+    build:
+      context: .
+      dockerfile: test-orchestrator/Dockerfile
     volumes:
-      - "${PWD}/selenoid/etc:/etc/selenoid"
-      - "${PWD}/selenoid/work/selenoid/video:/opt/selenoid/video"
-      - "${PWD}/selenoid/logs:/opt/selenoid/logs"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - gradle-cache:/root/.gradle
+    ports:
+      - "5050:5050"
     environment:
-      - OVERRIDE_VIDEO_OUTPUT_DIR=/opt/selenoid/video
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-save-all-logs", "-log-output-dir", "/opt/selenoid/logs"]
-    ports:
-      - "4444:4444"
-    network_mode: bridge
-    container_name: selenoid
-
-  selenoid-ui:
-    image: "aerokube/selenoid-ui:latest-release"
-    network_mode: bridge
-    links:
-      - selenoid
-    depends_on:
-      - selenoid
-    ports:
-      - "9090:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
-    container_name: selenoid_ui
+      GRADLE_USER_HOME: /root/.gradle
+#    command: ["sleep", "infinity"]
+volumes:
+  gradle-cache:
