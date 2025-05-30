@@ -6,8 +6,9 @@ services:
       dockerfile: test-orchestrator/Dockerfile
     volumes:
       - gradle-cache:/root/.gradle
+      - ./allure-results:/app/build/allure-results
     ports:
-      - "5050:5050"
+      - "5050:35277"
     environment:
       GRADLE_USER_HOME: /root/.gradle
 #    command: ["sleep", "infinity"]
