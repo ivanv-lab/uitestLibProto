@@ -10,16 +10,20 @@ public class AdminBaseTest extends BaseTest {
 
     @BeforeEach
     void conditionalLogin(TestInfo testInfo) throws InterruptedException {
+
+        LoginPage loginPage=new LoginPage();
+
         if(!testInfo.getTags().contains("no-login")){
 
-            LoginPage loginPage=new LoginPage();
             loginPage.login(PropertyHandler.getProperty("admin.login"),
                     PropertyHandler.getProperty("admin.password"));
 
             Navbar navbar=new Navbar();
             navbar.openSidebar();
         } else{
+
             Selenide.open( PropertyHandler.getProperty("base.URL") + "/acui/login");
+            loginPage.changeLanguage();
         }
     }
 }

@@ -14,13 +14,14 @@ public abstract class BaseTest {
     @BeforeAll
     void setupSelenide(){
 
-        String selenoidHost = System.getenv("SELENOID_HOST");
-        String selenoidPort = System.getenv("SELENOID_PORT");
+        String selenoidHost = PropertyHandler.getProperty("selenoid.host");
+        String selenoidPort = PropertyHandler.getProperty("selenoid.port");
 
         if (selenoidHost != null && selenoidPort != null) {
             Configuration.remote = "http://" + selenoidHost + ":" + selenoidPort + "/wd/hub";
-            Configuration.browser = PropertyHandler.getProperty("browser"); // Или другой браузер
-            Configuration.headless = Boolean.parseBoolean(PropertyHandler.getProperty("headless")); // Или false
+            Configuration.browser = PropertyHandler.getProperty("browser");
+            Configuration.headless = Boolean.parseBoolean(PropertyHandler.getProperty("headless"));
+            Configuration.screenshots=true;
             System.out.println("Selenoid URL: " + Configuration.remote);
         } else {
             System.out.println("Selenoid не настроен. Запуск локально.");

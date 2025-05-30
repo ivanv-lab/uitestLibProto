@@ -9,27 +9,58 @@ services:
       - ./allure-results:/tmp/allure-results
     ports:
       - "5050:35277"
+    network_mode: bridge
     environment:
       GRADLE_USER_HOME: /root/.gradle
       SELENOID_HOST: selenoid
       SELENOID_PORT: "4444"
+    depends_on:
+      - selenoid
+#
+#  selenoid:
+#    image: aerokube/selenoid:latest-release
+#    ports:
+#      - "4444:4444"
+#    volumes:
+#      - "/var/run/docker.sock:/var/run/docker.sock"
+#      - "${PWD}/selenoid/etc:/etc/selenoid"
+#
+#
+#  selenoid-ui:
+#    image: aerokube/selenoid-ui:latest-release
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#       - selenoid
+#
 
   selenoid:
     image: aerokube/selenoid:latest-release
+    volumes:
+      - "${PWD}/selenoid/etc:/etc/selenoid"
+      - "${PWD}/selenoid/work/selenoid/video:/opt/selenoid/video"
+      - "${PWD}/selenoid/logs:/opt/selenoid/logs"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/opt/selenoid/video
+      - DISPLAY=:99
+    command: ["-conf", "/etc/selenoid/browsers.json", "-limit", "6", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs"]
     ports:
       - "4444:4444"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - ./browsers.json:/selenoid/etc/browsers.json
-    depends_on:
-      - test-orchestrator
+    network_mode: bridge
+    container_name: selenoid
 
   selenoid-ui:
-    image: aerokube/selenoid-ui:latest-release
-    ports:
-      - "8080:8080"
+    image: "aerokube/selenoid-ui:latest-release"
+    network_mode: bridge
+    links:
+      - selenoid
     depends_on:
-       - selenoid
+      - selenoid
+    ports:
+      - "9090:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+    container_name: selenoid_ui
 
 volumes:
   gradle-cache:
