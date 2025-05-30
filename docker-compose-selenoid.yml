@@ -11,6 +11,25 @@ services:
       - "5050:35277"
     environment:
       GRADLE_USER_HOME: /root/.gradle
-#    command: ["sleep", "infinity"]
+      SELENOID_HOST: selenoid
+      SELENOID_PORT: "4444"
+
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4444:4444"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./browsers.json:/selenoid/etc/browsers.json
+    depends_on:
+      - test-orchestrator
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:latest-release
+    ports:
+      - "8080:8080"
+    depends_on:
+       - selenoid
+
 volumes:
   gradle-cache:
