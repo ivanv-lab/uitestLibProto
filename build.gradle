@@ -59,6 +59,7 @@ tasks.test {
         events("passed", "skipped", "failed") // Отображаем результаты тестов
     }
     systemProperty 'allure.results.directory', "/tmp/allure-results"
+    maxParallelForks=12
 }
 
 allure {
