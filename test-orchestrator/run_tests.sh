@@ -1,13 +1,17 @@
 #!/bin/bash
+
 echo Начало работы скрипта
-/app/gradlew test allureReport
+
+rm -rf /tmp/allure-results/*
+/app/gradlew clean test allureReport
+
 echo gradlew отработал
-#/opt/allure/bin/allure serve --port 35277 /app/build/allure-results
-allure generate /app/build/allure-results -o /app/allure-report
+
+allure generate /tmp/allure-results -o /app/allure-report
+
 while true; do
-  # Здесь могут быть какие-то действия, которые нужно выполнять периодически
-  # Например, проверка состояния системы, логирование, и т.п.
   echo "Скрипт работает..."
-  sleep 60  # Пауза в 60 секунд (1 минута)
+  sleep 60
 done
+
 echo Закончил работу

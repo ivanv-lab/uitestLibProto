@@ -12,5 +12,5 @@ RUN ln -s /opt/allure/bin/allure /usr/local/bin/allure
 ENV PATH="$PATH:/opt/allure/bin"
 
 RUN chmod +x test-orchestrator/run_tests.sh
-# CMD ./gradlew clean test allureReport && allure serve /build/allure-results
+
 ENTRYPOINT ["/app/test-orchestrator/run_tests.sh"]

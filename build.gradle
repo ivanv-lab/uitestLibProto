@@ -58,8 +58,9 @@ tasks.test {
     testLogging {
         events("passed", "skipped", "failed") // Отображаем результаты тестов
     }
+    systemProperty 'allure.results.directory', "/tmp/allure-results"
+}
 
 allure {
     version("2.34.0")
-    }
 }
