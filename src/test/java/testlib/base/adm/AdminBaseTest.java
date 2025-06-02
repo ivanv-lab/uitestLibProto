@@ -3,6 +3,8 @@ package testlib.base.adm;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+import testlib.base.BaseTest;
+import testlib.base.NavbarWorker;
 import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
 
@@ -18,7 +20,7 @@ public class AdminBaseTest extends BaseTest {
             loginPage.login(PropertyHandler.getProperty("admin.login"),
                     PropertyHandler.getProperty("admin.password"));
 
-            Navbar navbar=new Navbar();
+            NavbarWorker navbar=new NavbarWorker();
             navbar.openSidebar();
         } else{
 

@@ -1,7 +1,7 @@
 package testlib.pages.adm.settings.clients;
 
 import org.openqa.selenium.By;
-import testlib.base.adm.BasePage;
+import testlib.base.BasePage;
 
 import static com.codeborne.selenide.Condition.visible;
 

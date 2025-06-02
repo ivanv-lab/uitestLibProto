@@ -1,7 +1,7 @@
 package testlib.pages.login;
 
 import org.openqa.selenium.By;
-import testlib.base.adm.BasePage;
+import testlib.base.BasePage;
 
 public class LoginPage extends BasePage {
 

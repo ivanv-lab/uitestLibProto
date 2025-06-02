@@ -1,9 +1,8 @@
-package testlib.base.adm;
+package testlib.base;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
-import org.junit.platform.engine.support.hierarchical.ParallelExecutionConfiguration;
 import testlib.utils.handlers.PropertyHandler;
 
 import static com.codeborne.selenide.Selenide.open;

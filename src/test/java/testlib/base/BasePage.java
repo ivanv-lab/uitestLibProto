@@ -1,13 +1,14 @@
-package testlib.base.adm;
+package testlib.base;
 
 import com.codeborne.selenide.*;
 import org.openqa.selenium.By;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.title;
+import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
 public abstract class BasePage extends BaseTest {
@@ -17,13 +18,21 @@ public abstract class BasePage extends BaseTest {
     }
 
     public SelenideElement find(By locator){
+        waitForElementVisible(locator,10);
         return $(locator);
+    }
+
+    public List<SelenideElement> findCollection(By locator){
+
+        List<SelenideElement> collection=new ArrayList<>();
+        waitForElementVisible(locator,10);
+        return collection = (List<SelenideElement>) $$(locator);
     }
 
     public void click(By locator) {
         waitForElementVisible(locator, 10);
         waitForElementClickable(locator, 10);
-        $(locator).click(ClickOptions.usingJavaScript());
+        find(locator).click(ClickOptions.usingJavaScript());
     }
 
     public void sendKeys(By locator, String text) {
