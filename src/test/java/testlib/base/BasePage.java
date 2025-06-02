@@ -63,15 +63,15 @@ public abstract class BasePage extends BaseTest {
     }
 
     public void waitForElementVisible(By locator, int timeout) {
-        find(locator).shouldBe(visible,Duration.ofSeconds(timeout));
+        $(locator).shouldBe(visible,Duration.ofSeconds(timeout));
     }
 
     public void waitForElementClickable(By locator, int timeout) {
-        find(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
+        $(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
     }
 
     public void waitForElementPresent(By locator, int timeout) {
-        find(locator).shouldBe(checked,Duration.ofSeconds(timeout));
+        $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
     public String getAlertText() {

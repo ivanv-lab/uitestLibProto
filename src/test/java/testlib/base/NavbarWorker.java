@@ -22,6 +22,10 @@ public class NavbarWorker extends BasePage {
         click(sidebarLockButton);
     }
 
+    public void sectionClick(String sectionText){
+        click(By.xpath(".//div[contains(@class,'sidebar')]/ul/li[a/p[contains(.,'"+sectionText+"')]]/a"));
+    }
+
     public void subSectionClick(String sectionText, String subSectionText){
         click(By.xpath(section+"[a/p[contains(.,'"+sectionText+"')]]/a"));
         click(By.xpath(subSection+"[span[@class='sidebar-normal' and text()='"+subSectionText+"']]"));
