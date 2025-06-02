@@ -20,8 +20,8 @@ public class EventsManagementPage extends BasePage {
     ///Страница создания\редактирования
     By nameInput=By.xpath(".//input[@id='name']");
     By codeInput=By.xpath(".//input[@id='code']");
-    By priorityInput=By.xpath(".//select[@id='priority']");
-    By typeInput=By.xpath(".//select[@id='transactional']");
+    By priorityInput=By.xpath(".//label[text()='Приоритет']/parent::div//input");
+    By typeInput=By.xpath(".//label[text()='Тип']/parent::div//input");
     By descriptionInput=By.xpath(".//textarea[@id='description']");
     By backButton=By.xpath(".//button[@id='button_back']");
     By saveButton=By.xpath(".//button[@id='button_save']");

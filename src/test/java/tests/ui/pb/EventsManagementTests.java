@@ -31,7 +31,9 @@ public class EventsManagementTests extends PBBaseTest {
                 Arguments.of("event1LowTrue","111","Low","Да","qweqwe"),
                 Arguments.of("event2NormalFalse","222","Normal","Нет","erbetbrtb"),
                 Arguments.of("event3HighTrue","333","High","Да","g54g4g45g45g"),
-                Arguments.of("event4RealtimeFalse","444","Realtime","Нет","f430f0-fooc434jv3ojv")
+                Arguments.of("event4RealtimeFalse","444","Realtime","Нет","f430f0-fooc434jv3ojv"),
+                Arguments.of("evenToEdit","555","Realtime","Да","qweqweqwe"),
+                Arguments.of("eventToDelete","666","High","Нет","2434f")
         );
     }
 
