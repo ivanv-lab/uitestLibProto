@@ -103,10 +103,12 @@ public abstract class BasePage extends BaseTest {
 
     public void setCalendar(By locator, String year, String month, String date){
         click(locator);
-        click(By.xpath(".//div[@class='vdatetime-popup__year'"));
-        click(By.xpath(".//div[@class='vdatetime-year-picker__item' and normalize-space(text())='"+year+"']"));
+        click(By.xpath(".//div[@class='vdatetime-popup__year']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-year-picker__item') and normalize-space(text())='"+year+"']"));
         click(By.xpath(".//div[@class='vdatetime-popup__date']"));
-        click(By.xpath(".//div[@class='vdatetime-month-picker__item' and normalize-space(text())='"+month+"']"));
-        click(By.xpath(".//div[@class='vdatetime-calendar__month__day']//span[normalize-space(text())='"+date+"']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-month-picker__item') and normalize-space(text())='"+month+"']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-calendar__month__day')]//span[normalize-space(text())='"+date+"']"));
+        click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
+        click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
     }
 }
