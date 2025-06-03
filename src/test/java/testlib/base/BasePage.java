@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ public abstract class BasePage extends BaseTest {
     public void click(By locator) {
         waitForElementVisible(locator, 10);
         waitForElementClickable(locator, 10);
-        find(locator).click(ClickOptions.usingJavaScript());
+        find(locator).shouldBe(enabled).click();
     }
 
     public void sendKeys(By locator, String text) {
@@ -80,6 +79,11 @@ public abstract class BasePage extends BaseTest {
         $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
+    public void waitTitle(By titleLocator, String expectedTitle, String hrefTitle){
+        $(titleLocator).shouldBe(visible).shouldHave(text(expectedTitle));
+        Selenide.Wait().until(url->url.getCurrentUrl().contains(hrefTitle));
+    }
+
     public String getAlertText() {
         waitForElementVisible(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
         waitForElementClickable(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
@@ -99,7 +103,7 @@ public abstract class BasePage extends BaseTest {
 
     public void setCalendar(By locator, String year, String month, String date){
         click(locator);
-        click(By.xpath(".vdatetime-popup__year"));
+        click(By.xpath(".//div[@class='vdatetime-popup__year'"));
         click(By.xpath(".//div[@class='vdatetime-year-picker__item' and normalize-space(text())='"+year+"']"));
         click(By.xpath(".//div[@class='vdatetime-popup__date']"));
         click(By.xpath(".//div[@class='vdatetime-month-picker__item' and normalize-space(text())='"+month+"']"));

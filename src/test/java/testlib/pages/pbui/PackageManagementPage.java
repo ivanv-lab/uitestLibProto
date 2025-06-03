@@ -5,7 +5,7 @@ import testlib.base.BasePage;
 
 import java.util.Map;
 
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 
 public class PackageManagementPage extends BasePage {
 
@@ -18,19 +18,19 @@ public class PackageManagementPage extends BasePage {
     ///Фильтры
     By filterNameInput=By.xpath(".//input[@id='name']");
     By filterCodeInput=By.xpath(".//input[@id='code']");
-    By filterSubTypeInput=By.xpath(".//select[@id='free']");
-    By filterStatusInput=By.xpath(".//select[@id='active']");
+    By filterSubTypeInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input");
+    By filterStatusInput=By.xpath(".//label[text()='Статус']/parent::div//input");
     By buttonAppFilter=By.xpath(".//button[@id='button_apply_filter']");
     By clearFiltersButton=By.xpath(".//button[@id='button_clear_filter']");
 
     ///Страница создания\редактирования
     By nameInput=By.xpath(".//input[@id='name']");
     By codeInput=By.xpath(".//input[@id='code']");
-    By subTypeInput=By.xpath(".//select[@id='free']");
-    By statusInput=By.xpath(".//select[@id='active']");
+    By subTypeInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input");
+    By statusInput=By.xpath(".//label[text()='Статус']/parent::div//input");
     By descriptionInput=By.xpath(".//textarea[@id='description']");
-    By startDateInput=By.xpath(".//input[@class='vdatetime-input md-input']/ancestor::div/label[text()='Действует с']");
-    By endDateInput=By.xpath(".//input[@class='vdatetime-input md-input']/ancestor::div/label[text()='Действует по']");
+    By startDateInput=By.xpath(".//label[text()='Действует с']/parent::div//input");
+    By endDateInput=By.xpath(".//label[text()='Действует по']/parent::div//input");
 
     By tariffInput=By.xpath(".//input[@id='charge_rate']");
     By periodInput=By.xpath(".//input[@id='charge_period_id']");
@@ -40,8 +40,12 @@ public class PackageManagementPage extends BasePage {
     By saveButton=By.xpath(".//button[@id='button_save']");
     By deleteButton=By.xpath(".//button[@id='button_delete']");
 
+    String hrefTitle="packages";
+
     public void waitTitle(){
-        click(title);
+        waitTitle(title,"Управление пакетами",hrefTitle);
+        find(createButton).shouldBe(visible).shouldBe(enabled)
+                .shouldBe(interactable);
     }
 
     public void createPack(){
