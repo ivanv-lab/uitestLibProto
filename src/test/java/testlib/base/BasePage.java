@@ -97,7 +97,7 @@ public abstract class BasePage extends BaseTest {
                 .click();
     }
 
-    public void setCalendar(By locator, int year, String month, int date){
+    public void setCalendar(By locator, String year, String month, String date){
         click(locator);
         click(By.xpath(".vdatetime-popup__year"));
         click(By.xpath(".//div[@class='vdatetime-year-picker__item' and normalize-space(text())='"+year+"']"));

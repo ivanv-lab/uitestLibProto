@@ -5,6 +5,8 @@ import testlib.base.BasePage;
 
 import java.util.Map;
 
+import static com.codeborne.selenide.Condition.visible;
+
 public class PackageManagementPage extends BasePage {
 
     ///Общие элементы
@@ -37,7 +39,7 @@ public class PackageManagementPage extends BasePage {
     By saveButton=By.xpath(".//button[@id='button_save']");
     By deleteButton=By.xpath(".//button[@id='button_delete']");
 
-    public void createEvent(){
+    public void createPack(){
         click(createButton);
     }
 
@@ -45,7 +47,7 @@ public class PackageManagementPage extends BasePage {
         click(openFilterButton);
     }
 
-    public void syncEvents(){
+    public void syncPacks(){
         click(syncButton);
     }
 
@@ -97,17 +99,37 @@ public class PackageManagementPage extends BasePage {
         sendKeys(descriptionInput,desc);
     }
 
-    public void setStartDate(int year, String month, int date){
+    public void setStartDate(String year, String month, String date){
 
         setCalendar(startDateInput,year,month,date);
     }
 
-    public void setEndDate(int year,String month, int date){
+    public void setEndDate(String year,String month, String date){
 
         setCalendar(endDateInput,year,month,date);
     }
 
     public void setTariffInput(String tariff){
         sendKeys(tariffInput, tariff);
+    }
+
+    public void setPeriodInput(String period){
+        sendKeys(periodInput,period);
+    }
+
+    public void ndsOn(){
+        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(ndsInput);
+        }
+    }
+
+    public void ndsOff(){
+        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(ndsInput);
+        }
     }
 }

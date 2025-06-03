@@ -1,6 +1,7 @@
 package testlib.base;
 
 import com.codeborne.selenide.CollectionCondition;
+import com.codeborne.selenide.HoverOptions;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
@@ -16,9 +17,8 @@ public class NavbarWorker extends BasePage {
     By section=By.xpath(".//div[contains(@class,'sidebar')]/ul/li");
     By subSection=By.xpath(".//div[contains(@class,'sidebar')]/ul//ul//a");
 
-    public void openSidebar() throws InterruptedException {
-        click(sidebar);
-        waitForElementClickable(sidebarLockButton,5);
+    public void openSidebar(){
+        find(sidebar).hover();
         click(sidebarLockButton);
     }
 
