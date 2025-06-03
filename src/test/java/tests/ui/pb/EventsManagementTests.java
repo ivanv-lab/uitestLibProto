@@ -11,7 +11,10 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.EventsManagementPage;
+import testlib.utils.handlers.jmx.JMXClient;
+import testlib.utils.handlers.jmx.JMXConnector;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -141,9 +144,12 @@ public class EventsManagementTests extends PBBaseTest {
     @Test
     @Tag("pb-ui")
     @Description("Синхронизация событий")
-    void eventsSyncTest(){
-
-
+    void eventsSyncTest() throws IOException {
+        JMXConnector jmxConnector = new JMXConnector();
+        jmxConnector.connect();
+        JMXClient jmxClient=new JMXClient(jmxConnector.getMbsc());
+        String cacheValue=jmxClient.getAttribute("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
+                "Description of keySet").toString();
     }
 
     @Test
