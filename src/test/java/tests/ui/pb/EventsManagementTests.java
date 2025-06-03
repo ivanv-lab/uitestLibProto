@@ -157,6 +157,63 @@ public class EventsManagementTests extends PBBaseTest {
     @Description("Фильтрация")
     void eventsFilterTest(){
 
+        navbarWorker.sectionClick("Управление событиями");
 
+        eventsManagementPage.openFilters();
+        eventsManagementPage.filterSetName("event1LowTrue");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("event1LowTrue"),true);
+        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetCode("444");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("444"),true);
+        assertEquals(tableWorker.tableRowExists("333"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetTransactional("Да");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("true"),true);
+        assertEquals(tableWorker.tableRowExists("false"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetTransactional("Нет");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("false"),true);
+        assertEquals(tableWorker.tableRowExists("true"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetPriority("Low");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("event1LowTrue"),true);
+        assertEquals(tableWorker.tableRowExists("event2"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetPriority("Normal");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("event2Normal"),true);
+        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetPriority("High");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("event3High"),true);
+        assertEquals(tableWorker.tableRowExists("event2"),false);
+        eventsManagementPage.clearFilters();
+
+        eventsManagementPage.filterSetPriority("Realtime");
+        eventsManagementPage.filterApp();
+
+        assertEquals(tableWorker.tableRowExists("event4Realtime"),true);
+        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
+        eventsManagementPage.clearFilters();
     }
 }
