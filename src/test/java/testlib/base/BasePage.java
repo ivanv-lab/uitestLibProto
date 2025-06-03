@@ -2,10 +2,12 @@ package testlib.base;
 
 import com.codeborne.selenide.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -22,11 +24,14 @@ public abstract class BasePage extends BaseTest {
         return $(locator);
     }
 
-    public List<SelenideElement> findCollection(By locator){
+    public List<String> findCollection(By locator){
 
-        List<SelenideElement> collection=new ArrayList<>();
         waitForElementVisible(locator,10);
-        return collection = (List<SelenideElement>) $$(locator);
+        return $$(locator).shouldHave(CollectionCondition
+                .sizeGreaterThan(0))
+                .asFixedIterable()
+                .stream().map(SelenideElement::getText)
+                .collect(Collectors.toList());
     }
 
     public void click(By locator) {
@@ -38,7 +43,8 @@ public abstract class BasePage extends BaseTest {
     public void sendKeys(By locator, String text) {
         waitForElementVisible(locator, 10);
         waitForElementClickable(locator, 10);
-        find(locator).clear();
+        find(locator).sendKeys(Keys.CONTROL+"A");
+        find(locator).sendKeys(Keys.BACK_SPACE);
         find(locator).sendKeys(text);
     }
 
@@ -89,5 +95,14 @@ public abstract class BasePage extends BaseTest {
     public void dismissAlert(){
         find(By.xpath(".//div[contains(@class,'alert')]/button[@id='no-button']"))
                 .click();
+    }
+
+    public void setCalendar(By locator, int year, String month, int date){
+        click(locator);
+        click(By.xpath(".vdatetime-popup__year"));
+        click(By.xpath(".//div[@class='vdatetime-year-picker__item' and normalize-space(text())='"+year+"']"));
+        click(By.xpath(".//div[@class='vdatetime-popup__date']"));
+        click(By.xpath(".//div[@class='vdatetime-month-picker__item' and normalize-space(text())='"+month+"']"));
+        click(By.xpath(".//div[@class='vdatetime-calendar__month__day']//span[normalize-space(text())='"+date+"']"));
     }
 }

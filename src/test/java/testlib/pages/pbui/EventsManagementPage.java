@@ -16,6 +16,7 @@ public class EventsManagementPage extends BasePage {
     By filterTransactionalInput=By.xpath(".//select[@id='transactional']");
     By filterPriorityInput=By.xpath(".//select[@id='filter_partner']");
     By buttonAppFilter=By.xpath(".//button[@id='button_apply_filter']");
+    By clearFiltersButton=By.xpath(".//button[@id='button_clear_filter']");
 
     ///Страница создания\редактирования
     By nameInput=By.xpath(".//input[@id='name']");
@@ -89,5 +90,29 @@ public class EventsManagementPage extends BasePage {
 
     public void clickDeleteButton(){
         click(deleteButton);
+    }
+
+    public void clearFilters(){
+        click(clearFiltersButton);
+    }
+
+    public String getValueFromNameInput(){
+        return getValue(nameInput);
+    }
+
+    public String getValueFromCodeInput(){
+        return getValue(codeInput);
+    }
+
+    public String getValueFromPriorityInput(){
+        return getValue(priorityInput);
+    }
+
+    public String getValueFromTransactionalInput(){
+        return getValue(typeInput);
+    }
+
+    public String getValueFromDescInput(){
+        return getValue(descriptionInput);
     }
 }

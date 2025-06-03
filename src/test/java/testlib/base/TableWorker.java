@@ -15,7 +15,7 @@ public class TableWorker extends BasePage {
      * @param text
      */
     public void tableHrefClick(String text){
-        click(By.xpath(".//a[contains(@id,'link_edit') and text()='"+text+"']"));
+        click(By.xpath(".//tbody/tr[td//*[normalize-space(text())='"+text+"']]/td//a"));
     }
 
     /**
@@ -30,7 +30,7 @@ public class TableWorker extends BasePage {
         int tableSize=findCollection(By.xpath(".//table/tbody/tr")).size();
 
         String tableRowCollection="";
-        for(int i=0;i<tableSize;i++){
+        for(int i=1;i<=tableSize;i++){
             tableRowCollection=getText(By.xpath(".//table/tbody/tr["+i+"]"));
             if(tableRowCollection.contains(text)){
                 return true;
