@@ -40,6 +40,7 @@ public class PackageManagementTests extends PBBaseTest {
 
         navbarWorker.sectionClick("Управление пакетами");
 
+        packageManagementPage.waitTitle();
         packageManagementPage.createPack();
 
         packageManagementPage.setNameInput(name);

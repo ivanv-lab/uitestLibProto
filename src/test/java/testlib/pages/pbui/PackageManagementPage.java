@@ -13,6 +13,7 @@ public class PackageManagementPage extends BasePage {
     By createButton=By.xpath(".//button[@id='button_create']");
     By openFilterButton=By.xpath(".//button[@id='button_show_filter']");
     By syncButton=By.xpath(".//button[@id='button_export']");
+    By title=By.xpath(".//h3[normalize-space(text())='Управление пакетами']");
 
     ///Фильтры
     By filterNameInput=By.xpath(".//input[@id='name']");
@@ -38,6 +39,10 @@ public class PackageManagementPage extends BasePage {
     By backButton=By.xpath(".//button[@id='button_back']");
     By saveButton=By.xpath(".//button[@id='button_save']");
     By deleteButton=By.xpath(".//button[@id='button_delete']");
+
+    public void waitTitle(){
+        click(title);
+    }
 
     public void createPack(){
         click(createButton);
