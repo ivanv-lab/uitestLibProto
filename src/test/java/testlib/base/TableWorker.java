@@ -25,8 +25,6 @@ public class TableWorker extends BasePage {
      */
     public boolean tableRowExists(String text){
 
-        List<String> elementsRowCollection=new ArrayList<>();
-
         int tableSize=findCollection(By.xpath(".//table/tbody/tr")).size();
 
         String tableRowCollection="";

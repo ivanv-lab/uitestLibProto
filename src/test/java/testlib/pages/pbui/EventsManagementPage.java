@@ -13,7 +13,7 @@ public class EventsManagementPage extends BasePage {
     ///Фильтры
     By filterNameInput=By.xpath(".//input[@id='name']");
     By filterCodeInput=By.xpath(".//input[@id='code']");
-    By filterTransactionalInput=By.xpath(".//label[text()='Транзакционный']/parent::div//input");
+    By filterTransactionalInput=By.xpath(".//label[text()='Транзакционность']/parent::div//input");
     By filterPriorityInput=By.xpath(".//label[text()='Приоритет']/parent::div//input");
     By buttonAppFilter=By.xpath(".//button[@id='button_apply_filter']");
     By clearFiltersButton=By.xpath(".//button[@id='button_clear_filter']");
@@ -22,7 +22,7 @@ public class EventsManagementPage extends BasePage {
     By nameInput=By.xpath(".//input[@id='name']");
     By codeInput=By.xpath(".//input[@id='code']");
     By priorityInput=By.xpath(".//label[text()='Приоритет']/parent::div//input");
-    By typeInput=By.xpath(".//label[text()='Тип']/parent::div//input");
+    By typeInput=By.xpath(".//label[text()='Транзакционность']/parent::div//input");
     By descriptionInput=By.xpath(".//textarea[@id='description']");
     By backButton=By.xpath(".//button[@id='button_back']");
     By saveButton=By.xpath(".//button[@id='button_save']");

@@ -149,4 +149,40 @@ public class PackageManagementPage extends BasePage {
     public void clickDeleteButton(){
         click(deleteButton);
     }
+
+    public String getValueFromNameInput(){
+        return getValue(nameInput);
+    }
+
+    public String getValueFromCodeInput(){
+        return getValue(codeInput);
+    }
+
+    public String getValueFromSubTypeInput(){
+        return getValue(subTypeInput);
+    }
+
+    public String getValueFromStatusInput(){
+        return getValue(statusInput);
+    }
+
+    public String getValueFromDescInput(){
+        return getValue(descriptionInput);
+    }
+
+    public String getValueFromStartDateInput(){
+        return getValue(startDateInput);
+    }
+
+    public String getValueFromEndDateInput(){
+        return getValue(endDateInput);
+    }
+
+    public String getValueFromTariffInput(){
+        return getValue(tariffInput);
+    }
+
+    public String getValueFromPeriodInput(){
+        return getValue(periodInput);
+    }
 }
