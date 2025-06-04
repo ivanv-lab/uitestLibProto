@@ -112,8 +112,11 @@ public abstract class BasePage extends BaseTest {
     }
 
     public void acceptAlert(){
-        find(By.xpath(".//div[contains(@class,'alert')]/button[@id='ok-button']"))
-                .click();
+        click(By.xpath(".//div[contains(@class,'alert')]/button[@id='ok-button']"));
+    }
+
+    public void confirmDelete(){
+        click(By.xpath(".//button[contains(@class,'button_confirm')]"));
     }
 
     public void dismissAlert(){

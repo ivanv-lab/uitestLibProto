@@ -4,6 +4,7 @@ import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,15 +12,16 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.EventsManagementPage;
+import testlib.utils.TagOrderer;
 import testlib.utils.handlers.jmx.JMXClient;
 import testlib.utils.handlers.jmx.JMXConnector;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление событиями PBUI")
 @Tag("pb-ui")
 //@Execution(ExecutionMode.CONCURRENT)
@@ -40,6 +42,7 @@ public class EventsManagementTests extends PBBaseTest {
 
     @ParameterizedTest
     @Tag("pb-ui-1")
+    @Tag("pb-events-1")
     @Description("Создание события")
     @MethodSource("eventsList")
     void eventCreateTest(String name,String code,String priority,String type, String desc) {
@@ -60,6 +63,7 @@ public class EventsManagementTests extends PBBaseTest {
 
     @Test
     @Tag("pb-ui-1")
+    @Tag("pb-events-1")
     @Description("Редактирование события")
     void eventEditTest(){
 
@@ -99,6 +103,7 @@ public class EventsManagementTests extends PBBaseTest {
 
     @Test
     @Tag("pb-ui-1")
+    @Tag("pb-events-1")
     @Description("Удаление события")
     void eventDeleteTest(){
 
@@ -119,13 +124,14 @@ public class EventsManagementTests extends PBBaseTest {
 
         eventsManagementPage.clickDeleteButton();
 
-        eventsManagementPage.acceptAlert();
+        eventsManagementPage.confirmDelete();
 
-        assertEquals(false,tableWorker.tableRowExists("eventToDelete"));
+        assertFalse(tableWorker.tableRowExists("eventToDelete"));
     }
 
     @Test
     @Tag("pb-ui-1")
+    @Tag("pb-events-1")
     @Description("Создание события с нечисловым кодом. Ожидается ошибка")
     void createEventWithNoDigitalCode(){
 
@@ -146,6 +152,7 @@ public class EventsManagementTests extends PBBaseTest {
 
     @Test
     @Tag("pb-ui-2")
+    @Tag("pb-events-2")
     @Description("Синхронизация событий")
     void eventsSyncTest() throws IOException {
         JMXConnector jmxConnector = new JMXConnector();
@@ -157,6 +164,7 @@ public class EventsManagementTests extends PBBaseTest {
 
     @Test
     @Tag("pb-ui-2")
+    @Tag("pb-events-2")
     @Description("Фильтрация")
     void eventsFilterTest(){
 

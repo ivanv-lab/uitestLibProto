@@ -36,6 +36,7 @@ public class PackageManagementTests extends PBBaseTest {
 
     @ParameterizedTest
     @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
     @Description("Создание пакета")
     @MethodSource("packageList")
     void packCreateTests(String name, String code, String subType, String status, String desc,String[] startDate,
@@ -67,6 +68,7 @@ public class PackageManagementTests extends PBBaseTest {
     @Test
     @Description("Редактирование пакета")
     @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
     void packEditTest(){
 
         navbarWorker.sectionClick("Управление пакетами");
@@ -123,6 +125,7 @@ public class PackageManagementTests extends PBBaseTest {
     @Test
     @Description("Удаление пакета")
     @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
     void packDeleteTest(){
 
         navbarWorker.sectionClick("Управление пакетами");
@@ -157,6 +160,7 @@ public class PackageManagementTests extends PBBaseTest {
     @Test
     @Description("Фильтрация пакетов")
     @Tag("pb-ui-2")
+    @Tag("pb-packs-2")
     void packFiltersTest(){
 
         navbarWorker.sectionClick("Управление пакетами");

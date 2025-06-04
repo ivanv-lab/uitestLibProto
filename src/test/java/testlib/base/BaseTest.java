@@ -5,6 +5,9 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
 import testlib.utils.handlers.PropertyHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.codeborne.selenide.Selenide.open;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -90,6 +90,7 @@ public class EventsManagementPage extends BasePage {
 
     public void clickDeleteButton(){
         click(deleteButton);
+
     }
 
     public void clearFilters(){

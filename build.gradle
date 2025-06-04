@@ -65,3 +65,35 @@ tasks.test {
 allure {
     version("2.34.0")
 }
+
+///Таски для запуска тестов по классам - категориям
+
+tasks.register("pb-events-1", Test){
+    useJUnitPlatform(){
+        includeTags 'pb-events-1'
+    }
+}
+
+tasks.register("pb-events-2",Test){
+    useJUnitPlatform(){
+        includeTags 'pb-events-2'
+    }
+    dependsOn 'pb-events-1'
+}
+
+tasks.register("pb-packs-1", Test){
+    useJUnitPlatform(){
+        includeTags 'pb-packs-1'
+    }
+}
+
+tasks.register("pb-packs-2",Test){
+    useJUnitPlatform(){
+        includeTags 'pb-packs-2'
+    }
+    dependsOn 'pb-packs-1'
+}
+
+task pb_ui_tests {
+    dependsOn 'pb-events-1', 'pb-events-2', 'pb-packs-1', 'pb-packs-2'
+}
