@@ -30,7 +30,7 @@ public class PackageManagementTests extends PBBaseTest {
                 Arguments.of("pack3","333","Бесплатный","Неактивный","qweqwe",new String[]{"2025","Июнь","5"},
                         new String[]{"2029","Август","2"},"3","12",true),
                 Arguments.of("pack4","444","Платный","Неактивный","qweqwe",new String[]{"2025","Июнь","6"},
-                        new String[]{"2028","Июнь","6"},"4","12",true)
+                        new String[]{"2028","Июнь","6"},"4","12",false)
         );
     }
 
@@ -84,8 +84,8 @@ public class PackageManagementTests extends PBBaseTest {
         packageManagementPage.setDescriptionInput("фывапро");
         packageManagementPage.setStartDate("2025","Июль","12");
         packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("tariff");
-        packageManagementPage.setPeriodInput("period");
+        packageManagementPage.setTariffInput("3");
+        packageManagementPage.setPeriodInput("4");
         packageManagementPage.ndsOn();
 
         packageManagementPage.clickSaveButton();
@@ -101,8 +101,8 @@ public class PackageManagementTests extends PBBaseTest {
         packageManagementPage.setDescriptionInput("ячсмит");
         packageManagementPage.setStartDate("2023","Июль","12");
         packageManagementPage.setEndDate("2025","Август","25");
-        packageManagementPage.setTariffInput("tariffEdited");
-        packageManagementPage.setPeriodInput("periodEdited");
+        packageManagementPage.setTariffInput("5");
+        packageManagementPage.setPeriodInput("6");
         packageManagementPage.ndsOff();
 
         packageManagementPage.clickSaveButton();
@@ -118,8 +118,8 @@ public class PackageManagementTests extends PBBaseTest {
         assertEquals(packageManagementPage.getValueFromDescInput(),"ячсмит");
         assertEquals(packageManagementPage.getValueFromStartDateInput().contains("12 июл. 2023"),true);
         assertEquals(packageManagementPage.getValueFromEndDateInput().contains("25 авг. 2025"),true);
-        assertEquals(packageManagementPage.getValueFromTariffInput(),"tariffEdited");
-        assertEquals(packageManagementPage.getValueFromPeriodInput(),"periodEdited");
+        assertEquals(packageManagementPage.getValueFromTariffInput(),"5");
+        assertEquals(packageManagementPage.getValueFromPeriodInput(),"6");
     }
 
     @Test
@@ -141,8 +141,8 @@ public class PackageManagementTests extends PBBaseTest {
         packageManagementPage.setDescriptionInput("фывапро");
         packageManagementPage.setStartDate("2025","Июль","12");
         packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("tariff");
-        packageManagementPage.setPeriodInput("period");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
         packageManagementPage.ndsOn();
 
         packageManagementPage.clickSaveButton();
@@ -175,7 +175,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("pack2"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetName("pack2");
         packageManagementPage.filterApp();
 
@@ -183,7 +182,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("pack1"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetCode("111");
         packageManagementPage.filterApp();
 
@@ -191,7 +189,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("222"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetCode("222");
         packageManagementPage.filterApp();
 
@@ -199,7 +196,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("111"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetSubType("Платный");
         packageManagementPage.filterApp();
 
@@ -207,7 +203,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("true"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetSubType("Бесплатный");
         packageManagementPage.filterApp();
 
@@ -215,7 +210,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("false"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetStatus("Активный");
         packageManagementPage.filterApp();
 
@@ -223,7 +217,6 @@ public class PackageManagementTests extends PBBaseTest {
         assertFalse(tableWorker.tableRowExists("false"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.openFilters();
         packageManagementPage.filterSetStatus("Неактивный");
         packageManagementPage.filterApp();
 

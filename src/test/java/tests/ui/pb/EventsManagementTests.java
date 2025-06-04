@@ -99,6 +99,14 @@ public class EventsManagementTests extends PBBaseTest {
         assertEquals(eventsManagementPage.getValueFromPriorityInput(), "High");
         assertEquals(eventsManagementPage.getValueFromTransactionalInput(),"Да");
         assertEquals(eventsManagementPage.getValueFromDescInput(),"zxcvbn");
+
+        tableWorker.tableHrefClick("editedEvent");
+
+        eventsManagementPage.clickDeleteButton();
+
+        eventsManagementPage.confirmDelete();
+
+        assertFalse(tableWorker.tableRowExists("eventToDelete"));
     }
 
     @Test
@@ -139,15 +147,13 @@ public class EventsManagementTests extends PBBaseTest {
 
         eventsManagementPage.createEvent();
         eventsManagementPage.setNameInput("eventCode");
-        eventsManagementPage.setCodeInput("666qwe");
+        eventsManagementPage.setCodeInput("666fghj");
         eventsManagementPage.setPriorityInput("Realtime");
         eventsManagementPage.setTypeInput("Да");
         eventsManagementPage.setDescInput("qweqwczcdscsdc");
 
         eventsManagementPage.clickSaveButton();
-        eventsManagementPage.acceptAlert();
-
-        assertEquals(eventsManagementPage.getAlertText(),"qweqweqwe");
+        assertTrue(tableWorker.tableRowExists("666"));
     }
 
     @Test
