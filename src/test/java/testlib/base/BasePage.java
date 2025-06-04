@@ -2,7 +2,11 @@ package testlib.base;
 
 import com.codeborne.selenide.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
 public abstract class BasePage extends BaseTest {
@@ -79,9 +84,24 @@ public abstract class BasePage extends BaseTest {
         $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
+    private boolean waitForPageLoad(){
+        WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(10));
+
+        ExpectedCondition<Boolean> pageLoadCondition=new
+                ExpectedCondition<Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                                .equals("complete");
+                    }
+                };
+        return wait.until(pageLoadCondition);
+    }
+
     public void waitTitle(By titleLocator, String expectedTitle, String hrefTitle){
         $(titleLocator).shouldBe(visible).shouldHave(text(expectedTitle));
         Selenide.Wait().until(url->url.getCurrentUrl().contains(hrefTitle));
+        waitForPageLoad();
     }
 
     public String getAlertText() {

@@ -56,6 +56,8 @@ public class PackageManagementTests extends PBBaseTest {
             packageManagementPage.ndsOn();
         else packageManagementPage.ndsOff();
 
+        packageManagementPage.clickSaveButton();
+
         tableWorker.tableRowExists(name);
     }
 }

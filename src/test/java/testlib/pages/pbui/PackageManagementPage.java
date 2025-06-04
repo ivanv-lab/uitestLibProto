@@ -34,7 +34,7 @@ public class PackageManagementPage extends BasePage {
 
     By tariffInput=By.xpath(".//input[@id='charge_rate']");
     By periodInput=By.xpath(".//input[@id='charge_period_id']");
-    By ndsInput=By.xpath(".//input[contains(@id,'md-switch')]");
+    By ndsInput=By.xpath(".//div[contains(@class,'md-switch-container')]");
 
     By backButton=By.xpath(".//button[@id='button_back']");
     By saveButton=By.xpath(".//button[@id='button_save']");
@@ -140,5 +140,13 @@ public class PackageManagementPage extends BasePage {
 
             click(ndsInput);
         }
+    }
+
+    public void clickSaveButton(){
+        click(saveButton);
+    }
+
+    public void clickDeleteButton(){
+        click(deleteButton);
     }
 }
