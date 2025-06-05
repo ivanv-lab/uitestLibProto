@@ -1,8 +1,10 @@
 package tests.ui.pb;
 
 import io.qameta.allure.Description;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,11 +12,15 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.PackageManagementPage;
+import testlib.utils.TagOrderer;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(TagOrderer.class)
+@DisplayName("Тестирование страницы Управление пакетами PBUI")
+@Tag("pb-ui")
 public class PackageManagementTests extends PBBaseTest {
 
     private PackageManagementPage packageManagementPage=new PackageManagementPage();
@@ -77,14 +83,13 @@ public class PackageManagementTests extends PBBaseTest {
         navbarWorker.sectionClick("Управление пакетами");
 
         packageManagementPage.waitTitle();
-        packageManagementPage.openFilters();
 
         assertTrue(packageManagementPage.deleteIfExistsInTable("editedPackToEdit"));
 
         packageManagementPage.createPack();
-        packageManagementPage.waitForPageLoad();
 
         packageManagementPage.setNameInput("packToEdit");
+
         packageManagementPage.setCodeInput("12345");
         packageManagementPage.setSubTypeInput("Платный");
         packageManagementPage.setStatusInput("Активный");
@@ -99,7 +104,7 @@ public class PackageManagementTests extends PBBaseTest {
 
         assertEquals(tableWorker.tableRowExists("packToEdit"),true);
 
-        tableWorker.tableHrefClick("packToEdit");
+        tableWorker.tableRowCellClick("packToEdit",6);
 
         packageManagementPage.setNameInput("editedPackToEdit");
         packageManagementPage.setCodeInput("54321");
@@ -156,12 +161,255 @@ public class PackageManagementTests extends PBBaseTest {
 
         assertEquals(tableWorker.tableRowExists("packToDelete"),true);
 
-        tableWorker.tableHrefClick("packToDelete");
+        tableWorker.tableRowCellClick("packToDelete",6);
 
         packageManagementPage.clickDeleteButton();
-        packageManagementPage.acceptAlert();
+        packageManagementPage.confirmDelete();
 
         assertEquals(tableWorker.tableRowExists("packToDelete"),false);
+    }
+
+    @Test
+    @Description("Создание пакета без Наименования")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutName(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertEquals(packageManagementPage.getAlertText(),"Поле Наименование обязательно для заполнения");
+    }
+
+    @Test
+    @Description("Создание пакета без Кода")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutCode(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoCode");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertEquals(packageManagementPage.getAlertText(),"Поле Код обязательно для заполнения");
+    }
+
+    @Test
+    @Description("Создание пакета без Типа подписки")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutSubType(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoSubType");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertEquals(packageManagementPage.getAlertText(),"Поле Тип подписки обязательно для заполнения");
+    }
+
+    @Test
+    @Description("Создание пакета без Статуса")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutStatus(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoStatus");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertEquals(packageManagementPage.getAlertText(),"Поле Статус обязательно для заполнения");
+    }
+
+    @Test
+    @Description("Создание пакета без Даты начала")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutStartDate(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoStartDate");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertEquals(packageManagementPage.getAlertText(),"Поле Дата начала обязательно для заполнения");
+    }
+
+    @Test
+    @Description("Создание пакета без Даты конца")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutEndDate(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoEndDate");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("packNoEndDate"));
+    }
+
+    @Test
+    @Description("Создание пакета без Тарифа пакета")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutTariff(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoTariff");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setPeriodInput("8");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("packNoTariff"));
+    }
+
+    @Test
+    @Description("Создание пакета без Периода тарификации")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutPeriod(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoPeriod");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.ndsOn();
+
+        packageManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("packNoPeriod"));
+    }
+
+    @Test
+    @Description("Создание пакета без НДС")
+    @Tag("pb-ui-1")
+    @Tag("pb-packs-1")
+    void createPackWithoutNDS(){
+
+        navbarWorker.sectionClick("Управление пакетами");
+
+        packageManagementPage.waitTitle();
+
+        packageManagementPage.createPack();
+
+        packageManagementPage.setNameInput("packNoNDS");
+        packageManagementPage.setCodeInput("12345");
+        packageManagementPage.setSubTypeInput("Платный");
+        packageManagementPage.setStatusInput("Активный");
+        packageManagementPage.setDescriptionInput("фывапро");
+        packageManagementPage.setStartDate("2025","Июль","12");
+        packageManagementPage.setEndDate("2026","Август","25");
+        packageManagementPage.setTariffInput("7");
+        packageManagementPage.setPeriodInput("8");
+
+        packageManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("packNoNDS"));
     }
 
     @Test

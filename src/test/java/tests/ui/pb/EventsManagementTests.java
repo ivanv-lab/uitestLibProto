@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -24,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление событиями PBUI")
 @Tag("pb-ui")
-//@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.CONCURRENT)
 public class EventsManagementTests extends PBBaseTest {
 
     private EventsManagementPage eventsManagementPage=new EventsManagementPage();
@@ -202,7 +204,7 @@ public class EventsManagementTests extends PBBaseTest {
 
         eventsManagementPage.clickSaveButton();
 
-        assertTrue(tableWorker.tableRowExists("eventNoCode"));
+        assertEquals(eventsManagementPage.getAlertText(),"Поле Код обязательно для заполнения");
     }
 
     @Test

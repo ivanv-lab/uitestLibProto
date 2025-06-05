@@ -31,6 +31,8 @@ public abstract class BasePage extends BaseTest {
     public List<String> findCollection(By locator){
 
         waitForElementVisible(locator,10);
+        waitForElementClickable(locator, 10);
+        waitForElementInteractable(locator,10);
         return $$(locator).shouldHave(CollectionCondition
                 .sizeGreaterThan(0))
                 .asFixedIterable()
@@ -47,6 +49,7 @@ public abstract class BasePage extends BaseTest {
     public void sendKeys(By locator, String text) {
         waitForElementVisible(locator, 10);
         waitForElementClickable(locator, 10);
+        waitForElementInteractable(locator,10);
         find(locator).sendKeys(Keys.CONTROL+"A");
         find(locator).sendKeys(Keys.BACK_SPACE);
         find(locator).sendKeys(text);
@@ -80,11 +83,15 @@ public abstract class BasePage extends BaseTest {
         $(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
     }
 
+    public void waitForElementInteractable(By locator,int timeout){
+        $(locator).shouldBe(interactable,Duration.ofSeconds(timeout));
+    }
+
     public void waitForElementPresent(By locator, int timeout) {
         $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
-    public boolean waitForPageLoad(){
+    private boolean waitForPageLoad(){
         WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(10));
 
         ExpectedCondition<Boolean> pageLoadCondition=new

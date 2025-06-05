@@ -55,6 +55,7 @@ public class TableWorker extends BasePage {
             tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
             if (tableRowCollection.contains(rowText)) {
                 click(By.xpath(".//table/tbody/tr["+i+"]/td["+cellNumber+"]"));
+                return;
             }
         }
     }

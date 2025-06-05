@@ -204,4 +204,12 @@ public class PackageManagementPage extends BasePage {
 
             return true;
     }
+
+    @Override
+    public String getAlertText(){
+        waitForElementVisible(By.xpath(".//div[@id='swal2-content']"), 10);
+        waitForElementClickable(By.xpath(".//div[@id='swal2-content']"), 10);
+        String alertText = find(By.xpath(".//div[@id='swal2-content']")).getText();
+        return alertText;
+    }
 }

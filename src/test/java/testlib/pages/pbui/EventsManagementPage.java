@@ -133,4 +133,12 @@ public class EventsManagementPage extends BasePage {
             if(tableWorker.tableRowExists(rowValue)) return false;
         }
     }
+
+    @Override
+    public String getAlertText(){
+        waitForElementVisible(By.xpath(".//div[@id='swal2-content']"), 10);
+        waitForElementClickable(By.xpath(".//div[@id='swal2-content']"), 10);
+        String alertText = find(By.xpath(".//div[@id='swal2-content']")).getText();
+        return alertText;
+    }
 }
