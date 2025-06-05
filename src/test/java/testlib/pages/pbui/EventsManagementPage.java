@@ -2,9 +2,11 @@ package testlib.pages.pbui;
 
 import org.openqa.selenium.By;
 import testlib.base.BasePage;
+import testlib.base.TableWorker;
 
 public class EventsManagementPage extends BasePage {
 
+    private TableWorker tableWorker=new TableWorker();
     ///Общие элементы
     By createButton=By.xpath(".//button[@id='button_create']");
     By openFilterButton=By.xpath(".//button[@id='button_show_filter']");
@@ -115,5 +117,20 @@ public class EventsManagementPage extends BasePage {
 
     public String getValueFromDescInput(){
         return getValue(descriptionInput);
+    }
+
+    public boolean deleteIfExistsInTable(String rowValue){
+
+        try {
+            if (tableWorker.tableRowExists(rowValue)) {
+                tableWorker.tableHrefClick(rowValue);
+                click(deleteButton);
+                confirmDelete();
+            }
+
+            return true;
+        } finally {
+            if(tableWorker.tableRowExists(rowValue)) return false;
+        }
     }
 }

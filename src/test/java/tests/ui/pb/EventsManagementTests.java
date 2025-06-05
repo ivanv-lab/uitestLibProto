@@ -49,6 +49,8 @@ public class EventsManagementTests extends PBBaseTest {
 
         navbarWorker.sectionClick("Управление событиями");
 
+        assertTrue(eventsManagementPage.deleteIfExistsInTable(name));
+
         eventsManagementPage.createEvent();
         eventsManagementPage.setNameInput(name);
         eventsManagementPage.setCodeInput(code);
@@ -68,6 +70,9 @@ public class EventsManagementTests extends PBBaseTest {
     void eventEditTest(){
 
         navbarWorker.sectionClick("Управление событиями");
+
+        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventToEdit"));
+        assertTrue(eventsManagementPage.deleteIfExistsInTable("editedEvent"));
 
         eventsManagementPage.createEvent();
         eventsManagementPage.setNameInput("eventToEdit");
@@ -100,8 +105,6 @@ public class EventsManagementTests extends PBBaseTest {
         assertEquals(eventsManagementPage.getValueFromTransactionalInput(),"Да");
         assertEquals(eventsManagementPage.getValueFromDescInput(),"zxcvbn");
 
-        tableWorker.tableHrefClick("editedEvent");
-
         eventsManagementPage.clickDeleteButton();
 
         eventsManagementPage.confirmDelete();
@@ -116,6 +119,8 @@ public class EventsManagementTests extends PBBaseTest {
     void eventDeleteTest(){
 
         navbarWorker.sectionClick("Управление событиями");
+
+        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventToDelete"));
 
         eventsManagementPage.createEvent();
         eventsManagementPage.setNameInput("eventToDelete");
@@ -140,10 +145,12 @@ public class EventsManagementTests extends PBBaseTest {
     @Test
     @Tag("pb-ui-1")
     @Tag("pb-events-1")
-    @Description("Создание события с нечисловым кодом. Ожидается ошибка")
+    @Description("Создание события с нечисловым кодом. Ожидается невозможность ввода букв, только чисел")
     void createEventWithNoDigitalCode(){
 
         navbarWorker.sectionClick("Управление событиями");
+
+        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventCode"));
 
         eventsManagementPage.createEvent();
         eventsManagementPage.setNameInput("eventCode");
@@ -194,15 +201,15 @@ public class EventsManagementTests extends PBBaseTest {
         eventsManagementPage.filterSetTransactional("Да");
         eventsManagementPage.filterApp();
 
-        assertEquals(tableWorker.tableRowExists("true"),true);
-        assertEquals(tableWorker.tableRowExists("false"),false);
+        assertEquals(tableWorker.tableRowExists("Да"),true);
+        assertEquals(tableWorker.tableRowExists("Нет"),false);
         eventsManagementPage.clearFilters();
 
         eventsManagementPage.filterSetTransactional("Нет");
         eventsManagementPage.filterApp();
 
-        assertEquals(tableWorker.tableRowExists("false"),true);
-        assertEquals(tableWorker.tableRowExists("true"),false);
+        assertEquals(tableWorker.tableRowExists("Нет"),true);
+        assertEquals(tableWorker.tableRowExists("Да"),false);
         eventsManagementPage.clearFilters();
 
         eventsManagementPage.filterSetPriority("Low");

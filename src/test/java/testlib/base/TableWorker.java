@@ -36,4 +36,22 @@ public class TableWorker extends BasePage {
         }
         return false;
     }
+
+    /**
+     * Метод ищет первую строку в таблице с указанным текстом @param rowText и кликает на столбец с указанным номером @param cellNumber
+     * @param rowText
+     * @param cellNumber
+     */
+    public void tableRowCellClick(String rowText, int cellNumber) {
+
+        int tableSize = findCollection(By.xpath(".//table/tbody/tr")).size();
+
+        String tableRowCollection = "";
+        for (int i = 1; i <= tableSize; i++) {
+            tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
+            if (tableRowCollection.contains(rowText)) {
+                click(By.xpath(".//table/tbody/tr/td["+cellNumber+"]"));
+            }
+        }
+    }
 }
