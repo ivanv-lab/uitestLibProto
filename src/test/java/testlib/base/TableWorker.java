@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.codeborne.selenide.Selenide.$;
+
 /**
  * Класс работы с таблицами в интерфейсе
  */
@@ -29,9 +31,11 @@ public class TableWorker extends BasePage {
 
         String tableRowCollection="";
         for(int i=1;i<=tableSize;i++){
-            tableRowCollection=getText(By.xpath(".//table/tbody/tr["+i+"]"));
-            if(tableRowCollection.contains(text)){
-                return true;
+            if($(By.xpath(".//table/tbody/tr["+i+"]")).exists()) {
+                tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
+                if (tableRowCollection.contains(text)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -50,7 +54,7 @@ public class TableWorker extends BasePage {
         for (int i = 1; i <= tableSize; i++) {
             tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
             if (tableRowCollection.contains(rowText)) {
-                click(By.xpath(".//table/tbody/tr/td["+cellNumber+"]"));
+                click(By.xpath(".//table/tbody/tr["+i+"]/td["+cellNumber+"]"));
             }
         }
     }

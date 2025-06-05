@@ -84,7 +84,7 @@ public abstract class BasePage extends BaseTest {
         $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
     }
 
-    private boolean waitForPageLoad(){
+    public boolean waitForPageLoad(){
         WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(10));
 
         ExpectedCondition<Boolean> pageLoadCondition=new

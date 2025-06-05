@@ -161,6 +161,86 @@ public class EventsManagementTests extends PBBaseTest {
 
         eventsManagementPage.clickSaveButton();
         assertTrue(tableWorker.tableRowExists("666"));
+
+        tableWorker.tableHrefClick("eventCode");
+        eventsManagementPage.clickDeleteButton();
+        eventsManagementPage.confirmDelete();
+        assertFalse(tableWorker.tableRowExists("eventCode"));
+    }
+
+    @Test
+    @Tag("pb-ui-1")
+    @Tag("pb-events-1")
+    @Description("Создание события без заполнения Наименования")
+    void createEventWithoutName(){
+
+        navbarWorker.sectionClick("Управление событиями");
+
+        eventsManagementPage.createEvent();
+        eventsManagementPage.setCodeInput("789");
+        eventsManagementPage.setPriorityInput("Realtime");
+        eventsManagementPage.setTypeInput("Да");
+        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+
+        eventsManagementPage.clickSaveButton();
+        assertEquals(eventsManagementPage.getAlertText(),"Поле Наименование обязательно для заполнения");
+    }
+
+    @Test
+    @Tag("pb-ui-1")
+    @Tag("pb-events-1")
+    @Description("Создание события без заполнения Кода")
+    void createEventWithoutCode(){
+
+        navbarWorker.sectionClick("Управление событиями");
+
+        eventsManagementPage.createEvent();
+        eventsManagementPage.setNameInput("eventNoCode");
+        eventsManagementPage.setPriorityInput("Realtime");
+        eventsManagementPage.setTypeInput("Да");
+        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+
+        eventsManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("eventNoCode"));
+    }
+
+    @Test
+    @Tag("pb-ui-1")
+    @Tag("pb-events-1")
+    @Description("Создание события без заполнения Приоритета")
+    void createEventWithoutPriority(){
+
+        navbarWorker.sectionClick("Управление событиями");
+
+        eventsManagementPage.createEvent();
+        eventsManagementPage.setNameInput("eventNoPriority");
+        eventsManagementPage.setCodeInput("7810");
+        eventsManagementPage.setTypeInput("Да");
+        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+
+        eventsManagementPage.clickSaveButton();
+
+        assertTrue(tableWorker.tableRowExists("eventNoPriority"));
+    }
+
+    @Test
+    @Tag("pb-ui-1")
+    @Tag("pb-events-1")
+    @Description("Создание события без заполнения Транзакционности")
+    void createEventWithoutTransact(){
+
+        navbarWorker.sectionClick("Управление событиями");
+
+        eventsManagementPage.createEvent();
+        eventsManagementPage.setNameInput("eventNoTransact");
+        eventsManagementPage.setCodeInput("789");
+        eventsManagementPage.setPriorityInput("Realtime");
+        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+
+        eventsManagementPage.clickSaveButton();
+
+        assertEquals(eventsManagementPage.getAlertText(),"Поле Транзакционность обязательно для заполнения");
     }
 
     @Test

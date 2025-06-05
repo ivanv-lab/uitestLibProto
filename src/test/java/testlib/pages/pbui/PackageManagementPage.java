@@ -2,12 +2,17 @@ package testlib.pages.pbui;
 
 import org.openqa.selenium.By;
 import testlib.base.BasePage;
+import testlib.base.TableWorker;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
 
 public class PackageManagementPage extends BasePage {
+
+    private TableWorker tableWorker=new TableWorker();
 
     ///Общие элементы
     By createButton=By.xpath(".//button[@id='button_create']");
@@ -184,5 +189,19 @@ public class PackageManagementPage extends BasePage {
 
     public String getValueFromPeriodInput(){
         return getValue(periodInput);
+    }
+
+    public boolean deleteIfExistsInTable(String rowValue){
+
+            if(!$(By.xpath(".//table/tbody/tr")).exists())
+                return true;
+
+            if (tableWorker.tableRowExists(rowValue)) {
+                tableWorker.tableRowCellClick(rowValue,6);
+                click(deleteButton);
+                confirmDelete();
+            }
+
+            return true;
     }
 }

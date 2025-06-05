@@ -45,6 +45,10 @@ public class PackageManagementTests extends PBBaseTest {
         navbarWorker.sectionClick("Управление пакетами");
 
         packageManagementPage.waitTitle();
+        packageManagementPage.openFilters();
+
+        assertTrue(packageManagementPage.deleteIfExistsInTable(name));
+
         packageManagementPage.createPack();
 
         packageManagementPage.setNameInput(name);
@@ -58,7 +62,6 @@ public class PackageManagementTests extends PBBaseTest {
         packageManagementPage.setPeriodInput(period);
         if(nds)
             packageManagementPage.ndsOn();
-        else packageManagementPage.ndsOff();
 
         packageManagementPage.clickSaveButton();
 
@@ -74,8 +77,12 @@ public class PackageManagementTests extends PBBaseTest {
         navbarWorker.sectionClick("Управление пакетами");
 
         packageManagementPage.waitTitle();
+        packageManagementPage.openFilters();
+
+        assertTrue(packageManagementPage.deleteIfExistsInTable("editedPackToEdit"));
 
         packageManagementPage.createPack();
+        packageManagementPage.waitForPageLoad();
 
         packageManagementPage.setNameInput("packToEdit");
         packageManagementPage.setCodeInput("12345");
@@ -109,7 +116,7 @@ public class PackageManagementTests extends PBBaseTest {
 
         assertEquals(tableWorker.tableRowExists("editedPackToEdit"),true);
 
-        tableWorker.tableHrefClick("editedPackToEdit");
+        tableWorker.tableRowCellClick("editedPackToEdit",6);
 
         assertEquals(packageManagementPage.getValueFromNameInput(),"editedPackToEdit");
         assertEquals(packageManagementPage.getValueFromCodeInput(),"54321");

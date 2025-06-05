@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestTag;
 
+import java.util.Collections;
 import java.util.Comparator;
 
 public class TagOrderer implements MethodOrderer {
