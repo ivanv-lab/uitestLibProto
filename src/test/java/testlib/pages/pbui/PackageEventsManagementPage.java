@@ -132,7 +132,7 @@ public class PackageEventsManagementPage extends BasePage {
 
     public void setChannelInput(String channel){
         click(channelInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+channel+"']]"));
+        click(By.xpath(".//div[@class='md-layout-item'][div/label[text()='Поиск']]/parent::ul//li/button[div/span[normalize-space(text())='"+channel+"']]"));
     }
 
     public void setTemplateInput(String template){
@@ -141,7 +141,7 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setTransliterateInputOn(){
-        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Транслитерация']/parent::div//input"))
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Транслитерация']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
                 .is(visible)){
 
             click(transliterateInput);
@@ -149,51 +149,51 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setTransliterateInputOff(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Транслитерация']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(transliterateInput);
+        }
     }
 
     public void setImportantInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Важность']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(importantInput);
+        }
     }
 
     public void setImportantInputOff(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Важность']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(importantInput);
+        }
     }
 
     public void setSendingEmailInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Отправка на неподтвержденные email']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(sendingEmailInput);
+        }
     }
 
     public void setSendingEmailInputOff(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+//        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Отправка на неподтвержденные msisdn']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
 //                .is(visible)){
 //
-//            click(ndsInput);
+//            click(sendingMSISDNInput);
 //        }
     }
 
     public void setSendingMSISDNInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Основные настройки']/ancestor::div[contains(@class,'md-card')]//label[text()='Отправка на неподтвержденные msisdn']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(sendingMSISDNInput);
+        }
     }
 
     public void setSendingMSISDNInputOff(){
@@ -209,11 +209,11 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setIMSIInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Настройки IMSI']/ancestor::div[contains(@class,'md-card')]//label[text()='Проверка IMSI']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(IMSIInput);
+        }
     }
 
     public void setIMSIInputOff(){
@@ -235,11 +235,11 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setIMSITransliterateInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Настройки IMSI']/ancestor::div[contains(@class,'md-card')]//label[text()='Транслитерация']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(IMSITransliterateInput);
+        }
     }
 
     public void setIMSITransliterateInputOff(){
@@ -251,11 +251,11 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setClientSendingInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Отправка по доверенности']/ancestor::div[contains(@class,'md-card')]//label[text()='Отправка клиенту']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(clientSendingInput);
+        }
     }
 
     public void setClientSendingInputOff(){
@@ -267,11 +267,11 @@ public class PackageEventsManagementPage extends BasePage {
     }
 
     public void setTrustedPersonSendingInputOn(){
-//        if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-//                .is(visible)){
-//
-//            click(ndsInput);
-//        }
+        if(find(By.xpath(".//h4[text()='Отправка по доверенности']/ancestor::div[contains(@class,'md-card')]//label[text()='Отправка доверительному лицу']/parent::div//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .is(visible)){
+
+            click(trustedPersonSendingInput);
+        }
     }
 
     public void setTrustedPersonSendingInputOff(){
@@ -296,7 +296,7 @@ public class PackageEventsManagementPage extends BasePage {
             return true;
 
         if (tableWorker.tableRowExists(rowValue)) {
-            tableWorker.tableRowCellClick(rowValue,6);
+            tableWorker.tableRowCellClick(rowValue,8);
             clickDeleteButton();
             confirmDelete();
         }

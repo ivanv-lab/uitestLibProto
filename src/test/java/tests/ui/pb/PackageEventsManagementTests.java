@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
+import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.PackageEventsManagementPage;
 import testlib.utils.TagOrderer;
 
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление событиями пакета PBUI")
 @Tag("pb-ui")
-public class PackageEventsManagementTests {
+public class PackageEventsManagementTests extends PBBaseTest {
 
     private TableWorker tableWorker=new TableWorker();
     private NavbarWorker navbarWorker=new NavbarWorker();
@@ -30,15 +31,15 @@ public class PackageEventsManagementTests {
     static Stream<Arguments> packageEventList(){
         return Stream.of(
                 Arguments.of("pack1","event1LowTrue","Push","tempPush",true,true,true,true,true,"SMS","tempSMS",true,true,true),
-                Arguments.of("pack1","event3HighTrue","SMS","tempSMS",false,true,false,true,false,"","","","",false,true),
+                Arguments.of("pack1","event3HighTrue","SMS","tempSMS",false,true,false,true,false,"","",false,false,false,true),
                 Arguments.of("pack2","event1LowTrue","Push","tempPush",true,false,true,false,true,"Viber","tempViber",false,true,false),
-                Arguments.of("pack3","event4RealtimeFalse","Email","tempEmail",false,false,false,false,false,"","","","",true,false),
+                Arguments.of("pack3","event4RealtimeFalse","Email","tempEmail",false,false,false,false,false,"","",false,false,true,false),
                 Arguments.of("pack4","event1LowTrue","Viber","tempViber",true,true,true,true,true,"Push","tempPush",true,false,false),
-                Arguments.of("packNoStartDate","event4RealtimeFalse","WhatsApp","tempWA",false,true,false,true,false,"","","","",false,true),
+                Arguments.of("packNoStartDate","event4RealtimeFalse","WhatsApp","tempWA",false,true,false,true,false,"","",false,false,false,true),
                 Arguments.of("packNoNDS","eventNoPriority","Mail Notify","tempMN",true,false,true,false,true,"Email","tempEmail",true,true,false),
-                Arguments.of("packNoPeriod","event2NormalFalse","SMS","tempSMS2",false,false,false,false,false,"","","","",true,true),
+                Arguments.of("packNoPeriod","event2NormalFalse","SMS","tempSMS2",false,false,false,false,false,"","",false,false,true,true),
                 Arguments.of("packNoTariff","event3HighTrue","Viber","tempViber2",true,true,true,true,true,"WhatsApp","tempWA",true,false,false),
-                Arguments.of("packNoEndDate","eventNoPriority","WhatsApp","tempWA2",false,true,false,true,false,"","","","",false,true)
+                Arguments.of("packNoEndDate","eventNoPriority","WhatsApp","tempWA2",false,true,false,true,false,"","",false,false,false,true)
         );
     }
 
@@ -53,18 +54,17 @@ public class PackageEventsManagementTests {
 
         navbarWorker.sectionClick("Управление пакетами");
 
-        packageEventsManagementPage.waitTitle();
         packageEventsManagementPage.openFilters();
 
         packageEventsManagementPage.clickPackage(pack);
 
-        packageEventsManagementPage.waitTitle();
         packageEventsManagementPage.openFilters();
 
         assertTrue(packageEventsManagementPage.deleteIfExistsInTable(event));
 
         packageEventsManagementPage.createEvent();
 
+        packageEventsManagementPage.setEventInput(event);
         packageEventsManagementPage.setChannelInput(channel);
         packageEventsManagementPage.setTemplateInput(template);
         if(transliterate)
@@ -91,4 +91,7 @@ public class PackageEventsManagementTests {
 
         tableWorker.tableRowExists(event);
     }
+
+    ///Отправка
+
 }

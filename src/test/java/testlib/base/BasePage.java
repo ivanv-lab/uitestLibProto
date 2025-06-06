@@ -43,7 +43,8 @@ public abstract class BasePage extends BaseTest {
     public void click(By locator) {
         waitForElementVisible(locator, 10);
         waitForElementClickable(locator, 10);
-        find(locator).shouldBe(enabled).click();
+        find(locator).shouldBe(enabled).click();//div[@class='md-layout-item'][div/label[text()='Поиск']]/parent::div//li/button[div/span[normalize-space(text())='Push']]
+
     }
 
     public void sendKeys(By locator, String text) {
