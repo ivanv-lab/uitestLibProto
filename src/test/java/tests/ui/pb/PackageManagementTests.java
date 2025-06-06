@@ -301,7 +301,7 @@ public class PackageManagementTests extends PBBaseTest {
 
         packageManagementPage.clickSaveButton();
 
-        assertEquals(packageManagementPage.getAlertText(),"Поле Дата начала обязательно для заполнения");
+        assertTrue(tableWorker.tableRowExists("packNoStartDate"));
     }
 
     @Test
