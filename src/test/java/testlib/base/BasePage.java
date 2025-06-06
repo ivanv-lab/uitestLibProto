@@ -14,122 +14,83 @@ import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
-import static com.codeborne.selenide.WebDriverRunner.url;
+import static com.codeborne.selenide.WebDriverRunner.*;
 
 public abstract class BasePage extends BaseTest {
-
-    public void open(String url){
-        Selenide.open(url);
-    }
+    
+    private final int defaultTimeout=10;
 
     public SelenideElement find(By locator){
-        waitForElementVisible(locator,10);
+        waitForElementConditions(locator,defaultTimeout,visible);
         return $(locator);
     }
 
     public List<String> findCollection(By locator){
-
-        waitForElementVisible(locator,10);
-        waitForElementClickable(locator, 10);
-        waitForElementInteractable(locator,10);
-        return $$(locator).shouldHave(CollectionCondition
-                .sizeGreaterThan(0))
+        waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
+        return $$(locator)
                 .asFixedIterable()
                 .stream().map(SelenideElement::getText)
                 .collect(Collectors.toList());
     }
 
     public void click(By locator) {
-        waitForElementVisible(locator, 10);
-        waitForElementClickable(locator, 10);
-        find(locator).shouldBe(enabled).click();//div[@class='md-layout-item'][div/label[text()='Поиск']]/parent::div//li/button[div/span[normalize-space(text())='Push']]
-
+        waitForElementConditions(locator,defaultTimeout,visible,clickable);
+        find(locator).shouldBe(enabled).click();
     }
 
     public void sendKeys(By locator, String text) {
-        waitForElementVisible(locator, 10);
-        waitForElementClickable(locator, 10);
-        waitForElementInteractable(locator,10);
+        waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
         find(locator).sendKeys(Keys.CONTROL+"A");
         find(locator).sendKeys(Keys.BACK_SPACE);
         find(locator).sendKeys(text);
     }
 
-    public String getText(By locator)  {
-        waitForElementVisible(locator, 10);
-        waitForElementClickable(locator, 10);
+    public String getText(By locator) {
+        waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getText();
     }
 
     public String getValue(By locator) {
-        waitForElementVisible(locator, 10);
-        waitForElementClickable(locator, 10);
+        waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getValue();
     }
 
-    public String getCurrentUrl(){
-        return url();
-    }
-
-    public String getTitle(){
-        return title();
-    }
-
-    public void waitForElementVisible(By locator, int timeout) {
-        $(locator).shouldBe(visible,Duration.ofSeconds(timeout));
-    }
-
-    public void waitForElementClickable(By locator, int timeout) {
-        $(locator).shouldBe(clickable,Duration.ofSeconds(timeout));
-    }
-
-    public void waitForElementInteractable(By locator,int timeout){
-        $(locator).shouldBe(interactable,Duration.ofSeconds(timeout));
-    }
-
-    public void waitForElementPresent(By locator, int timeout) {
-        $(locator).shouldBe(checked,Duration.ofSeconds(timeout));
+    private void waitForElementConditions(By locator,int timeout,WebElementCondition... conditions){
+        for(WebElementCondition condition:conditions){
+            $(locator).shouldBe(condition,Duration.ofSeconds(timeout));
+        }
     }
 
     private boolean waitForPageLoad(){
-        WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(10));
-
-        ExpectedCondition<Boolean> pageLoadCondition=new
-                ExpectedCondition<Boolean>() {
-                    @Override
-                    public Boolean apply(WebDriver driver) {
-                        return ((JavascriptExecutor) driver).executeScript("return document.readyState")
-                                .equals("complete");
-                    }
-                };
-        return wait.until(pageLoadCondition);
+//        WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(defaultTimeout));
+//
+//        ExpectedCondition<Boolean> pageLoadCondition=new
+//                ExpectedCondition<Boolean>() {
+//                    @Override
+//                    public Boolean apply(WebDriver driver) {
+//                        return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+//                                .equals("complete");
+//                    }
+//                };
+//        return wait.until(pageLoadCondition);
+        return Selenide.executeJavaScript("return document.readyState")
+                .equals("complete");
     }
 
     public void waitTitle(By titleLocator, String expectedTitle, String hrefTitle){
-        $(titleLocator).shouldBe(visible).shouldHave(text(expectedTitle));
+        find(titleLocator).shouldBe(visible).shouldHave(text(expectedTitle));
         Selenide.Wait().until(url->url.getCurrentUrl().contains(hrefTitle));
         waitForPageLoad();
     }
 
     public String getAlertText() {
-        waitForElementVisible(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
-        waitForElementClickable(By.xpath(".//div[contains(@class,'alert')]/span"), 10);
-        String alertText = find(By.xpath(".//div[contains(@class,'alert')]/span")).getText();
-        return alertText;
-    }
-
-    public void acceptAlert(){
-        click(By.xpath(".//div[contains(@class,'alert')]/button[@id='ok-button']"));
+        By alertLocator=By.xpath(".//div[contains(@class,'alert')]/span");
+        waitForElementConditions(alertLocator,defaultTimeout,visible,clickable);
+        return find(alertLocator).getText();
     }
 
     public void confirmDelete(){
         click(By.xpath(".//button[contains(@class,'button_confirm')]"));
-    }
-
-    public void dismissAlert(){
-        find(By.xpath(".//div[contains(@class,'alert')]/button[@id='no-button']"))
-                .click();
     }
 
     public void setCalendar(By locator, String year, String month, String date){

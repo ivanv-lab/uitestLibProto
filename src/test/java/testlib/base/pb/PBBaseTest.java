@@ -9,11 +9,11 @@ import testlib.utils.handlers.PropertyHandler;
 
 public class PBBaseTest extends BaseTest {
 
+    private LoginPage loginPage=new LoginPage();
+    private NavbarWorker navbarWorker=new NavbarWorker();
+
     @BeforeEach
     void setup(){
-
-        LoginPage loginPage=new LoginPage();
-        NavbarWorker navbarWorker=new NavbarWorker();
 
         Selenide.open( PropertyHandler.getProperty("base.URL") + "/pbui/login");
         loginPage.login(PropertyHandler.getProperty("admin.login"),

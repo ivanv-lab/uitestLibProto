@@ -3,6 +3,7 @@ package testlib.base;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
+import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
 
 import java.util.ArrayList;
