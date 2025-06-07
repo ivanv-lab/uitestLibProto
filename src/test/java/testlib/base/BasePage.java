@@ -103,4 +103,14 @@ public abstract class BasePage extends BaseTest {
         click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
         click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
     }
+
+    public void switchCheckbox(By locator,boolean switchPosition){
+        if(switchPosition)
+            if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                    .is(visible)) click(locator);
+
+        if(!switchPosition)
+            if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                    .is(visible)) click(locator);
+    }
 }
