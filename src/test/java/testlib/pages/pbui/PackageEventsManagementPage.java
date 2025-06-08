@@ -24,14 +24,7 @@ public class PackageEventsManagementPage extends BasePage {
             title=By.xpath(".//h3[contains(normalize-space(text()),'Управление событиями пакета')]");
 
     ///Фильтры
-    By filterEventInput=By.xpath(".//label[text()='Событие']/parent::div//input"),
-        filterPackageInput=By.xpath(".//label[text()='Пакет']/parent::div//input"),
-        filterChannelInput=By.xpath(".//label[text()='Канал']/parent::div//input"),
-        filterTemplateInput=By.xpath(".//label[text()='Шаблон']/parent::div//input"),
-        filterIMSIInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input"),
-        filterImportantInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input"),
-        filterTransliterateInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input"),
-        filterAppButton=By.xpath(".//label[text()='Тип подписки']/parent::div//input"),
+       By filterAppButton=By.xpath(".//label[text()='Тип подписки']/parent::div//input"),
     filterClearButton=By.xpath(".//button[@id='button_clear_filter']");
 
     ///Страница создания\редактирования\удаления
@@ -83,39 +76,9 @@ public class PackageEventsManagementPage extends BasePage {
         click(syncButton);
     }
 
-    public void setFilterEventInput(String eventName){
-        click(filterEventInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+eventName+"']]"));
-    }
-
-    public void setFilterPackageInput(String packName){
-        click(filterPackageInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+packName+"']]"));
-    }
-
-    public void setFilterChannelInput(String channelName){
-        click(filterChannelInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+channelName+"']]"));
-    }
-
-    public void setFilterTemplateInput(String templateName){
-        click(filterTemplateInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+templateName+"']]"));
-    }
-
-    public void setFilterIMSIInput(String IMSIInputString){
-        click(filterIMSIInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+IMSIInputString+"']]"));
-    }
-
-    public void setFilterImportantInput(String importantInputString){
-        click(filterImportantInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+importantInputString+"']]"));
-    }
-
-    public void setFilterTransliterateInput(String transliterateInputString){
-        click(filterTransliterateInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+transliterateInputString+"']]"));
+    public void setFilter(String filterName, String filterValue){
+        click(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"));
+        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
     }
 
     public void filterApp(){
