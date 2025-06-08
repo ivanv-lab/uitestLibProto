@@ -13,10 +13,6 @@ public class EventsManagementPage extends BasePage {
     By syncButton=By.xpath(".//button[@id='button_export']");
 
     ///Фильтры
-    By filterNameInput=By.xpath(".//input[@id='name']");
-    By filterCodeInput=By.xpath(".//input[@id='code']");
-    By filterTransactionalInput=By.xpath(".//label[text()='Транзакционность']/parent::div//input");
-    By filterPriorityInput=By.xpath(".//label[text()='Приоритет']/parent::div//input");
     By buttonAppFilter=By.xpath(".//button[@id='button_apply_filter']");
     By clearFiltersButton=By.xpath(".//button[@id='button_clear_filter']");
 
@@ -42,22 +38,9 @@ public class EventsManagementPage extends BasePage {
         click(syncButton);
     }
 
-    public void filterSetName(String name){
-        sendKeys(filterNameInput,name);
-    }
-
-    public void filterSetCode(String code){
-        sendKeys(filterCodeInput,code);
-    }
-
-    public void filterSetTransactional(String value){
-        click(filterTransactionalInput);
-        click(By.xpath(".//li/button[div/span[text()='"+value+"']]"));
-    }
-
-    public void filterSetPriority(String value){
-        click(filterPriorityInput);
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+value+"']]"));
+    public void setFilter(String filterName, String filterValue){
+        click(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"));
+        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
     }
 
     public void filterApp(){
@@ -136,9 +119,6 @@ public class EventsManagementPage extends BasePage {
 
     @Override
     public String getAlertText(){
-        waitForElementVisible(By.xpath(".//div[@id='swal2-content']"), 10);
-        waitForElementClickable(By.xpath(".//div[@id='swal2-content']"), 10);
-        String alertText = find(By.xpath(".//div[@id='swal2-content']")).getText();
-        return alertText;
+        return find(By.xpath(".//div[@id='swal2-content']")).getText();
     }
 }
