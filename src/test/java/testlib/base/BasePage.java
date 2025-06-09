@@ -107,10 +107,12 @@ public abstract class BasePage extends BaseTest {
     public void switchCheckbox(By locator,boolean switchPosition){
         if(switchPosition)
             if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-                    .is(visible)) click(locator);
+                    .is(exist))
+                click(locator);
 
         if(!switchPosition)
             if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
-                    .is(visible)) click(locator);
+                    .is(exist))
+                click(locator);
     }
 }

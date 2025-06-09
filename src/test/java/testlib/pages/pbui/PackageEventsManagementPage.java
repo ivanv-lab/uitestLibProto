@@ -31,20 +31,20 @@ public class PackageEventsManagementPage extends BasePage {
     By eventInput=By.xpath(".//label[text()='Событие']/parent::div//input"),
             channelInput=By.xpath(".//label[text()='Канал']/parent::div//input"),
             templateInput=By.xpath(".//label[text()='Шаблон']/parent::div//input"),
-            transliterateInput=By.xpath(".//label[text()='Транслитерация']/parent::div//input"),
-            importantInput=By.xpath(".//label[text()='Важность']/parent::div//input"),
-            sendingEmailInput=By.xpath(".//label[text()='Отправка на неподтвержденные email']/parent::div//input"),
-            sendingMSISDNInput=By.xpath(".//label[text()='Отправка на неподтвержденные msisdn']/parent::div//input"),
+            transliterateInput=By.xpath(".//h4[text()='Основные настройки']/parent::div/parent::div/parent::div//label[text()='Транслитерация']/parent::div//div[contains(@class,'md-switch-container')]"),
+            importantInput=By.xpath(".//label[text()='Важность']/parent::div//div[contains(@class,'md-switch-container')]"),
+            sendingEmailInput=By.xpath(".//label[text()='Отправка на неподтвержденные email']/parent::div//div[contains(@class,'md-switch-container')]"),
+            sendingMSISDNInput=By.xpath(".//label[text()='Отправка на неподтвержденные msisdn']/parent::div//div[contains(@class,'md-switch-container')]"),
             emailDraftIdInput=By.xpath(".//label[text()='Email draft_id']/parent::div//input"),
-            clientSendingInput=By.xpath(".//label[text()='Отправка клиенту']/parent::div//input"),
-            trustedPersonSendingInput=By.xpath(".//label[text()='Отправка доверительному лицу']/parent::div//input"),
+            clientSendingInput=By.xpath(".//label[text()='Отправка клиенту']/parent::div//div[contains(@class,'md-switch-container')]"),
+            trustedPersonSendingInput=By.xpath(".//label[text()='Отправка доверительному лицу']/parent::div//div[contains(@class,'md-switch-container')]"),
             ndsInput=By.xpath(".");
 
     ///Элементы управления IMSI
-    By IMSIInput=By.xpath(".//label[text()='Проверка IMSI']/parent::div//input"),
-        IMSIChannelInput=By.xpath(".//label[text()='Канал']/parent::div//input"),
-        IMSITemplateInput=By.xpath(".//label[text()='Шаблон']/parent::div//input"),
-        IMSITransliterateInput=By.xpath(".//label[text()='Транслитерация']/parent::div//input");
+    By IMSIInput=By.xpath(".//label[text()='Проверка IMSI']/parent::div//div[contains(@class,'md-switch-container')]"),
+        IMSIChannelInput=By.xpath(".//h4[text()='Настройки IMSI']/parent::div/parent::div/parent::div//label[text()='Канал']/parent::div//input"),
+        IMSITemplateInput=By.xpath(".//h4[text()='Настройки IMSI']/parent::div/parent::div/parent::div//label[text()='Шаблон']/parent::div//input"),
+        IMSITransliterateInput=By.xpath(".//h4[text()='Настройки IMSI']/parent::div/parent::div/parent::div//label[text()='Транслитерация']/parent::div//div[contains(@class,'md-switch-container')]");
 
     ///Кнопки страницы создания\редактирования\удаления
     By saveButton=By.xpath(".//button[@id='button_save']"),
@@ -78,7 +78,11 @@ public class PackageEventsManagementPage extends BasePage {
 
     public void setFilter(String filterName, String filterValue){
         click(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"));
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        if($(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"))
+                .exists())
+            click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        else
+            sendKeys(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"),filterValue);
     }
 
     public void filterApp(){

@@ -423,56 +423,56 @@ public class PackageManagementTests extends PBBaseTest {
         packageManagementPage.waitTitle();
 
         packageManagementPage.openFilters();
-        packageManagementPage.filterSetName("pack1");
+        packageManagementPage.setFilter("Наименование","pack1");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("pack1"));
         assertFalse(tableWorker.tableRowExists("pack2"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetName("pack2");
+        packageManagementPage.setFilter("Наименование","pack2");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("pack2"));
         assertFalse(tableWorker.tableRowExists("pack1"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetCode("111");
+        packageManagementPage.setFilter("Код","111");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("111"));
         assertFalse(tableWorker.tableRowExists("222"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetCode("222");
+        packageManagementPage.setFilter("Код","222");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("222"));
         assertFalse(tableWorker.tableRowExists("111"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetSubType("Платный");
+        packageManagementPage.setFilter("Тип подписки","Платный");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("false"));
         assertFalse(tableWorker.tableRowExists("true"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetSubType("Бесплатный");
+        packageManagementPage.setFilter("Тип подписки","Бесплатный");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("true"));
         assertFalse(tableWorker.tableRowExists("false"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetStatus("Активный");
+        packageManagementPage.setFilter("Статус","Активный");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("true"));
         assertFalse(tableWorker.tableRowExists("false"));
         packageManagementPage.clearFilters();
 
-        packageManagementPage.filterSetStatus("Неактивный");
+        packageManagementPage.setFilter("Статус","Неактивный");
         packageManagementPage.filterApp();
 
         assertTrue(tableWorker.tableRowExists("false"));

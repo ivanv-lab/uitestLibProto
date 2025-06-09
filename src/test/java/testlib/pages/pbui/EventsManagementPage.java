@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import testlib.base.BasePage;
 import testlib.base.TableWorker;
 
+import static com.codeborne.selenide.Selenide.$;
+
 public class EventsManagementPage extends BasePage {
 
     private TableWorker tableWorker=new TableWorker();
@@ -40,7 +42,11 @@ public class EventsManagementPage extends BasePage {
 
     public void setFilter(String filterName, String filterValue){
         click(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"));
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        if($(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"))
+                .exists())
+            click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        else
+            sendKeys(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"),filterValue);
     }
 
     public void filterApp(){

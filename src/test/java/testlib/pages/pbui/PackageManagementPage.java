@@ -21,10 +21,6 @@ public class PackageManagementPage extends BasePage {
     By title=By.xpath(".//h3[normalize-space(text())='Управление пакетами']");
 
     ///Фильтры
-//    By filterNameInput=By.xpath(".//input[@id='name']");
-//    By filterCodeInput=By.xpath(".//input[@id='code']");
-//    By filterSubTypeInput=By.xpath(".//label[text()='Тип подписки']/parent::div//input");
-//    By filterStatusInput=By.xpath(".//label[text()='Статус']/parent::div//input");
     By buttonAppFilter=By.xpath(".//button[@id='button_apply_filter']");
     By clearFiltersButton=By.xpath(".//button[@id='button_clear_filter']");
 
@@ -65,27 +61,13 @@ public class PackageManagementPage extends BasePage {
         click(syncButton);
     }
 
-//    public void filterSetName(String name){
-//        sendKeys(filterNameInput,name);
-//    }
-//
-//    public void filterSetCode(String code){
-//        sendKeys(filterCodeInput,code);
-//    }
-//
-//    public void filterSetStatus(String status){
-//        click(filterStatusInput);
-//        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+status+"']]"));
-//    }
-//
-//    public void filterSetSubType(String subType){
-//        click(filterSubTypeInput);
-//        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+subType+"']]"));
-//    }
-
     public void setFilter(String filterName, String filterValue){
         click(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"));
-        click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        if($(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"))
+                .exists())
+            click(By.xpath(".//li/button[div/span[normalize-space(text())='"+filterValue+"']]"));
+        else
+            sendKeys(By.xpath(".//label[text()='"+filterName+"']/parent::div//input"),filterValue);
     }
 
     public void filterApp(){
@@ -212,9 +194,6 @@ public class PackageManagementPage extends BasePage {
 
     @Override
     public String getAlertText(){
-        waitForElementVisible(By.xpath(".//div[@id='swal2-content']"), 10);
-        waitForElementClickable(By.xpath(".//div[@id='swal2-content']"), 10);
-        String alertText = find(By.xpath(".//div[@id='swal2-content']")).getText();
-        return alertText;
+        return find(By.xpath(".//div[@id='swal2-content']")).getText();
     }
 }
