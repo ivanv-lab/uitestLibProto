@@ -12,14 +12,12 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.PackageEventsManagementPage;
-import testlib.utils.TagOrderer;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление событиями пакета PBUI")
 @Tag("pb-ui")
 public class PackageEventsManagementTests extends PBBaseTest {

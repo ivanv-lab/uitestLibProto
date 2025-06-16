@@ -12,13 +12,11 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.PackageManagementPage;
-import testlib.utils.TagOrderer;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление пакетами PBUI")
 @Tag("pb-ui")
 public class PackageManagementTests extends PBBaseTest {

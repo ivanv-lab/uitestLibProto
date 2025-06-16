@@ -4,7 +4,6 @@ import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,16 +13,12 @@ import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
 import testlib.pages.pbui.EventsManagementPage;
-import testlib.utils.TagOrderer;
-import testlib.utils.handlers.jmx.JMXClient;
-import testlib.utils.handlers.jmx.JMXConnector;
+import testlib.utils.handlers.jmx.JmxHandler;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(TagOrderer.class)
 @DisplayName("Тестирование страницы Управление событиями PBUI")
 @Tag("pb-ui")
 @Execution(ExecutionMode.CONCURRENT)
@@ -32,6 +27,8 @@ public class EventsManagementTests extends PBBaseTest {
     private EventsManagementPage eventsManagementPage=new EventsManagementPage();
     private NavbarWorker navbarWorker=new NavbarWorker();
     private TableWorker tableWorker=new TableWorker();
+
+    private JmxHandler jmxHandler;
 
     static Stream<Arguments> eventsList(){
         return Stream.of(
@@ -249,12 +246,20 @@ public class EventsManagementTests extends PBBaseTest {
     @Tag("pb-ui-2")
     @Tag("pb-events-2")
     @Description("Синхронизация событий")
-    void eventsSyncTest() throws IOException {
-        JMXConnector jmxConnector = new JMXConnector();
-        jmxConnector.connect();
-        JMXClient jmxClient=new JMXClient(jmxConnector.getMbsc());
-        String cacheValue=jmxClient.getAttribute("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
-                "Description of keySet").toString();
+    void eventsSyncTest() throws Exception {
+
+        navbarWorker.sectionClick("Управление событиями");
+        eventsManagementPage.syncEvents();
+
+        jmxHandler=new JmxHandler();
+        jmxHandler.connect();
+
+        Object value=jmxHandler.invoke("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
+                "get","cdp-event-profiles","111");
+
+
+
+        jmxHandler.disconnect();
     }
 
     @Test

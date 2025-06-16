@@ -10,22 +10,21 @@ import testlib.utils.handlers.PropertyHandler;
 
 public class AdminBaseTest extends BaseTest {
 
+    private LoginPage loginPage=new LoginPage();
+    private NavbarWorker navbarWorker=new NavbarWorker();
+
     @BeforeEach
     void conditionalLogin(TestInfo testInfo) throws InterruptedException {
-
-        LoginPage loginPage=new LoginPage();
 
         if(!testInfo.getTags().contains("no-login")){
 
             loginPage.login(PropertyHandler.getProperty("admin.login"),
                     PropertyHandler.getProperty("admin.password"));
 
-            NavbarWorker navbar=new NavbarWorker();
-            navbar.openSidebar();
+            navbarWorker.openSidebar();
         } else{
 
             Selenide.open( PropertyHandler.getProperty("base.URL") + "/acui/login");
-            loginPage.changeLanguage();
         }
     }
 }
