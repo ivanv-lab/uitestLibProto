@@ -1,17 +1,28 @@
 package testlib.base;
 
+import com.codeborne.selenide.Selenide;
+import testlib.pages.login.LoginPage;
+import testlib.utils.handlers.PropertyHandler;
+
 public class UIHandler extends BasePage{
 
     public UIHandler loginAcui(){
-
+        LoginPage loginPage=new LoginPage();
+        loginPage.login(PropertyHandler.getProperty("admin.login"),PropertyHandler.getProperty("admin.password"));
+        return this;
     }
 
     public UIHandler loginLkui(){
-
+        LoginPage loginPage=new LoginPage();
+        loginPage.login(PropertyHandler.getProperty("lk.login"),PropertyHandler.getProperty("lk.password"));
+        return this;
     }
 
-    public UIHandler login(){
-
+    public UIHandler login(String address, String login,String password){
+        Selenide.open(address);
+        LoginPage loginPage=new LoginPage();
+        loginPage.login(login,password);
+        return this;
     }
 
     public UIHandler logout(){
