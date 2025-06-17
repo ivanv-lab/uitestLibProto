@@ -30,11 +30,16 @@ public class LoginPage extends BasePage {
         clickSubmitButton();
     }
 
-    public void changeLanguage(){
+    public void changeLanguageToEng(){
         click(changeLanguageButton);
         if(getValue(currentLang).equals("Русский")) {
             click(By.xpath(".//button[div/span[contains(.,'English')]]"));
-        } else if(getValue(currentLang).equals("English")) {
+        }
+    }
+
+    public void changeLanguageToRus(){
+        click(changeLanguageButton);
+        if(getValue(currentLang).equals("English")) {
             click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
         }
     }
