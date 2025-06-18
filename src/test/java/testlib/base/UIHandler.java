@@ -5,6 +5,8 @@ import org.openqa.selenium.By;
 import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
 
+import static com.codeborne.selenide.Selenide.$;
+
 public class UIHandler extends BasePage{
 
     public UIHandler loginAcui(){
@@ -32,7 +34,7 @@ public class UIHandler extends BasePage{
     }
 
     public UIHandler logout(){
-        click(By.xpath(""));
+        buttonClickById("button_logout");
         return this;
     }
 
@@ -48,7 +50,8 @@ public class UIHandler extends BasePage{
     }
 
     public UIHandler buttonClick(String buttonText){
-        click();
+        click(By.xpath(""));
+        return this;
     }
 
     public UIHandler buttonClickById(String buttonId){
@@ -102,28 +105,53 @@ public class UIHandler extends BasePage{
     public UIHandler switchCheckbox(String checkboxName,
                                     boolean switchPosition){
         if(switchPosition){
-
+            if(find(By.xpath(".//label[text()='"+checkboxName+"']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//label[text()='"+checkboxName+"']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"));
         }
 
         if(!switchPosition){
-
+            if(find(By.xpath(".//label[text()='"+checkboxName+"']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//label[text()='"+checkboxName+"']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"));
         }
+        return this;
     }
 
     public UIHandler setInputValueFromTableValues(String inputName){
-
+        return this;
     }
 
     public UIHandler filterSet(String filterInput, String value){
+        click(By.xpath(".//label[text()='"+filterInput+"']/parent::div//input"));
+        if($(By.xpath(".//li/button[div/span[normalize-space(text())='"+value+"']]"))
+                .exists())
+            click(By.xpath(".//li/button[div/span[normalize-space(text())='"+value+"']]"));
+        else
+            sendKeys(By.xpath(".//label[text()='"+filterInput+"']/parent::div//input"),value);
 
+        buttonClickById("button_apply_filter");
+        return this;
     }
 
     public UIHandler settingsOff(String... settingsToOff){
-
+        click(By.xpath(".//button[div//i[text()='settings']]"));
+        for(String setting:settingsToOff){
+            if($(By.xpath(".//div[@class='open dropdown']/ul/li[div/label[text()='"+setting+"']]/div[contains(@class,'checked')]//input"))
+                    .exists())
+                click(By.xpath(".//div[@class='open dropdown']/ul/li[div/label[text()='"+setting+"']]/div[contains(@class,'checked')]//input"));
+        }
+        return this;
     }
 
     public UIHandler settingsOn(String... settingsToOn){
-
+        click(By.xpath(".//button[div//i[text()='settings']]"));
+        for(String setting:settingsToOn){
+            if($(By.xpath(".//div[@class='open dropdown']/ul/li[div/label[text()='"+setting+"']]/div[not(contains(@class,'checked'))]//input"))
+                    .exists())
+                click(By.xpath(".//div[@class='open dropdown']/ul/li[div/label[text()='"+setting+"']]/div[not(contains(@class,'checked'))]//input"));
+        }
+        return this;
     }
 
     public UIHandler calendarSet(){
