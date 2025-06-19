@@ -1,29 +1,28 @@
 package tests.ui.pb;
 
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Link;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import testlib.base.NavbarWorker;
-import testlib.base.TableWorker;
+import org.openqa.selenium.By;
+import testlib.base.UIHandler;
 import testlib.base.pb.PBBaseTest;
-import testlib.pages.pbui.PackageManagementPage;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.codeborne.selenide.Selenide.$$;
 
 @DisplayName("Тестирование страницы Управление пакетами PBUI")
 @Tag("pb-ui")
 public class PackageManagementTests extends PBBaseTest {
-
-    private PackageManagementPage packageManagementPage=new PackageManagementPage();
-    private NavbarWorker navbarWorker=new NavbarWorker();
-    private TableWorker tableWorker=new TableWorker();
 
     static Stream<Arguments> packageList(){
         return Stream.of(
@@ -39,442 +38,481 @@ public class PackageManagementTests extends PBBaseTest {
     }
 
     @ParameterizedTest
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     @MethodSource("packageList")
-    void packCreateTests(String name, String code, String subType, String status, String desc,String[] startDate,
-                         String[] endDate,String tariff,String period,boolean nds){
+    void packCreateTest(String name, String code, String subType, String status, String desc,String[] startDate,
+                        String[] endDate,String tariff,String period,boolean nds){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами");
 
-        packageManagementPage.waitTitle();
-        packageManagementPage.openFilters();
+        List<String> rows=$$(By.xpath(".//table/tbody/tr"))
+                .asFixedIterable()
+                .stream().map(SelenideElement::getText)
+                .collect(Collectors.toList());
 
-        assertTrue(packageManagementPage.deleteIfExistsInTable(name));
+        for(int i=0;i<rows.size();i++){
+            if(rows.get(i).contains(name)){
+                ui.tableRowCellClick(name,6)
+                        .buttonClickById(UIHandler.ButtonId.delete.getId())
+                        .confirmDelete();
+            }
+        }
 
-        packageManagementPage.createPack();
-
-        packageManagementPage.setNameInput(name);
-        packageManagementPage.setCodeInput(code);
-        packageManagementPage.setSubTypeInput(subType);
-        packageManagementPage.setStatusInput(status);
-        packageManagementPage.setDescriptionInput(desc);
-        packageManagementPage.setStartDate(startDate[0],startDate[1],startDate[2]);
-        packageManagementPage.setEndDate(endDate[0],endDate[1],endDate[2]);
-        packageManagementPage.setTariffInput(tariff);
-        packageManagementPage.setPeriodInput(period);
-        if(nds)
-            packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertEquals(tableWorker.tableRowExists(name),true);
+        ui
+                .buttonClickById(UIHandler.ButtonId.create.getId())
+                .inputSet("Наименование",name)
+                .inputSet("Код",code)
+                .inputSet("Тип подписки",subType)
+                .inputSet("Статус",status)
+                .inputSet("Описание",desc)
+                .calendarSet("Действует с")
+                .calendarSet("Действует по")
+                .inputSet("Тариф пакета", tariff)
+                .inputSet("Период тарификации",period)
+                .switchCheckbox("Облагается НДС",nds)
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists(name);
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Редактирование пакета")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void packEditTest(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами");
 
-        packageManagementPage.waitTitle();
+        List<String> rows=$$(By.xpath(".//table/tbody/tr"))
+                .asFixedIterable()
+                .stream().map(SelenideElement::getText)
+                .collect(Collectors.toList());
 
-        assertTrue(packageManagementPage.deleteIfExistsInTable("editedPackToEdit"));
+        for(int i=0;i<rows.size();i++){
+            if(rows.get(i).contains("packToEdit")){
+                ui.tableRowCellClick("packToEdit",6)
+                        .buttonClickById(UIHandler.ButtonId.delete.getId())
+                        .confirmDelete();
+            }
+        }
 
-        packageManagementPage.createPack();
+        for(int i=0;i<rows.size();i++){
+            if(rows.get(i).contains("editedPackToEdit")){
+                ui.tableRowCellClick("editedPackToEdit",6)
+                        .buttonClickById(UIHandler.ButtonId.delete.getId())
+                        .confirmDelete();
+            }
+        }
 
-        packageManagementPage.setNameInput("packToEdit");
+        ui
+                .buttonClickById(UIHandler.ButtonId.create.getId())
+                .inputSet("Наименование","packToEdit")
+                .inputSet("Код","12345")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .calendarSet("Действует с")
+                .calendarSet("Действует по",10)
+                .inputSet("Тариф пакета", "3")
+                .inputSet("Период тарификации","4")
+                .switchCheckbox("Облагается НДС")
 
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("3");
-        packageManagementPage.setPeriodInput("4");
-        packageManagementPage.ndsOn();
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
-        packageManagementPage.clickSaveButton();
+                .tableRowExists("packToEdit")
 
-        assertEquals(tableWorker.tableRowExists("packToEdit"),true);
+                .tableRowCellClick("packToEdit",6)
 
-        tableWorker.tableRowCellClick("packToEdit",6);
+                .inputSet("Наименование","editedPackToEdit")
+                .inputSet("Код","54321")
+                .inputSet("Тип подписки","Бесплатный")
+                .inputSet("Статус","Неактивный")
+                .inputSet("Описание","ячсмит")
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",15)
+                .inputSet("Тариф пакета", "5")
+                .inputSet("Период тарификации","6")
+                .switchCheckbox("Облагается НДС",false)
 
-        packageManagementPage.setNameInput("editedPackToEdit");
-        packageManagementPage.setCodeInput("54321");
-        packageManagementPage.setSubTypeInput("Бесплатный");
-        packageManagementPage.setStatusInput("Неактивный");
-        packageManagementPage.setDescriptionInput("ячсмит");
-        packageManagementPage.setStartDate("2023","Июль","12");
-        packageManagementPage.setEndDate("2025","Август","25");
-        packageManagementPage.setTariffInput("5");
-        packageManagementPage.setPeriodInput("6");
-        packageManagementPage.ndsOff();
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
-        packageManagementPage.clickSaveButton();
+                .tableRowExists("editedPackToEdit")
 
-        assertEquals(tableWorker.tableRowExists("editedPackToEdit"),true);
+                .tableRowCellClick("editedPackToEdit",6)
 
-        tableWorker.tableRowCellClick("editedPackToEdit",6);
-
-        assertEquals(packageManagementPage.getValueFromNameInput(),"editedPackToEdit");
-        assertEquals(packageManagementPage.getValueFromCodeInput(),"54321");
-        assertEquals(packageManagementPage.getValueFromSubTypeInput(),"Бесплатный");
-        assertEquals(packageManagementPage.getValueFromStatusInput(),"Неактивный");
-        assertEquals(packageManagementPage.getValueFromDescInput(),"ячсмит");
-        assertEquals(packageManagementPage.getValueFromStartDateInput().contains("12 июл. 2023"),true);
-        assertEquals(packageManagementPage.getValueFromEndDateInput().contains("25 авг. 2025"),true);
-        assertEquals(packageManagementPage.getValueFromTariffInput(),"5");
-        assertEquals(packageManagementPage.getValueFromPeriodInput(),"6");
+                .inputContains("Наименование","editedPackToEdit")
+                .inputContains("Код","54321")
+                .inputContains("Тип подписки","Бесплатный")
+                .inputContains("Статус","Неактивный")
+                .inputContains("Описание","ячсмит")
+                .inputContains("Тариф пакета", "5")
+                .inputContains("Период тарификации","6")
+                .switchCheckboxIs("Облагается НДС",false);
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Удаление пакета")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void packDeleteTest(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packToDelete")
+                .inputSet("Код","12345")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",15)
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .switchCheckbox("Облагается НДС")
 
-        packageManagementPage.setNameInput("packToDelete");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
-        packageManagementPage.clickSaveButton();
+                .tableRowExists("packToDelete")
 
-        assertEquals(tableWorker.tableRowExists("packToDelete"),true);
+                .tableRowCellClick("packToDelete",6)
 
-        tableWorker.tableRowCellClick("packToDelete",6);
-
-        packageManagementPage.clickDeleteButton();
-        packageManagementPage.confirmDelete();
-
-        assertEquals(tableWorker.tableRowExists("packToDelete"),false);
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
+                .confirmDelete()
+                .tableRowNotExists("packToDelete");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Наименования")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutName(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Код","12345")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",15)
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .switchCheckbox("Облагается НДС")
 
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertEquals(packageManagementPage.getAlertText(),"Поле Наименование обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Наименование обязательно для заполнения");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Кода")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutCode(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoCode")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",15)
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .switchCheckbox("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoCode");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertEquals(packageManagementPage.getAlertText(),"Поле Код обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Код обязательно для заполнения");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Типа подписки")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutSubType(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoCode")
+                .inputSet("Код","1255")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputClick("Действует по")
+                .calendarSetDate(+15)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoSubType");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertEquals(packageManagementPage.getAlertText(),"Поле Тип подписки обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextShouldBe("Поле Тип подписки обязательно для заполнения");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Статуса")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutStatus(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoCode")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputClick("Действует по")
+                .calendarSetDate(+15)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoStatus");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertEquals(packageManagementPage.getAlertText(),"Поле Статус обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextShouldBe("Поле Статус обязательно для заполнения");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Даты начала")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
-    void createPackWithoutStartDate(){
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void createPackWithoutSTartDate(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoStartDate")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует по")
+                .calendarSetDate(+15)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoStartDate");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertTrue(tableWorker.tableRowExists("packNoStartDate"));
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists("packNoStartDate");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Даты конца")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutEndDate(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoEndDate")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoEndDate");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertTrue(tableWorker.tableRowExists("packNoEndDate"));
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists("packNoEndDate");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Тарифа пакета")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutTariff(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoTariff")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputClick("Действует по")
+                .calendarSetDate(10)
+                .calendarSave()
+                .inputSet("Период тарификации","8")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoTariff");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setPeriodInput("8");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertTrue(tableWorker.tableRowExists("packNoTariff"));
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists("packNoTariff");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без Периода тарификации")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutPeriod(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoPeriod")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputClick("Действует по")
+                .calendarSetDate(10)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .radioButtonOn("Облагается НДС")
 
-        packageManagementPage.setNameInput("packNoPeriod");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.ndsOn();
-
-        packageManagementPage.clickSaveButton();
-
-        assertTrue(tableWorker.tableRowExists("packNoPeriod"));
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists("packNoPeriod");
     }
 
     @Test
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание пакета без НДС")
-    @Tag("pb-ui-1")
-    @Tag("pb-packs-1")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createPackWithoutNDS(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById(UIHandler.ButtonId.create.getId())
 
-        packageManagementPage.createPack();
+                .inputSet("Наименование","packNoNDS")
+                .inputSet("Код","6547")
+                .inputSet("Тип подписки","Платный")
+                .inputSet("Статус","Активный")
+                .inputSet("Описание","фывапро")
+                .inputClick("Действует с")
+                .calendarSetDate(-3)
+                .calendarSave()
+                .inputClick("Действует по")
+                .calendarSetDate(10)
+                .calendarSave()
+                .inputSet("Тариф пакета", "7")
+                .inputSet("Период тарификации","8")
 
-        packageManagementPage.setNameInput("packNoNDS");
-        packageManagementPage.setCodeInput("12345");
-        packageManagementPage.setSubTypeInput("Платный");
-        packageManagementPage.setStatusInput("Активный");
-        packageManagementPage.setDescriptionInput("фывапро");
-        packageManagementPage.setStartDate("2025","Июль","12");
-        packageManagementPage.setEndDate("2026","Август","25");
-        packageManagementPage.setTariffInput("7");
-        packageManagementPage.setPeriodInput("8");
-
-        packageManagementPage.clickSaveButton();
-
-        assertTrue(tableWorker.tableRowExists("packNoNDS"));
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists("packNoNDS");
     }
 
     @Test
-    @Description("Фильтрация пакетов")
-    @Tag("pb-ui-2")
-    @Tag("pb-packs-2")
-    void packFiltersTest(){
+    @Feature("pb-custom-2")
+    @Tag("pb-custom-2")
+    @Description("Фильтрация")
+    @Link("https://jira.wsoft.ru/browse/LTB-1659")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void packFilterTest(){
 
-        navbarWorker.sectionClick("Управление пакетами");
+        ui
+                .sectionClick("Управление пакетами")
+                .filterSet("Наименование","pack1")
+                .tableRowExists("pack1")
+                .tableRowNotExists("pack2")
 
-        packageManagementPage.waitTitle();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.openFilters();
-        packageManagementPage.setFilter("Наименование","pack1");
-        packageManagementPage.filterApp();
+                .filterSet("Наименование","pack2")
+                .tableRowExists("pack2")
+                .tableRowNotExists("pack1")
 
-        assertTrue(tableWorker.tableRowExists("pack1"));
-        assertFalse(tableWorker.tableRowExists("pack2"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Наименование","pack2");
-        packageManagementPage.filterApp();
+                .filterSet("Код","111")
+                .tableRowExists("111")
+                .tableRowNotExists("222")
 
-        assertTrue(tableWorker.tableRowExists("pack2"));
-        assertFalse(tableWorker.tableRowExists("pack1"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Код","111");
-        packageManagementPage.filterApp();
+                .filterSet("Код","222")
+                .tableRowExists("222")
+                .tableRowNotExists("111")
 
-        assertTrue(tableWorker.tableRowExists("111"));
-        assertFalse(tableWorker.tableRowExists("222"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Код","222");
-        packageManagementPage.filterApp();
+                .filterSet("Тип подписки","Платный")
+                .tableRowExists("pack2")
+                .tableRowNotExists("pack3")
 
-        assertTrue(tableWorker.tableRowExists("222"));
-        assertFalse(tableWorker.tableRowExists("111"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Тип подписки","Платный");
-        packageManagementPage.filterApp();
+                .filterSet("Тип подписки","Бесплатный")
+                .tableRowExists("pack3")
+                .tableRowNotExists("pack2")
 
-        assertTrue(tableWorker.tableRowExists("false"));
-        assertFalse(tableWorker.tableRowExists("true"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Тип подписки","Бесплатный");
-        packageManagementPage.filterApp();
+                .filterSet("Статус","Активный")
+                .tableRowExists("pack2")
+                .tableRowNotExists("pack3")
 
-        assertTrue(tableWorker.tableRowExists("true"));
-        assertFalse(tableWorker.tableRowExists("false"));
-        packageManagementPage.clearFilters();
+                .buttonClickById("Очистить фильтры")
 
-        packageManagementPage.setFilter("Статус","Активный");
-        packageManagementPage.filterApp();
-
-        assertTrue(tableWorker.tableRowExists("true"));
-        assertFalse(tableWorker.tableRowExists("false"));
-        packageManagementPage.clearFilters();
-
-        packageManagementPage.setFilter("Статус","Неактивный");
-        packageManagementPage.filterApp();
-
-        assertTrue(tableWorker.tableRowExists("false"));
-        assertFalse(tableWorker.tableRowExists("true"));
-        packageManagementPage.clearFilters();
+                .filterSet("Статус","Неактивный")
+                .tableRowExists("pack3")
+                .tableRowNotExists("pack2");
     }
 }

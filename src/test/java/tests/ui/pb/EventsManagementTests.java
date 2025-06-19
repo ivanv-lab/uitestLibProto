@@ -11,14 +11,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import testlib.base.NavbarWorker;
-import testlib.base.TableWorker;
+import testlib.base.UIHandler;
 import testlib.base.pb.PBBaseTest;
-import testlib.utils.handlers.jmx.JmxHandler;
-
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Тестирование страницы Управление событиями PBUI")
 @Tag("pb-ui")
@@ -46,14 +41,14 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
                 .deleteFromTableIfExists(name)
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование",name)
                 .inputSet("Код",code)
                 .inputSet("Приоритет",priority)
                 .inputSet("Транзакционность",transact)
                 .inputSet("Описание",desc)
 
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists(name);
 
@@ -79,14 +74,14 @@ public class EventsManagementTests extends PBBaseTest {
                 .deleteFromTableIfExists("eventToEdit")
                 .deleteFromTableIfExists("editedEvent")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventToEdit")
                 .inputSet("Код","555")
                 .inputSet("Приоритет","Low")
                 .inputSet("Транзакционность","Нет")
                 .inputSet("Описание","qweqwczcdscsdc")
 
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("eventToEdit");
 
@@ -105,7 +100,7 @@ public class EventsManagementTests extends PBBaseTest {
                 .inputSet("Приоритет","High")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","zxcvbn")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("editedEvent")
                 .buttonClick("Синхронизировать");
@@ -120,7 +115,7 @@ public class EventsManagementTests extends PBBaseTest {
 
         ui
                 .tableCellHrefClick("editedEvent")
-                .buttonClick("Удалить")
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
                 .confirmDelete();
     }
 
@@ -135,14 +130,14 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventToDelete")
                 .inputSet("Код","666")
                 .inputSet("Приоритет","Realtime")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","qweqwczcdscsdc")
 
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("eventToDelete");
 
@@ -156,7 +151,7 @@ public class EventsManagementTests extends PBBaseTest {
 
         ui
                 .tableCellHrefClick("eventToDelete")
-                .buttonClick("Удалить")
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
                 .confirmDelete()
                 .tableRowNotExists("eventToDelete");
 
@@ -178,13 +173,13 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventCode")
                 .inputSet("Код","666fghj")
                 .inputSet("Приоритет","Realtime")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","qweqwczcdscsdc")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("eventCode");
 
@@ -198,7 +193,7 @@ public class EventsManagementTests extends PBBaseTest {
 
         ui
                 .tableCellHrefClick("eventCode")
-                .buttonClick("Удалить")
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
                 .confirmDelete()
                 .tableRowNotExists("eventCode");
     }
@@ -214,12 +209,12 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Код","789")
                 .inputSet("Приоритет","Realtime")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","qweqwczcdscsdc")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .alertTextEquals("Поле Наименование обязательно для заполнения");
     }
@@ -235,12 +230,12 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventNoCode")
                 .inputSet("Приоритет","Realtime")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","qweqwczcdscsdc")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .alertTextEquals("Поле Код обязательно для заполнения");
     }
@@ -256,12 +251,12 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventNoPriority")
                 .inputSet("Код","7810")
                 .inputSet("Транзакционность","Да")
                 .inputSet("Описание","qweqwczcdscsdc")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("eventNoPriority");
 
@@ -285,12 +280,12 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Наименование","eventNoTransact")
                 .inputSet("Код","789")
                 .inputSet("Приоритет","Realtime")
                 .inputSet("Описание","qweqwczcdscsdc")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .alertTextEquals("Поле Транзакционность обязательно для заполнения");
     }
@@ -353,43 +348,43 @@ public class EventsManagementTests extends PBBaseTest {
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Код","444")
                 .tableRowExists("444")
                 .tableRowNotExists("333")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Транзакционность","Нет")
                 .tableRowExists("Нет")
                 .tableRowNotExists("Да")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Транзакционность","Да")
                 .tableRowExists("Да")
                 .tableRowNotExists("Нет")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Приоритет","Low")
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Приоритет","Normal")
                 .tableRowExists("event2NormalFalse")
                 .tableRowNotExists("event3HighTrue")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Приоритет","High")
                 .tableRowExists("event3HighTrue")
                 .tableRowNotExists("event4RealtimeFalse")
 
-                .buttonClick("Очистить фильтры")
+                .buttonClickById(UIHandler.ButtonId.filterClean.getId())
 
                 .filterSet("Приоритет","Realtime")
                 .tableRowExists("event4RealtimeFalse")

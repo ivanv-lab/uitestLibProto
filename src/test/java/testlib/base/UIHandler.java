@@ -5,6 +5,11 @@ import com.codeborne.selenide.Selenide;
 import org.openqa.selenium.By;
 import testlib.utils.handlers.PropertyHandler;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
+
 import static com.codeborne.selenide.Condition.clickable;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -13,20 +18,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UIHandler extends BasePage {
 
+    /**
+     * Перечисление с id основных кнопок управления
+     * @create - Создать
+     * @delete - Удалить
+     * @filterOpen - Открыть фильтры
+     * @filterClean - Очистить фильтры
+     * @save - Сохранить
+     * @back - Назад
+     */
     public enum ButtonId{
         create("button_create"),
         delete("button_delete"),
         filterOpen("button_show_filter"),
+        filterClean("button_clear_filter"),
         save("button_save"),
         back("button_back");
 
         private String id;
+
         ButtonId(String id){
             this.id=id;
         }
         public String getId(){return id;}
     }
 
+    /**
+     * Производится вход в Админку по базовому логину\паролю
+     * @return
+     */
     public UIHandler loginAcui() {
         Selenide.open(PropertyHandler.getProperty("base.URL" + "/acui/login"));
         changeLanguageToRus();
@@ -34,6 +54,12 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    /**
+     * Производится вход в Админку по введенному логину и паролю
+     * @param login    Логин
+     * @param password Пароль
+     * @return
+     */
     public UIHandler loginAcui(String login,String password){
         Selenide.open(PropertyHandler.getProperty("base.URL" + "/acui/login"));
         changeLanguageToRus();
@@ -41,6 +67,10 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    /**
+     * Производится вход в ЛК пользователя по базовому логину\паролю
+     * @return
+     */
     public UIHandler loginLkui() {
         Selenide.open(PropertyHandler.getProperty("base.URL" + "/lkui/login"));
         changeLanguageToRus();
@@ -48,6 +78,12 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    /**
+     * Производится вход в ЛК пользователя по введенному логину и паролю
+     * @param login Логин
+     * @param password Пароль
+     * @return
+     */
     public UIHandler loginLkui(String login,String password){
         Selenide.open(PropertyHandler.getProperty("base.URL" + "/lkui/login"));
         changeLanguageToRus();
@@ -55,11 +91,27 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    /**
+     * Проверка отображаемого логина пользователя после входа в аккаунт.
+     * При входе в аккаунт Админки или ЛК, логин пользователя отображается в правом верхнем углу.
+     * По нему можно понять:
+     * 1) Вход успешный или нет
+     * 2) Под каким пользователем мы зашли
+     * @param value Значение ожидаемого логина пользователя
+     * @return
+     */
     public UIHandler topUserTextEquals(String value){
         assertTrue(getText(By.xpath(".//span[contains(@class,'top-user')]")).equals(value));
         return this;
     }
 
+    /**
+     * Вход по указанному адресу с указанным логином и паролем
+     * @param address Адрес /login страницы
+     * @param login Логин
+     * @param password Пароль
+     * @return
+     */
     public UIHandler login(String address, String login, String password) {
         Selenide.open(address);
         changeLanguageToRus();
@@ -67,27 +119,52 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    /**
+     * Выход из учетной записи авторизованного пользователя
+     * @return
+     */
     public UIHandler logout() {
         buttonClickById("button_logout");
         return this;
     }
 
+    /**
+     * Клик по указанной секции навигационного меню
+     * @param section Наименование секции
+     * @return
+     */
     public UIHandler sectionClick(String section) {
         click(By.xpath(".//div[contains(@class,'sidebar')]/ul/li[a/p[contains(.,'" + section + "')]]/a"));
         return this;
     }
 
+    /**
+     * Клик по указанной секции навигационного меню, далее клик по указанной подсекции меню
+     * @param section Секция
+     * @param subSection Подсекция
+     * @return
+     */
     public UIHandler subSectionClick(String section, String subSection) {
         click(By.xpath(section + "[a/p[contains(.,'" + section + "')]]/a"));
         click(By.xpath(subSection + "[span[@class='sidebar-normal' and text()='" + subSection + "']]"));
         return this;
     }
 
+    /**
+     * Клик по кнопке с указанным наименованием (текстом)
+     * @param buttonText Наименование(текст) кнопки
+     * @return
+     */
     public UIHandler buttonClick(String buttonText) {
         click(By.xpath(""));
         return this;
     }
 
+    /**
+     * Клик по кнопке с указанным id
+     * @param buttonId id кнопки
+     * @return
+     */
     public UIHandler buttonClickById(String buttonId) {
         click(By.xpath(".//button[@id='" + buttonId + "']"));
         return this;
@@ -166,11 +243,29 @@ public class UIHandler extends BasePage {
     }
 
     public UIHandler switchCheckboxIs(String checkboxName,boolean switchPosition){
+        if (switchPosition) {
+                assertTrue(find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                        .exists());
+        }
 
+        if (!switchPosition) {
+                assertTrue(find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                        .exists());
+        }
+        return this;
     }
 
     public UIHandler cardSwitchCheckboxIs(String checkboxName,boolean switchPosition, String cardName){
+        if (switchPosition) {
+            assertTrue(find(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                    .exists());
+        }
 
+        if (!switchPosition) {
+            assertTrue(find(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                    .exists());
+        }
+        return this;
     }
 
     public UIHandler switchCheckbox(String checkboxName){
@@ -240,6 +335,30 @@ public class UIHandler extends BasePage {
         click(By.xpath(".//div[@class='vdatetime-popup__date']"));
         click(By.xpath(".//div[contains(@class,'vdatetime-month-picker__item') and normalize-space(text())='" + month + "']"));
         click(By.xpath(".//div[contains(@class,'vdatetime-calendar__month__day')]//span[normalize-space(text())='" + date + "']"));
+        click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
+        click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
+        return this;
+    }
+
+    public UIHandler calendarSet(String calendarInputName) {
+        inputClick(calendarInputName);
+        click(By.xpath(".//div[@class='vdatetime-popup__year']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-year-picker__item') and normalize-space(text())='" + LocalDateTime.now().getYear() + "']"));
+        click(By.xpath(".//div[@class='vdatetime-popup__date']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-month-picker__item') and normalize-space(text())='" + Month.of(LocalDateTime.now().getMonthValue()) + "']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-calendar__month__day')]//span[normalize-space(text())='" + LocalDateTime.now().getDayOfMonth() + "']"));
+        click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
+        click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
+        return this;
+    }
+
+    public UIHandler calendarSet(String calendarInputName, int relationDay) {
+        inputClick(calendarInputName);
+        click(By.xpath(".//div[@class='vdatetime-popup__year']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-year-picker__item') and normalize-space(text())='" + LocalDateTime.now().getYear() + "']"));
+        click(By.xpath(".//div[@class='vdatetime-popup__date']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-month-picker__item') and normalize-space(text())='" + Month.of(LocalDateTime.now().getMonthValue()) + "']"));
+        click(By.xpath(".//div[contains(@class,'vdatetime-calendar__month__day')]//span[normalize-space(text())='" + LocalDateTime.now().plusDays(relationDay) + "']"));
         click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
         click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
         return this;
