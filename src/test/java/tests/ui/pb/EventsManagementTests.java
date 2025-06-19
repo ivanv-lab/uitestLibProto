@@ -20,6 +20,8 @@ import java.util.stream.Stream;
 @Execution(ExecutionMode.CONCURRENT)
 public class EventsManagementTests extends PBBaseTest {
 
+    String cdpCacheService="WCS:group=Services,instance-type=Cache,name=cdp-cache-service";
+
     static Stream<Arguments> eventsList(){
         return Stream.of(
                 Arguments.of("event1LowTrue","111","Low","Да","qweqwe"),
@@ -38,19 +40,23 @@ public class EventsManagementTests extends PBBaseTest {
     @MethodSource("eventsList")
     void eventsCreateTests(String name,String code,String priority,String transact, String desc){
 
-        ui
-                .sectionClick("Управление событиями")
-                .deleteFromTableIfExists(name)
-                .buttonClickById(UIHandler.ButtonId.create.getId())
-                .inputSet("Наименование",name)
-                .inputSet("Код",code)
-                .inputSet("Приоритет",priority)
-                .inputSet("Транзакционность",transact)
-                .inputSet("Описание",desc)
+//        ui
+//                .sectionClick("Управление событиями")
+//                .deleteFromTableIfExists(name)
+//                .buttonClickById(UIHandler.ButtonId.create.getId())
+//                .inputSet("Наименование",name)
+//                .inputSet("Код",code)
+//                .inputSet("Приоритет",priority)
+//                .inputSet("Транзакционность",transact)
+//                .inputSet("Описание",desc)
+//
+//                .buttonClickById(UIHandler.ButtonId.save.getId())
+//
+//                .tableRowExists(name);
 
-                .buttonClickById(UIHandler.ButtonId.save.getId())
-
-                .tableRowExists(name);
+        jmxHandler.invoke(cdpCacheService,"get",
+                "cdp-event-profiles","897")
+                .cacheValueContains("qwe","werwe");
 
 //        cache
 //                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")

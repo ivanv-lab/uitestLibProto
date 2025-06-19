@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
-public abstract class BasePage extends BaseTest {
+public abstract class BasePage {
     
     private final int defaultTimeout=10;
 
@@ -56,7 +56,7 @@ public abstract class BasePage extends BaseTest {
         }
     }
 
-    protected void confirmDelete(){
+    protected void confirm(){
         click(By.xpath(".//button[contains(@class,'button_confirm')]"));
     }
 
@@ -68,9 +68,7 @@ public abstract class BasePage extends BaseTest {
 
     protected void changeLanguageToRus(){
         click(By.xpath(".//div[label[@for='language']]//input"));
-        if(getValue(By.xpath(".//div[select[@id='language']]/input")).equals("English")) {
-            click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
-        }
+        click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
     }
 
     protected String getAlertText() {

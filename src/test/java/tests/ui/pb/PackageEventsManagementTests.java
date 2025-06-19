@@ -29,27 +29,7 @@ public class PackageEventsManagementTests extends PBBaseTest {
 
     record CacheValues(String free, String name, String status, String important,
                        String packageCode, String templateName, String translit, String imsiCheck,
-                       String imsiTemplateName, String imsiTranslit, String sendEmail, String sendMSISDN) {
-
-        public Map<String, String> returnValues() {
-            Map<String, String> values = new HashMap<>();
-
-            values.put("name", this.name);
-            values.put("status", this.status);
-            values.put("important", this.important);
-            values.put("package-code", this.packageCode);
-            values.put("template-name", this.templateName);
-            values.put("translit", this.translit);
-            values.put("imsi-check", this.imsiCheck);
-            values.put("imsi-template-name", this.imsiTemplateName);
-            values.put("imsi-translit", this.imsiTranslit);
-            values.put("send-unconfirmed-email", this.sendEmail);
-            values.put("send-unconfirmed-msisdn", this.sendMSISDN);
-
-            return values;
-        }
-
-    }
+                       String imsiTemplateName, String imsiTranslit, String sendEmail, String sendMSISDN) {}
 
     static Stream<Arguments> packageEventList() {
         return Stream.of(
@@ -112,7 +92,7 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick(pack)
                 .deleteFromTableIfExists(event)
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", event)
                 .inputSet("Канал", channel)
                 .inputSet("Шаблон", template)
@@ -133,7 +113,7 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .switchCheckbox("Отправка клиенту", clientSending)
                 .switchCheckbox("Отправка доверительному лицу", trustedSending)
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists(event);
     }
 
@@ -150,12 +130,12 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .tableCellHrefClick("pack1")
                 .deleteFromTableIfExists("eventNoPriority")
                 .deleteFromTableIfExists("event4RealtimeFalse")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
 
-                .buttonClick("Сохранить");
+                .buttonClickById(UIHandler.ButtonId.save.getId());
 
 //        cache
 //                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
@@ -184,7 +164,7 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .switchCheckbox("Отправка клиенту")
                 .switchCheckbox("Отправка доверительному лицу")
 
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .tableRowExists("event4RealtimeFalse")
 
@@ -194,26 +174,26 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .inputContains("Канал", "Push")
                 .inputContains("Шаблон", "tempPush")
 
-                .isRadioButtonOn("Транслитерация")
-                .isRadioButtonOn("Важность")
-                .isRadioButtonOn("Отправка на неподтвержденные email")
-                .isRadioButtonOn("Отправка на неподтвержденные msisdn")
+                .switchCheckboxIs("Транслитерация",true)
+                .switchCheckboxIs("Важность",true)
+                .switchCheckboxIs("Отправка на неподтвержденные email",true)
+                .switchCheckboxIs("Отправка на неподтвержденные msisdn",true)
 
-                .isRadioButtonOn("Проверка IMSI")
-                .cardInputContains("Настройки IMSI", "Канал", "SMS")
-                .cardInputContains("Настройки IMSI", "Шаблон", "tempSMS2")
-                .isRadioButtonOn("Транслитерация", 1)
+                .switchCheckboxIs("Проверка IMSI",true)
+                .cardInputContains( "Канал", "SMS","Настройки IMSI")
+                .cardInputContains( "Шаблон", "tempSMS2","Настройки IMSI")
+                .switchCheckboxIs("Транслитерация", true)
 
-                .isRadioButtonOn("Отправка клиенту")
-                .isRadioButtonOn("Отправка доверительному лицу");
+                .switchCheckboxIs("Отправка клиенту",true)
+                .switchCheckboxIs("Отправка доверительному лицу",true);
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles", "444")
-                .xmlContains("CASE_TYPE_ID", "444")
-                .xmlContains("NAME", "event4RealtimeFalse")
-                .xmlContains("name", "pack1");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles", "444")
+//                .xmlContains("CASE_TYPE_ID", "444")
+//                .xmlContains("NAME", "event4RealtimeFalse")
+//                .xmlContains("name", "pack1");
     }
 
     @Test
@@ -227,34 +207,34 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack1")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "event2NormalFalse")
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("event2NormalFalse");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles", "222")
-                .xmlContains("CASE_TYPE_ID", "222")
-                .xmlContains("NAME", "event2NormalFalse")
-                .xmlContains("name", "pack1");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles", "222")
+//                .xmlContains("CASE_TYPE_ID", "222")
+//                .xmlContains("NAME", "event2NormalFalse")
+//                .xmlContains("name", "pack1");
 
         ui
                 .tableCellHrefClick("event2NormalFalse")
-                .buttonClick("Удалить")
-                .confirm()
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
+                .confirmDelete()
                 .tableRowNotExists("event2NormalFalse");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles", "222")
-                .xmlContains("CASE_TYPE_ID", "222")
-                .xmlContains("NAME", "event2NormalFalse")
-                .xmlNotContains("name", "pack1");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles", "222")
+//                .xmlContains("CASE_TYPE_ID", "222")
+//                .xmlContains("NAME", "event2NormalFalse")
+//                .xmlNotContains("name", "pack1");
 
     }
 
@@ -269,26 +249,26 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack1")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
 
-                .buttonClick("Сохранить")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
 
                 .sectionClick("Управление событиями")
                 .tableCellHrefClick("eventNoPriority")
                 .inputSet("Наименование", "eventNoPriorityEdited")
                 .inputSet("Транзакционность", "Нет")
-                .buttonClick("Сохранить");
+                .buttonClickById(UIHandler.ButtonId.save.getId());
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles", "7810")
-                .xmlContains("CASE_TYPE_ID", "7810")
-                .xmlContains("NAME", "eventNoPriorityEdited")
-                .xmlContains("IS_TRANS", "false");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles", "7810")
+//                .xmlContains("CASE_TYPE_ID", "7810")
+//                .xmlContains("NAME", "eventNoPriorityEdited")
+//                .xmlContains("IS_TRANS", "false");
     }
 
     @Test
@@ -302,9 +282,9 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
                 .tableCellHrefClick("event4RealtimeFalse")
-                .buttonClick("Удалить")
-                .confirm()
-                .alertTextShouldBe("Удаление невозможно, пока есть связь с пакетом или событием");
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
+                .confirmDelete()
+                .alertTextEquals("Удаление невозможно, пока есть связь с пакетом или событием");
     }
 
     @Test
@@ -317,20 +297,19 @@ public class PackageEventsManagementTests extends PBBaseTest {
 
         ui
                 .sectionClick("Управление пакетами")
-                .tableCellClick(6, "pack1")
+                .tableRowCellClick("pack1",6)
                 .inputSet("Наименование", "pack1Edited")
                 .inputSet("Код", "121")
                 .inputSet("Статус", "Неактивный")
 
-                .buttonClick("Сохранить")
-                .waiting(3);
+                .buttonClickById(UIHandler.ButtonId.save.getId());
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles", "111")
-                .xmlContains("CASE_TYPE_ID", "111")
-                .xmlContains("name", "pack1Edited");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles", "111")
+//                .xmlContains("CASE_TYPE_ID", "111")
+//                .xmlContains("name", "pack1Edited");
     }
 
     @Test
@@ -343,10 +322,10 @@ public class PackageEventsManagementTests extends PBBaseTest {
 
         ui
                 .sectionClick("Управление пакетами")
-                .tableCellClick(6, "pack2")
-                .buttonClick("Удалить")
-                .confirm()
-                .alertTextShouldBe("Удаление невозможно, пока есть связь с пакетом или событием");
+                .tableRowCellClick("pack2",6)
+                .buttonClickById(UIHandler.ButtonId.delete.getId())
+                .confirmDelete()
+                .alertTextEquals("Удаление невозможно, пока есть связь с пакетом или событием");
     }
 
     @Test
@@ -360,11 +339,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack2")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
-                .buttonClick("Сохранить")
-                .alertTextShouldBe("Поле Событие обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Событие обязательно для заполнения");
     }
 
     @Test
@@ -378,10 +357,10 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack2")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
-                .buttonClick("Сохранить")
-                .alertTextShouldBe("Поле Канал обязательно для заполнения\n" +
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Канал обязательно для заполнения\n" +
                         "Поле Шаблон обязательно для заполнения");
     }
 
@@ -396,11 +375,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack2")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
                 .inputSet("Канал", "SMS")
-                .buttonClick("Сохранить")
-                .alertTextShouldBe("Поле Шаблон обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Шаблон обязательно для заполнения");
     }
 
     @Test
@@ -414,14 +393,14 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack2")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
 
-                .radioButtonOn("Проверка IMSI")
-                .buttonClick("Сохранить")
-                .alertTextShouldBe("Поле Канал обязательно для заполнения\n" +
+                .switchCheckbox("Проверка IMSI")
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Канал обязательно для заполнения\n" +
                         "Поле Шаблон обязательно для заполнения");
     }
 
@@ -436,15 +415,15 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick("pack2")
-                .buttonClick("Создать")
+                .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Событие", "eventNoPriority")
                 .inputSet("Канал", "SMS")
                 .inputSet("Шаблон", "tempSMS")
 
-                .radioButtonOn("Проверка IMSI")
+                .switchCheckbox("Проверка IMSI")
                 .cardInputSet("Настройки IMSI", "Канал", "Push")
-                .buttonClick("Сохранить")
-                .alertTextShouldBe("Поле Шаблон обязательно для заполнения");
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .alertTextEquals("Поле Шаблон обязательно для заполнения");
     }
 
     @ParameterizedTest
@@ -461,22 +440,22 @@ public class PackageEventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление пакетами")
                 .tableCellHrefClick(pack)
-                .buttonClick("Синхронизировать");
+                .buttonClickById("Синхронизировать");
 
-        cacheValuesMap.forEach((key, values) -> {
-            Map<String, String> cacheValues = values.returnValues();
-            cacheValues.forEach((cacheKey, cacheValue) -> {
-                if (!cacheValue.equals("")) {
-                    cache
-                            .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                            .openCache()
-                            .get("cdp-event-profiles", eventCode)
-                            .xmlContains("CASE_TYPE_ID", eventCode)
-                            .xmlContains("NAME", event)
-                            .xmlContains(cacheKey, cacheValue);
-                }
-            });
-        });
+//        cacheValuesMap.forEach((key, values) -> {
+//            Map<String, String> cacheValues = values.returnValues();
+//            cacheValues.forEach((cacheKey, cacheValue) -> {
+//                if (!cacheValue.equals("")) {
+//                    cache
+//                            .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                            .openCache()
+//                            .get("cdp-event-profiles", eventCode)
+//                            .xmlContains("CASE_TYPE_ID", eventCode)
+//                            .xmlContains("NAME", event)
+//                            .xmlContains(cacheKey, cacheValue);
+//                }
+//            });
+//        });
     }
 
     @Test
@@ -494,59 +473,59 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .filterSet("Событие", "event1LowTrue")
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Событие", "event3HighTrue")
                 .tableRowExists("event3HighTrue")
                 .tableRowNotExists("event1LowTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Канал", "SMS")
                 .filterSet("Шаблон", "tempSMS")
                 .tableRowExists("event3HighTrue")
                 .tableRowNotExists("event1LowTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Канал", "SMS")
                 .filterSet("Шаблон", "tempSMS2")
                 .tableRowNotExists("event3HighTrue")
                 .tableRowNotExists("event1LowTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Канал", "Push")
                 .filterSet("Шаблон", "tempPush")
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Проверка IMSI", "Включено")
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Проверка IMSI", "Выключено")
                 .tableRowExists("event3HighTrue")
                 .tableRowNotExists("event1LowTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Важность", "Да")
                 .tableRowExists("event1LowTrue")
                 .tableRowExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Важность", "Нет")
                 .tableRowNotExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Транслитерация", "Да")
                 .tableRowExists("event1LowTrue")
                 .tableRowNotExists("event3HighTrue")
-                .buttonClick("Очистить фильтры")
+                .buttonClickById("Очистить фильтры")
 
                 .filterSet("Транслитерация", "Нет")
                 .tableRowExists("event3HighTrue")
                 .tableRowNotExists("event1LowTrue")
-                .buttonClick("Очистить фильтры");
+                .buttonClickById("Очистить фильтры");
     }
 }

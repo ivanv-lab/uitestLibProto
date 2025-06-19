@@ -2,6 +2,7 @@ package testlib.base;
 
 import com.codeborne.selenide.HoverOptions;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 import testlib.utils.handlers.PropertyHandler;
 
@@ -48,7 +49,8 @@ public class UIHandler extends BasePage {
      * @return
      */
     public UIHandler loginAcui() {
-        Selenide.open(PropertyHandler.getProperty("base.URL" + "/acui/login"));
+        if(!WebDriverRunner.driver().url().equals(PropertyHandler.getProperty("base.URL") + "/acui/login"))
+            Selenide.open(PropertyHandler.getProperty("base.URL") + "/acui/login");
         changeLanguageToRus();
         login(PropertyHandler.getProperty("admin.login"), PropertyHandler.getProperty("admin.password"));
         return this;
@@ -61,7 +63,8 @@ public class UIHandler extends BasePage {
      * @return
      */
     public UIHandler loginAcui(String login,String password){
-        Selenide.open(PropertyHandler.getProperty("base.URL" + "/acui/login"));
+        if(!WebDriverRunner.driver().url().equals(PropertyHandler.getProperty("base.URL") + "/acui/login"))
+            Selenide.open(PropertyHandler.getProperty("base.URL") + "/acui/login");
         changeLanguageToRus();
         login(login, password);
         return this;
@@ -72,7 +75,8 @@ public class UIHandler extends BasePage {
      * @return
      */
     public UIHandler loginLkui() {
-        Selenide.open(PropertyHandler.getProperty("base.URL" + "/lkui/login"));
+        if(!WebDriverRunner.driver().url().equals(PropertyHandler.getProperty("base.URL") + "/lkui/login"))
+            Selenide.open(PropertyHandler.getProperty("base.URL")+ "/lkui/login");
         changeLanguageToRus();
         login(PropertyHandler.getProperty("lk.login"), PropertyHandler.getProperty("lk.password"));
         return this;
@@ -85,7 +89,8 @@ public class UIHandler extends BasePage {
      * @return
      */
     public UIHandler loginLkui(String login,String password){
-        Selenide.open(PropertyHandler.getProperty("base.URL" + "/lkui/login"));
+        if(!WebDriverRunner.driver().url().equals(PropertyHandler.getProperty("base.URL") + "/lkui/login"))
+            Selenide.open(PropertyHandler.getProperty("base.URL") + "/lkui/login");
         changeLanguageToRus();
         login(login, password);
         return this;

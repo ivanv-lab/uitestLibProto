@@ -17,10 +17,10 @@ public class AdminBaseTest extends BaseTest {
 
         if(!testInfo.getTags().contains("no-login")){
 
-            loginPage.login(PropertyHandler.getProperty("admin.login"),
-                    PropertyHandler.getProperty("admin.password"));
+            ui.loginAcui(PropertyHandler.getProperty("admin.login"),
+                    PropertyHandler.getProperty("admin.password"))
 
-            navbarWorker.openSidebar();
+            .openSidebar();
         } else{
 
             Selenide.open( PropertyHandler.getProperty("base.URL") + "/acui/login");

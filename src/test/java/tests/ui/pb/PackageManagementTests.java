@@ -263,18 +263,14 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Код","1255")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
-                .inputClick("Действует по")
-                .calendarSetDate(+15)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",15)
                 .inputSet("Тариф пакета", "7")
                 .inputSet("Период тарификации","8")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
-                .alertTextShouldBe("Поле Тип подписки обязательно для заполнения");
+                .alertTextEquals("Поле Тип подписки обязательно для заполнения");
     }
 
     @Test
@@ -294,18 +290,14 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Код","6547")
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
-                .inputClick("Действует по")
-                .calendarSetDate(+15)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",+15)
                 .inputSet("Тариф пакета", "7")
                 .inputSet("Период тарификации","8")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
-                .alertTextShouldBe("Поле Статус обязательно для заполнения");
+                .alertTextEquals("Поле Статус обязательно для заполнения");
     }
 
     @Test
@@ -326,12 +318,10 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует по")
-                .calendarSetDate(+15)
-                .calendarSave()
+                .calendarSet("Действует по",15)
                 .inputSet("Тариф пакета", "7")
                 .inputSet("Период тарификации","8")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("packNoStartDate");
@@ -355,12 +345,10 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
                 .inputSet("Тариф пакета", "7")
                 .inputSet("Период тарификации","8")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("packNoEndDate");
@@ -384,14 +372,10 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
-                .inputClick("Действует по")
-                .calendarSetDate(10)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",10)
                 .inputSet("Период тарификации","8")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("packNoTariff");
@@ -415,14 +399,10 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
-                .inputClick("Действует по")
-                .calendarSetDate(10)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",10)
                 .inputSet("Тариф пакета", "7")
-                .radioButtonOn("Облагается НДС")
+                .switchCheckbox("Облагается НДС")
 
                 .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("packNoPeriod");
@@ -446,12 +426,8 @@ public class PackageManagementTests extends PBBaseTest {
                 .inputSet("Тип подписки","Платный")
                 .inputSet("Статус","Активный")
                 .inputSet("Описание","фывапро")
-                .inputClick("Действует с")
-                .calendarSetDate(-3)
-                .calendarSave()
-                .inputClick("Действует по")
-                .calendarSetDate(10)
-                .calendarSave()
+                .calendarSet("Действует с",-3)
+                .calendarSet("Действует по",10)
                 .inputSet("Тариф пакета", "7")
                 .inputSet("Период тарификации","8")
 

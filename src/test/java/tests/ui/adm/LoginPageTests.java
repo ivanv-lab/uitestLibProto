@@ -17,7 +17,7 @@ public class LoginPageTests extends AdminBaseTest {
     @Description("Только логин")
     void loginOnly() {
         ui
-                .loginAcui("admin@admin.com", "")
+                .loginAcui("admin@admin.com", " ")
                 .alertTextEquals("Невозможно авторизоваться.\n" +
                         "Неправильный логин/пароль.");
     }
@@ -28,7 +28,7 @@ public class LoginPageTests extends AdminBaseTest {
     @Description("Только пароль")
     void passwordOnly() {
         ui
-                .loginAcui("", "Admin")
+                .loginAcui(" ", "Admin")
                 .alertTextEquals("Невозможно авторизоваться.\n" +
                         "Неправильный логин/пароль.");
     }

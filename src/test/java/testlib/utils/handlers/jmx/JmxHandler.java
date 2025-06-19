@@ -1,5 +1,7 @@
 package testlib.utils.handlers.jmx;
 
+import groovy.util.NodeList;
+import org.xml.sax.SAXException;
 import testlib.utils.handlers.PropertyHandler;
 
 import javax.management.MBeanServerConnection;
@@ -7,6 +9,10 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+import javax.sql.rowset.spi.XmlReader;
+import javax.swing.text.Document;
+import javax.xml.parsers.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +22,11 @@ public class JmxHandler {
     private final int port=Integer.parseInt(PropertyHandler.getProperty("cache.port"));
     private JMXConnector jmxConnector;
     private MBeanServerConnection mBeanServerConnection;
+    SAXParserFactory factory=SAXParserFactory.newInstance();
+    SAXParser parser;
     private Object cacheValue;
 
     public void connect(){
-
         try {
             String domain = "jmxrmi";
             JMXServiceURL url =
@@ -28,6 +35,7 @@ public class JmxHandler {
             environment.put(JMXConnector.CREDENTIALS, new String[]{"jmxadmin", "jmxpwd-wcsd"});
             jmxConnector = JMXConnectorFactory.connect(url, environment);
             mBeanServerConnection = jmxConnector.getMBeanServerConnection();
+            parser=factory.newSAXParser();
         } catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException("Ошибка подключения к JMX",e);
@@ -58,7 +66,7 @@ public class JmxHandler {
         }
     }
 
-    public JmxHandler cacheValueContains(String path, String value){
+    public JmxHandler cacheValueContains(String path, String value) {
 
         return this;
     }
