@@ -3,16 +3,14 @@ package testlib.base;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
-import testlib.pages.login.LoginPage;
 import testlib.utils.handlers.PropertyHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.codeborne.selenide.Selenide.open;
+import testlib.utils.handlers.jmx.JmxHandler;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseTest {
+
+    protected final UIHandler ui=new UIHandler();
+    protected JmxHandler jmxHandler=new JmxHandler();
 
     @BeforeAll
     void setupSelenide(){
@@ -32,6 +30,8 @@ public abstract class BaseTest {
             Configuration.baseUrl=PropertyHandler.getProperty("base.URL");
             Configuration.headless=Boolean.parseBoolean(PropertyHandler.getProperty("headless"));
         }
+
+        jmxHandler.connect();
     }
 
     @AfterEach

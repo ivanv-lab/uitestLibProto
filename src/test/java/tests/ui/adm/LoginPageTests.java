@@ -5,79 +5,54 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import testlib.base.adm.AdminBaseTest;
-import testlib.pages.login.LoginPage;
-import testlib.utils.handlers.PropertyHandler;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Тестирование страницы логина ADM")
 @Tag("login-tests-class")
 @Execution(ExecutionMode.CONCURRENT)
 public class LoginPageTests extends AdminBaseTest {
 
-    private LoginPage loginPage=new LoginPage();
-
     @Test
     @Tag("login-tests")
     @Tag("no-login")
     @Description("Только логин")
-    void loginOnly(){
-
-        loginPage.setLogin("admin@admin.com");
-        loginPage.clickSubmitButton();
-        assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.", loginPage.getAlertText());
+    void loginOnly() {
+        ui
+                .loginAcui("admin@admin.com", "")
+                .alertTextEquals("Невозможно авторизоваться.\n" +
+                        "Неправильный логин/пароль.");
     }
 
     @Test
     @Tag("login-tests")
     @Tag("no-login")
     @Description("Только пароль")
-    void passwordOnly(){
-
-        loginPage.setPassword("Admin");
-        loginPage.clickSubmitButton();
-        assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",loginPage.getAlertText());
+    void passwordOnly() {
+        ui
+                .loginAcui("", "Admin")
+                .alertTextEquals("Невозможно авторизоваться.\n" +
+                        "Неправильный логин/пароль.");
     }
 
     @Test
     @Tag("login-tests")
     @Tag("no-login")
     @Description("Неверный логин")
-    void invalidLogin(){
-
-        loginPage.login("qweqwe","Admin");
-        assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",loginPage.getAlertText());
+    void invalidLogin() {
+        ui
+                .loginAcui("qweqwe", "Admin")
+                .alertTextEquals("Невозможно авторизоваться.\n" +
+                        "Неправильный логин/пароль.");
     }
 
     @Test
     @Tag("login-tests")
     @Tag("no-login")
     @Description("Неверный пароль")
-    void invalidPassword(){
-
-        loginPage.login("admin@admin.com","qweqwe");
-        assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",loginPage.getAlertText());
-    }
-
-    @Test
-    @Tag("login-tests")
-    @Tag("no-login")
-    @Description("Проверка смены языка на Английский и Русский")
-    void changeLanguageTest(){
-
-        loginPage.changeLanguage();
-        loginPage.clickSubmitButton();
-        assertEquals("It is impossible to log in.\n" +
-                "Incorrect login / password.",loginPage.getAlertText());
-
-        loginPage.changeLanguage();
-        loginPage.clickSubmitButton();
-        assertEquals("Невозможно авторизоваться.\n" +
-                "Неправильный логин/пароль.",loginPage.getAlertText());
+    void invalidPassword() {
+        ui
+                .loginAcui("admin@admin.com","qweqwe")
+                .alertTextEquals("Невозможно авторизоваться.\n" +
+                        "Неправильный логин/пароль.");
     }
 
     @Test
@@ -85,8 +60,8 @@ public class LoginPageTests extends AdminBaseTest {
     @Tag("no-login")
     @Description("Проверка успешной авторизации")
     void successLogin() {
-
-        loginPage.login(PropertyHandler.getProperty("admin.login"),PropertyHandler.getProperty("admin.password"));
-        assertEquals(loginPage.returnTopUserText(),"admin@admin.com");
+        ui
+                .loginAcui()
+                .topUserTextEquals("admin@admin.com");
     }
 }

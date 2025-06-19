@@ -15,12 +15,12 @@ public abstract class BasePage extends BaseTest {
     
     private final int defaultTimeout=10;
 
-    public SelenideElement find(By locator){
+    protected SelenideElement find(By locator){
         waitForElementConditions(locator,defaultTimeout,visible);
         return $(locator);
     }
 
-    public List<String> findCollection(By locator){
+    protected List<String> findCollection(By locator){
         waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
         return $$(locator)
                 .asFixedIterable()
@@ -28,24 +28,24 @@ public abstract class BasePage extends BaseTest {
                 .collect(Collectors.toList());
     }
 
-    public void click(By locator) {
+    protected void click(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
         find(locator).shouldBe(enabled).click();
     }
 
-    public void sendKeys(By locator, String text) {
+    protected void sendKeys(By locator, String text) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
         find(locator).sendKeys(Keys.CONTROL+"A");
         find(locator).sendKeys(Keys.BACK_SPACE);
         find(locator).sendKeys(text);
     }
 
-    public String getText(By locator) {
+    protected String getText(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getText();
     }
 
-    public String getValue(By locator) {
+    protected String getValue(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getValue();
     }
@@ -56,58 +56,31 @@ public abstract class BasePage extends BaseTest {
         }
     }
 
-    private boolean waitForPageLoad(){
-//        WebDriverWait wait=new WebDriverWait(getWebDriver(),Duration.ofSeconds(defaultTimeout));
-//
-//        ExpectedCondition<Boolean> pageLoadCondition=new
-//                ExpectedCondition<Boolean>() {
-//                    @Override
-//                    public Boolean apply(WebDriver driver) {
-//                        return ((JavascriptExecutor) driver).executeScript("return document.readyState")
-//                                .equals("complete");
-//                    }
-//                };
-//        return wait.until(pageLoadCondition);
-        return Selenide.executeJavaScript("return document.readyState")
-                .equals("complete");
+    protected void confirmDelete(){
+        click(By.xpath(".//button[contains(@class,'button_confirm')]"));
     }
 
-    public void waitTitle(By titleLocator, String expectedTitle, String hrefTitle){
-        find(titleLocator).shouldBe(visible).shouldHave(text(expectedTitle));
-        Selenide.Wait().until(url->url.getCurrentUrl().contains(hrefTitle));
-        waitForPageLoad();
+    protected void login(String login,String password){
+        sendKeys(By.xpath(".//input[@id='login']"),login);
+        sendKeys(By.xpath(".//input[@id='password']"),password);
+        click(By.xpath(".//button[@id='button_auth']"));
     }
 
-    public String getAlertText() {
+    protected void changeLanguageToRus(){
+        click(By.xpath(".//div[label[@for='language']]//input"));
+        if(getValue(By.xpath(".//div[select[@id='language']]/input")).equals("English")) {
+            click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
+        }
+    }
+
+    protected String getAlertText() {
         By alertLocator=By.xpath(".//div[contains(@class,'alert')]/span");
         waitForElementConditions(alertLocator,defaultTimeout,visible,clickable);
         return find(alertLocator).getText();
     }
 
-    public void confirmDelete(){
-        click(By.xpath(".//button[contains(@class,'button_confirm')]"));
-    }
-
-    public void setCalendar(By locator, String year, String month, String date){
-        click(locator);
-        click(By.xpath(".//div[@class='vdatetime-popup__year']"));
-        click(By.xpath(".//div[contains(@class,'vdatetime-year-picker__item') and normalize-space(text())='"+year+"']"));
-        click(By.xpath(".//div[@class='vdatetime-popup__date']"));
-        click(By.xpath(".//div[contains(@class,'vdatetime-month-picker__item') and normalize-space(text())='"+month+"']"));
-        click(By.xpath(".//div[contains(@class,'vdatetime-calendar__month__day')]//span[normalize-space(text())='"+date+"']"));
-        click(By.xpath(".//div[contains(@class,'hours')]/div[contains(@class,'selected')]"));
-        click(By.xpath(".//div[contains(@class,'minutes')]/div[contains(@class,'selected')]"));
-    }
-
-    public void switchCheckbox(By locator,boolean switchPosition){
-        if(switchPosition)
-            if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
-                    .is(exist))
-                click(locator);
-
-        if(!switchPosition)
-            if(find(By.xpath(".//input[contains(@id,'md-switch')]/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
-                    .is(exist))
-                click(locator);
+    public void openSidebar(){
+        find(By.xpath(".//div[contains(@class,'sidebar')]")).hover();
+        click(By.xpath(".//button[@id='minimizeSidebar']"));
     }
 }

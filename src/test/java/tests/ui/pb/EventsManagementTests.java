@@ -1,6 +1,8 @@
 package tests.ui.pb;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Link;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import testlib.base.NavbarWorker;
 import testlib.base.TableWorker;
 import testlib.base.pb.PBBaseTest;
-import testlib.pages.pbui.EventsManagementPage;
 import testlib.utils.handlers.jmx.JmxHandler;
 
 import java.util.stream.Stream;
@@ -24,12 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Execution(ExecutionMode.CONCURRENT)
 public class EventsManagementTests extends PBBaseTest {
 
-    private EventsManagementPage eventsManagementPage=new EventsManagementPage();
-    private NavbarWorker navbarWorker=new NavbarWorker();
-    private TableWorker tableWorker=new TableWorker();
-
-    private JmxHandler jmxHandler;
-
     static Stream<Arguments> eventsList(){
         return Stream.of(
                 Arguments.of("event1LowTrue","111","Low","Да","qweqwe"),
@@ -40,291 +35,364 @@ public class EventsManagementTests extends PBBaseTest {
     }
 
     @ParameterizedTest
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание события")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     @MethodSource("eventsList")
-    void eventCreateTest(String name,String code,String priority,String type, String desc) {
+    void eventsCreateTests(String name,String code,String priority,String transact, String desc){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
+                .deleteIfExists(name)
+                .buttonClick("Создать")
+                .inputSet("Наименование",name)
+                .inputSet("Код",code)
+                .inputSet("Приоритет",priority)
+                .inputSet("Транзакционность",transact)
+                .inputSet("Описание",desc)
 
-        assertTrue(eventsManagementPage.deleteIfExistsInTable(name));
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput(name);
-        eventsManagementPage.setCodeInput(code);
-        eventsManagementPage.setPriorityInput(priority);
-        eventsManagementPage.setTypeInput(type);
-        eventsManagementPage.setDescInput(desc);
+                .tableRowExists(name,code,desc);
 
-        eventsManagementPage.clickSaveButton();
-
-        assertEquals(tableWorker.tableRowExists(name),true);
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles",code)
+                .xmlContains("CASE_TYPE_ID",code)
+                .xmlContains("NAME",name)
+                .xmlContains("IS_TRANS",transact.equals("Да")?"true":"false");
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Редактирование события")
-    void eventEditTest(){
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void eventUpdateTests(){
+        ui
+                .sectionClick("Управление событиями")
 
-        navbarWorker.sectionClick("Управление событиями");
+                .deleteIfExists("eventToEdit")
+                .deleteIfExists("editedEvent")
 
-        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventToEdit"));
-        assertTrue(eventsManagementPage.deleteIfExistsInTable("editedEvent"));
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventToEdit")
+                .inputSet("Код","555")
+                .inputSet("Приоритет","Low")
+                .inputSet("Транзакционность","Нет")
+                .inputSet("Описание","qweqwczcdscsdc")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventToEdit");
-        eventsManagementPage.setCodeInput("555");
-        eventsManagementPage.setPriorityInput("Low");
-        eventsManagementPage.setTypeInput("Нет");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
+                .tableRowExists("eventToEdit");
 
-        assertEquals(tableWorker.tableRowExists("eventToEdit"),true);
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles","555")
+                .xmlContains("CASE_TYPE_ID","555")
+                .xmlContains("NAME","eventToEdit")
+                .xmlContains("IS_TRANS","false");
 
-        tableWorker.tableHrefClick("eventToEdit");
+        ui
+                .tableHrefCellClick("eventToEdit")
+                .inputSet("Наименование","editedEvent")
+                .inputSet("Код","559")
+                .inputSet("Приоритет","High")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","zxcvbn")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.setNameInput("editedEvent");
-        eventsManagementPage.setCodeInput("559");
-        eventsManagementPage.setPriorityInput("High");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("zxcvbn");
+                .tableRowExists("editedEvent")
+                .buttonClick("Синхронизировать");
 
-        eventsManagementPage.clickSaveButton();
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles","559")
+                .xmlContains("CASE_TYPE_ID","559")
+                .xmlContains("NAME","editedEvent")
+                .xmlContains("IS_TRANS","true");
 
-        assertTrue(tableWorker.tableRowExists("editedEvent"));
-
-        tableWorker.tableHrefClick("editedEvent");
-
-        assertEquals(eventsManagementPage.getValueFromNameInput(),"editedEvent");
-        assertEquals(eventsManagementPage.getValueFromCodeInput(),"559");
-        assertEquals(eventsManagementPage.getValueFromPriorityInput(), "High");
-        assertEquals(eventsManagementPage.getValueFromTransactionalInput(),"Да");
-        assertEquals(eventsManagementPage.getValueFromDescInput(),"zxcvbn");
-
-        eventsManagementPage.clickDeleteButton();
-
-        eventsManagementPage.confirmDelete();
-
-        assertFalse(tableWorker.tableRowExists("eventToDelete"));
+        ui
+                .tableHrefCellClick("editedEvent")
+                .buttonClick("Удалить")
+                .confirm();
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Удаление события")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void eventDeleteTest(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventToDelete"));
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventToDelete")
+                .inputSet("Код","666")
+                .inputSet("Приоритет","Realtime")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","qweqwczcdscsdc")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventToDelete");
-        eventsManagementPage.setCodeInput("666");
-        eventsManagementPage.setPriorityInput("Realtime");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
+                .tableRowExists("eventToDelete");
 
-        assertTrue(tableWorker.tableRowExists("eventToDelete"));
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles","666")
+                .xmlContains("CASE_TYPE_ID","666")
+                .xmlContains("NAME","eventToDelete")
+                .xmlContains("IS_TRANS","true");
 
-        tableWorker.tableHrefClick("eventToDelete");
+        ui
+                .tableHrefCellClick("eventToDelete")
+                .buttonClick("Удалить")
+                .confirm()
+                .tableRowNotExists("eventToDelete");
 
-        eventsManagementPage.clickDeleteButton();
-
-        eventsManagementPage.confirmDelete();
-
-        assertFalse(tableWorker.tableRowExists("eventToDelete"));
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles","666")
+                .equalsNull();
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
-    @Description("Создание события с нечисловым кодом. Ожидается невозможность ввода букв, только чисел")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
+    @Description("Создание события с нечисловым кодом")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createEventWithNoDigitalCode(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        assertTrue(eventsManagementPage.deleteIfExistsInTable("eventCode"));
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventCode")
+                .inputSet("Код","666fghj")
+                .inputSet("Приоритет","Realtime")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","qweqwczcdscsdc")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventCode");
-        eventsManagementPage.setCodeInput("666fghj");
-        eventsManagementPage.setPriorityInput("Realtime");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .tableRowExists("eventCode","666");
 
-        eventsManagementPage.clickSaveButton();
-        assertTrue(tableWorker.tableRowExists("666"));
+        cache
+                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+                .openCache()
+                .get("cdp-event-profiles","666")
+                .xmlContains("CASE_TYPE_ID","666")
+                .xmlContains("NAME","eventCode")
+                .xmlContains("IS_TRANS","true");
 
-        tableWorker.tableHrefClick("eventCode");
-        eventsManagementPage.clickDeleteButton();
-        eventsManagementPage.confirmDelete();
-        assertFalse(tableWorker.tableRowExists("eventCode"));
+        ui
+                .tableCellHrefClick("eventCode")
+                .buttonClick("Удалить")
+                .confirmDelete()
+                .tableRowNotExists("eventCode");
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание события без заполнения Наименования")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createEventWithoutName(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setCodeInput("789");
-        eventsManagementPage.setPriorityInput("Realtime");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Создать")
+                .inputSet("Код","789")
+                .inputSet("Приоритет","Realtime")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","qweqwczcdscsdc")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
-        assertEquals(eventsManagementPage.getAlertText(),"Поле Наименование обязательно для заполнения");
+                .alertTextEquals("Поле Наименование обязательно для заполнения");
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание события без заполнения Кода")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createEventWithoutCode(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventNoCode");
-        eventsManagementPage.setPriorityInput("Realtime");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventNoCode")
+                .inputSet("Приоритет","Realtime")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","qweqwczcdscsdc")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
-
-        assertEquals(eventsManagementPage.getAlertText(),"Поле Код обязательно для заполнения");
+                .alertTextEquals("Поле Код обязательно для заполнения");
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание события без заполнения Приоритета")
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
     void createEventWithoutPriority(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventNoPriority");
-        eventsManagementPage.setCodeInput("7810");
-        eventsManagementPage.setTypeInput("Да");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventNoPriority")
+                .inputSet("Код","7810")
+                .inputSet("Транзакционность","Да")
+                .inputSet("Описание","qweqwczcdscsdc")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
+                .tableRowExists("eventNoPriority");
 
-        assertTrue(tableWorker.tableRowExists("eventNoPriority"));
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","7810")
+//                .xmlContains("CASE_TYPE_ID","7810")
+//                .xmlContains("NAME","eventNoPriority")
+//                .xmlContains("IS_TRANS","true");
     }
 
     @Test
-    @Tag("pb-ui-1")
-    @Tag("pb-events-1")
+    @Feature("pb-custom-1")
+    @Tag("pb-custom-1")
     @Description("Создание события без заполнения Транзакционности")
-    void createEventWithoutTransact(){
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void createEventWithoutTransactional(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
 
-        eventsManagementPage.createEvent();
-        eventsManagementPage.setNameInput("eventNoTransact");
-        eventsManagementPage.setCodeInput("789");
-        eventsManagementPage.setPriorityInput("Realtime");
-        eventsManagementPage.setDescInput("qweqwczcdscsdc");
+                .buttonClick("Создать")
+                .inputSet("Наименование","eventNoTransact")
+                .inputSet("Код","789")
+                .inputSet("Приоритет","Realtime")
+                .inputSet("Описание","qweqwczcdscsdc")
+                .buttonClick("Сохранить")
 
-        eventsManagementPage.clickSaveButton();
-
-        assertEquals(eventsManagementPage.getAlertText(),"Поле Транзакционность обязательно для заполнения");
+                .alertTextEquals("Поле Транзакционность обязательно для заполнения");
     }
 
     @Test
-    @Tag("pb-ui-2")
-    @Tag("pb-events-2")
+    @Feature("pb-custom-2")
+    @Tag("pb-custom-2")
     @Description("Синхронизация событий")
-    void eventsSyncTest() throws Exception {
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void eventsSynchronizeTest(){
 
-        navbarWorker.sectionClick("Управление событиями");
-        eventsManagementPage.syncEvents();
+        ui
+                .sectionClick("Управление событиями")
+                .buttonClick("Синхронизировать");
 
-        jmxHandler=new JmxHandler();
-        jmxHandler.connect();
+//        Object value=jmxHandler.invoke("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
+//                "get","cdp-event-profiles","111");
+        String cacheService="WCS:group=Services,instance-type=Cache,name=cdp-cache-service";
 
-        Object value=jmxHandler.invoke("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
-                "get","cdp-event-profiles","111");
+        jmxHandler
+                .invoke(cacheService,
+                "get","cdp-event-profiles","111")
+                        .cacheValueContains("CASE_TYPE_ID","111")
+                                .cacheValueNotContains("NAME","event1LowTrue")
+                .cacheValueNotContains("IS_TRANS","true")
 
+                .invoke(cacheService,"get","cdp-event-profiles","222")
+                .cacheValueNotContains("CASE_TYPE_ID","222")
+                .cacheValueNotContains("NAME","event2NormalFalse")
+                .cacheValueNotContains("IS_TRANS","false")
 
+                .invoke(cacheService,"get","cdp-event-profiles","333")
+                .cacheValueNotContains("CASE_TYPE_ID","333")
+                .cacheValueNotContains("NAME","event3HighTrue")
+                .cacheValueNotContains("IS_TRANS","true")
 
-        jmxHandler.disconnect();
+                .invoke(cacheService,"get","cdp-event-profiles","444")
+                .cacheValueNotContains("CASE_TYPE_ID","444")
+                .cacheValueNotContains("NAME","event4RealtimeFalse")
+                .cacheValueNotContains("IS_TRANS","false")
+
+                .invoke(cacheService,"get","cdp-event-profiles","7810")
+                .cacheValueNotContains("CASE_TYPE_ID","7810")
+                .cacheValueNotContains("NAME","eventNoPriority")
+                .cacheValueNotContains("IS_TRANS","true");
     }
 
     @Test
-    @Tag("pb-ui-2")
-    @Tag("pb-events-2")
+    @Feature("pb-custom-2")
+    @Tag("pb-custom-2")
     @Description("Фильтрация")
-    void eventsFilterTest(){
+    @Link("https://jira.wsoft.ru/browse/LTB-1658")
+    @Link("https://jira.wsoft.ru/browse/LTB-1657")
+    void eventFilterTest(){
 
-        navbarWorker.sectionClick("Управление событиями");
+        ui
+                .sectionClick("Управление событиями")
+                .filterSet("Наименование","event1LowTrue")
+                .tableRowExists("event1LowTrue")
+                .tableRowNotExists("event3HighTrue")
 
-        eventsManagementPage.openFilters();
-        eventsManagementPage.setFilter("Наименование","event1LowTrue");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("event1LowTrue"),true);
-        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Код","444")
+                .tableRowExists("444")
+                .tableRowNotExists("333")
 
-        eventsManagementPage.setFilter("Код","444");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("444"),true);
-        assertEquals(tableWorker.tableRowExists("333"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Транзакционность","Нет")
+                .tableRowExists("Нет")
+                .tableRowNotExists("Да")
 
-        eventsManagementPage.setFilter("Транзакционность","Да");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("Да"),true);
-        assertEquals(tableWorker.tableRowExists("Нет"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Транзакционность","Да")
+                .tableRowExists("Да")
+                .tableRowNotExists("Нет")
 
-        eventsManagementPage.setFilter("Транзакционность","Нет");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("Нет"),true);
-        assertEquals(tableWorker.tableRowExists("Да"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Приоритет","Low")
+                .tableRowExists("event1LowTrue")
+                .tableRowNotExists("event3HighTrue")
 
-        eventsManagementPage.setFilter("Приоритет","Low");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("event1LowTrue"),true);
-        assertEquals(tableWorker.tableRowExists("event2"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Приоритет","Normal")
+                .tableRowExists("event2NormalFalse")
+                .tableRowNotExists("event3HighTrue")
 
-        eventsManagementPage.setFilter("Приоритет","Normal");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("event2Normal"),true);
-        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Приоритет","High")
+                .tableRowExists("event3HighTrue")
+                .tableRowNotExists("event4RealtimeFalse")
 
-        eventsManagementPage.setFilter("Приоритет","High");
-        eventsManagementPage.filterApp();
+                .buttonClick("Очистить фильтры")
 
-        assertEquals(tableWorker.tableRowExists("event3High"),true);
-        assertEquals(tableWorker.tableRowExists("event2"),false);
-        eventsManagementPage.clearFilters();
-
-        eventsManagementPage.setFilter("Приоритет","Realtime");
-        eventsManagementPage.filterApp();
-
-        assertEquals(tableWorker.tableRowExists("event4Realtime"),true);
-        assertEquals(tableWorker.tableRowExists("event3HighTrue"),false);
-        eventsManagementPage.clearFilters();
+                .filterSet("Приоритет","Realtime")
+                .tableRowExists("event4RealtimeFalse")
+                .tableRowNotExists("event3HighTrue");
     }
 }

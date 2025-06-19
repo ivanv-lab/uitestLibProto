@@ -16,33 +16,55 @@ public class JmxHandler {
     private final int port=Integer.parseInt(PropertyHandler.getProperty("cache.port"));
     private JMXConnector jmxConnector;
     private MBeanServerConnection mBeanServerConnection;
+    private Object cacheValue;
 
-    public void connect() throws Exception{
+    public void connect(){
 
-        String domain="jmxrmi";
-        JMXServiceURL url=
-                new JMXServiceURL(String.format("service:jmx:rmi:///jndi/rmi://%s:%s/%s", host, port, domain));
-        Map<String,Object> environment=new HashMap<>();
-        environment.put(JMXConnector.CREDENTIALS,new String[]{"jmxadmin","jmxpwd-wcsd"});
-        jmxConnector= JMXConnectorFactory.connect(url,environment);
-        mBeanServerConnection=jmxConnector.getMBeanServerConnection();
+        try {
+            String domain = "jmxrmi";
+            JMXServiceURL url =
+                    new JMXServiceURL(String.format("service:jmx:rmi:///jndi/rmi://%s:%s/%s", host, port, domain));
+            Map<String, Object> environment = new HashMap<>();
+            environment.put(JMXConnector.CREDENTIALS, new String[]{"jmxadmin", "jmxpwd-wcsd"});
+            jmxConnector = JMXConnectorFactory.connect(url, environment);
+            mBeanServerConnection = jmxConnector.getMBeanServerConnection();
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка подключения к JMX",e);
+        }
     }
 
-    public void disconnect() throws Exception{
+    private void disconnect() throws Exception{
         if(jmxConnector!=null){
             jmxConnector.close();
         }
     }
 
-    public Object invoke(String mbeanName, String methodName, Object... params) throws Exception{
+    public JmxHandler invoke(String mbeanName, String methodName, Object... params){
 
-        ObjectName objectName=new ObjectName(mbeanName);
-        String[] signature=new String[params.length];
-        for(int i=0;i<params.length;i++){
-            signature[i]=params[i].getClass().getName();
+        try {
+            ObjectName objectName = new ObjectName(mbeanName);
+            String[] signature = new String[params.length];
+            for (int i = 0; i < params.length; i++) {
+                signature[i] = params[i].getClass().getName();
+            }
+
+            cacheValue=mBeanServerConnection
+                    .invoke(objectName, methodName, params, signature);
+            return this;
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка получения значения из JMX",e);
         }
+    }
 
-        return mBeanServerConnection
-                .invoke(objectName,methodName,params,signature);
+    public JmxHandler cacheValueContains(String path, String value){
+
+        return this;
+    }
+
+    public JmxHandler cacheValueNotContains(String path, String value){
+
+        return this;
     }
 }
