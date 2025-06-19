@@ -13,6 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UIHandler extends BasePage {
 
+    public enum ButtonId{
+        create("button_create"),
+        delete("button_delete"),
+        filterOpen("button_show_filter"),
+        save("button_save"),
+        back("button_back");
+
+        private String id;
+        ButtonId(String id){
+            this.id=id;
+        }
+        public String getId(){return id;}
+    }
+
     public UIHandler loginAcui() {
         Selenide.open(PropertyHandler.getProperty("base.URL" + "/acui/login"));
         changeLanguageToRus();
@@ -96,6 +110,13 @@ public class UIHandler extends BasePage {
         return this;
     }
 
+    public UIHandler cardInputSet(String inputName, String value, String cardName) {
+        inputClick(inputName);
+        sendKeys(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='Приоритет']/parent::div//input"),
+                value);
+        return this;
+    }
+
     public UIHandler inputSetById(String inputId, String value) {
         inputClickById(inputId);
         sendKeys(By.xpath(".//input[@id='" + inputId + "']"),
@@ -107,6 +128,24 @@ public class UIHandler extends BasePage {
                                           String value) {
         inputClick(dropDownInputName);
         click(By.xpath(".//li/button[div/span[normalize-space(text())='" + value + "']]"));
+        return this;
+    }
+
+    public UIHandler inputContains(String inputName, String value){
+        if(getText(By.xpath(".//label[text()='"+inputName+"']/parent::div//input"))!=null){
+            assertTrue(getText(By.xpath(".//label[text()='"+inputName+"']/parent::div//input")).equals(value));
+        } else{
+           assertTrue(getValue(By.xpath(".//label[text()='"+inputName+"']/parent::div//input")).equals(value));
+        }
+        return this;
+    }
+
+    public UIHandler cardInputContains(String inputName,String value,String cardName){
+        if(getText(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='"+inputName+"']/parent::div//input"))!=null){
+            assertTrue(getText(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='"+inputName+"']/parent::div//input")).equals(value));
+        } else{
+            assertTrue(getValue(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='"+inputName+"']/parent::div//input")).equals(value));
+        }
         return this;
     }
 
@@ -122,6 +161,37 @@ public class UIHandler extends BasePage {
             if (find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
                     .exists())
                 click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"));
+        }
+        return this;
+    }
+
+    public UIHandler switchCheckboxIs(String checkboxName,boolean switchPosition){
+
+    }
+
+    public UIHandler cardSwitchCheckboxIs(String checkboxName,boolean switchPosition, String cardName){
+
+    }
+
+    public UIHandler switchCheckbox(String checkboxName){
+        if (find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                .exists())
+            click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"));
+        return this;
+    }
+
+    public UIHandler cardSwitchCheckbox(String checkboxName,
+                                    boolean switchPosition, String cardName) {
+        if (switchPosition) {
+            if (find(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"));
+        }
+
+        if (!switchPosition) {
+            if (find(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//h4[text()='"+cardName+"']/parent::div/parent::div/parent::div//"+".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"));
         }
         return this;
     }
@@ -252,7 +322,7 @@ public class UIHandler extends BasePage {
     }
 
     public UIHandler confirmDelete(){
-
+        click(By.xpath(".//button[contains(@class,'button_confirm')]"));
         return this;
     }
 }

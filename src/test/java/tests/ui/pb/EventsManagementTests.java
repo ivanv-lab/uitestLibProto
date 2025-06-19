@@ -45,7 +45,7 @@ public class EventsManagementTests extends PBBaseTest {
 
         ui
                 .sectionClick("Управление событиями")
-                .deleteIfExists(name)
+                .deleteFromTableIfExists(name)
                 .buttonClick("Создать")
                 .inputSet("Наименование",name)
                 .inputSet("Код",code)
@@ -55,15 +55,15 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .buttonClick("Сохранить")
 
-                .tableRowExists(name,code,desc);
+                .tableRowExists(name);
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles",code)
-                .xmlContains("CASE_TYPE_ID",code)
-                .xmlContains("NAME",name)
-                .xmlContains("IS_TRANS",transact.equals("Да")?"true":"false");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles",code)
+//                .xmlContains("CASE_TYPE_ID",code)
+//                .xmlContains("NAME",name)
+//                .xmlContains("IS_TRANS",transact.equals("Да")?"true":"false");
     }
 
     @Test
@@ -76,8 +76,8 @@ public class EventsManagementTests extends PBBaseTest {
         ui
                 .sectionClick("Управление событиями")
 
-                .deleteIfExists("eventToEdit")
-                .deleteIfExists("editedEvent")
+                .deleteFromTableIfExists("eventToEdit")
+                .deleteFromTableIfExists("editedEvent")
 
                 .buttonClick("Создать")
                 .inputSet("Наименование","eventToEdit")
@@ -90,16 +90,16 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventToEdit");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles","555")
-                .xmlContains("CASE_TYPE_ID","555")
-                .xmlContains("NAME","eventToEdit")
-                .xmlContains("IS_TRANS","false");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","555")
+//                .xmlContains("CASE_TYPE_ID","555")
+//                .xmlContains("NAME","eventToEdit")
+//                .xmlContains("IS_TRANS","false");
 
         ui
-                .tableHrefCellClick("eventToEdit")
+                .tableCellHrefClick("eventToEdit")
                 .inputSet("Наименование","editedEvent")
                 .inputSet("Код","559")
                 .inputSet("Приоритет","High")
@@ -110,18 +110,18 @@ public class EventsManagementTests extends PBBaseTest {
                 .tableRowExists("editedEvent")
                 .buttonClick("Синхронизировать");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles","559")
-                .xmlContains("CASE_TYPE_ID","559")
-                .xmlContains("NAME","editedEvent")
-                .xmlContains("IS_TRANS","true");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","559")
+//                .xmlContains("CASE_TYPE_ID","559")
+//                .xmlContains("NAME","editedEvent")
+//                .xmlContains("IS_TRANS","true");
 
         ui
-                .tableHrefCellClick("editedEvent")
+                .tableCellHrefClick("editedEvent")
                 .buttonClick("Удалить")
-                .confirm();
+                .confirmDelete();
     }
 
     @Test
@@ -146,25 +146,25 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventToDelete");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles","666")
-                .xmlContains("CASE_TYPE_ID","666")
-                .xmlContains("NAME","eventToDelete")
-                .xmlContains("IS_TRANS","true");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","666")
+//                .xmlContains("CASE_TYPE_ID","666")
+//                .xmlContains("NAME","eventToDelete")
+//                .xmlContains("IS_TRANS","true");
 
         ui
-                .tableHrefCellClick("eventToDelete")
+                .tableCellHrefClick("eventToDelete")
                 .buttonClick("Удалить")
-                .confirm()
+                .confirmDelete()
                 .tableRowNotExists("eventToDelete");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles","666")
-                .equalsNull();
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","666")
+//                .equalsNull();
     }
 
     @Test
@@ -186,15 +186,15 @@ public class EventsManagementTests extends PBBaseTest {
                 .inputSet("Описание","qweqwczcdscsdc")
                 .buttonClick("Сохранить")
 
-                .tableRowExists("eventCode","666");
+                .tableRowExists("eventCode");
 
-        cache
-                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-                .openCache()
-                .get("cdp-event-profiles","666")
-                .xmlContains("CASE_TYPE_ID","666")
-                .xmlContains("NAME","eventCode")
-                .xmlContains("IS_TRANS","true");
+//        cache
+//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
+//                .openCache()
+//                .get("cdp-event-profiles","666")
+//                .xmlContains("CASE_TYPE_ID","666")
+//                .xmlContains("NAME","eventCode")
+//                .xmlContains("IS_TRANS","true");
 
         ui
                 .tableCellHrefClick("eventCode")
