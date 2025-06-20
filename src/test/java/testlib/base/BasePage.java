@@ -3,6 +3,7 @@ package testlib.base;
 import com.codeborne.selenide.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import testlib.utils.handlers.PropertyHandler;
 
 import java.time.Duration;
 import java.util.List;
@@ -11,9 +12,10 @@ import java.util.stream.Collectors;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
-public abstract class BasePage {
+public abstract class BasePage implements BaseUIOperationsInterface{
     
-    private final int defaultTimeout=10;
+    private final int defaultTimeout=Integer.parseInt(PropertyHandler
+            .getProperty("timeout.default"));
 
     protected SelenideElement find(By locator){
         waitForElementConditions(locator,defaultTimeout,visible);
@@ -54,10 +56,6 @@ public abstract class BasePage {
         for(WebElementCondition condition:conditions){
             $(locator).shouldBe(condition,Duration.ofSeconds(timeout));
         }
-    }
-
-    protected void confirm(){
-        click(By.xpath(".//button[contains(@class,'button_confirm')]"));
     }
 
     protected void login(String login,String password){

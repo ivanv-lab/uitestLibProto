@@ -7,18 +7,18 @@ public class SQLHandler implements AutoCloseable {
     private static final String ORACLE_JDBC_URL = "jdbc:oracle:thin:@%s:1521:wsoft";
     private static final String POSTGRES_JDBC_URL = "jdbc:postgresql://%s:5432/msg";
 
-    private static Connection connection;
-    public String dbType;
-    private static String dbName;
+    private static Connection connection=null;
+    public String dbType=null;
+    private static String dbName="";
 
-    public SQLHandler(String dbName) {
-        this(dbName.equals("msg") ? PropertyHandler.getProperty("db.msg.user") : PropertyHandler.getProperty("db.msg.user") + "_" + dbName,
-                dbName.equals("msg") ? PropertyHandler.getProperty("db.msg.password") : PropertyHandler.getProperty("db.msg.password") + "_" + dbName,
-                dbName);
+    public SQLHandler(String dbType) {
+        this(dbType.equals("msg") ? PropertyHandler.getProperty("db.msg.user") : PropertyHandler.getProperty("db.msg.user") + "_" + dbType,
+                dbType.equals("msg") ? PropertyHandler.getProperty("db.msg.password") : PropertyHandler.getProperty("db.msg.password") + "_" + dbType,
+                dbType);
     }
 
     private SQLHandler(String username,String password,String dbName){
-        if(this.connection==null && this.dbName.equals(dbName)){
+        if(this.connection==null && !this.dbName.equals(dbName)){
             Connection tempConnection=null;
             String tempDbType=null;
 

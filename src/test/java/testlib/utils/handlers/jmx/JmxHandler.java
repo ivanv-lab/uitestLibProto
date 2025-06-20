@@ -1,7 +1,5 @@
 package testlib.utils.handlers.jmx;
 
-import groovy.util.NodeList;
-import org.xml.sax.SAXException;
 import testlib.utils.handlers.PropertyHandler;
 
 import javax.management.MBeanServerConnection;
@@ -9,8 +7,6 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
-import javax.sql.rowset.spi.XmlReader;
-import javax.swing.text.Document;
 import javax.xml.parsers.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,9 +42,13 @@ public class JmxHandler {
         }
     }
 
-    private void disconnect() throws Exception{
-        if(jmxConnector!=null){
-            jmxConnector.close();
+    public void disconnect(){
+        try {
+            if (jmxConnector != null) {
+                jmxConnector.close();
+            }
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 

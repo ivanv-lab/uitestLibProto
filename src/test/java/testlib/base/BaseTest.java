@@ -3,6 +3,8 @@ package testlib.base;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testlib.utils.handlers.PropertyHandler;
 import testlib.utils.handlers.SQLHandler;
 import testlib.utils.handlers.jmx.JmxHandler;
@@ -10,7 +12,9 @@ import testlib.utils.handlers.jmx.JmxHandler;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseTest {
 
-    protected final UIHandler ui=new UIHandler();
+    protected final Logger log= LoggerFactory.getLogger(getClass());
+
+    protected final UIOperationsInterface ui=new UIHandler();
     protected JmxHandler jmxHandler=new JmxHandler();
 
     public static final SQLHandler msg=new SQLHandler("msg");
@@ -37,6 +41,11 @@ public abstract class BaseTest {
         }
 
         jmxHandler.connect();
+    }
+
+    @BeforeEach
+    void logTestStart(TestInfo testInfo){
+        log.info("Начало тестирования: {}",testInfo.getDisplayName());
     }
 
     @AfterEach
