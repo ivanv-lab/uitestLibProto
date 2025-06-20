@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static testlib.utils.XmlParser.getValueByXpath;
+
 public class JmxHandler {
 
     private final String host= PropertyHandler.getProperty("cache.address");
@@ -67,12 +71,19 @@ public class JmxHandler {
     }
 
     public JmxHandler cacheValueContains(String path, String value) {
-
+        String expectedValue=getValueByXpath(cacheValue,path);
+        assertTrue(expectedValue.equals(value));
         return this;
     }
 
     public JmxHandler cacheValueNotContains(String path, String value){
+        String expectedValue=getValueByXpath(cacheValue,path);
+        assertFalse(expectedValue.equals(value));
+        return this;
+    }
 
+    public JmxHandler cacheValueIsNull(){
+        assertTrue(cacheValue.equals(null));
         return this;
     }
 }

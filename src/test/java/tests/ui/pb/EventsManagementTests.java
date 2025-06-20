@@ -40,31 +40,25 @@ public class EventsManagementTests extends PBBaseTest {
     @MethodSource("eventsList")
     void eventsCreateTests(String name,String code,String priority,String transact, String desc){
 
-//        ui
-//                .sectionClick("Управление событиями")
-//                .deleteFromTableIfExists(name)
-//                .buttonClickById(UIHandler.ButtonId.create.getId())
-//                .inputSet("Наименование",name)
-//                .inputSet("Код",code)
-//                .inputSet("Приоритет",priority)
-//                .inputSet("Транзакционность",transact)
-//                .inputSet("Описание",desc)
-//
-//                .buttonClickById(UIHandler.ButtonId.save.getId())
-//
-//                .tableRowExists(name);
+        ui
+                .sectionClick("Управление событиями")
+                .deleteFromTableIfExists(name)
+                .buttonClickById(UIHandler.ButtonId.create.getId())
+                .inputSet("Наименование",name)
+                .inputSet("Код",code)
+                .inputSet("Приоритет",priority)
+                .inputSet("Транзакционность",transact)
+                .inputSet("Описание",desc)
+
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+
+                .tableRowExists(name);
 
         jmxHandler.invoke(cdpCacheService,"get",
-                "cdp-event-profiles","897")
-                .cacheValueContains("qwe","werwe");
-
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles",code)
-//                .xmlContains("CASE_TYPE_ID",code)
-//                .xmlContains("NAME",name)
-//                .xmlContains("IS_TRANS",transact.equals("Да")?"true":"false");
+                "cdp-event-profiles",code)
+                .cacheValueContains("CASE_TYPE_ID",code)
+                .cacheValueContains("NAME",name)
+                .cacheValueContains("IS_TRANS",transact.equals("Да")?"true":"false");
     }
 
     @Test
@@ -91,13 +85,11 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventToEdit");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","555")
-//                .xmlContains("CASE_TYPE_ID","555")
-//                .xmlContains("NAME","eventToEdit")
-//                .xmlContains("IS_TRANS","false");
+        jmxHandler.invoke(cdpCacheService,"get",
+                "cdp-event-profiles","555")
+                        .cacheValueContains("CASE_TYPE_ID","555")
+                                .cacheValueContains("NAME","eventToEdit")
+                                        .cacheValueContains("IS_TRANS","false");
 
         ui
                 .tableCellHrefClick("eventToEdit")
@@ -111,13 +103,11 @@ public class EventsManagementTests extends PBBaseTest {
                 .tableRowExists("editedEvent")
                 .buttonClick("Синхронизировать");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","559")
-//                .xmlContains("CASE_TYPE_ID","559")
-//                .xmlContains("NAME","editedEvent")
-//                .xmlContains("IS_TRANS","true");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","559")
+                .cacheValueContains("CASE_TYPE_ID","559")
+                .cacheValueContains("NAME","editedEvent")
+                .cacheValueContains("IS_TRANS","true");
 
         ui
                 .tableCellHrefClick("editedEvent")
@@ -147,13 +137,11 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventToDelete");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","666")
-//                .xmlContains("CASE_TYPE_ID","666")
-//                .xmlContains("NAME","eventToDelete")
-//                .xmlContains("IS_TRANS","true");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","666")
+                .cacheValueContains("CASE_TYPE_ID","666")
+                .cacheValueContains("NAME","eventToDelete")
+                .cacheValueContains("IS_TRANS","true");
 
         ui
                 .tableCellHrefClick("eventToDelete")
@@ -161,11 +149,9 @@ public class EventsManagementTests extends PBBaseTest {
                 .confirmDelete()
                 .tableRowNotExists("eventToDelete");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","666")
-//                .equalsNull();
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","666")
+                .cacheValueIsNull();
     }
 
     @Test
@@ -189,13 +175,11 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventCode");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","666")
-//                .xmlContains("CASE_TYPE_ID","666")
-//                .xmlContains("NAME","eventCode")
-//                .xmlContains("IS_TRANS","true");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","666")
+                .cacheValueContains("CASE_TYPE_ID","666")
+                .cacheValueContains("NAME","eventCode")
+                .cacheValueContains("IS_TRANS","true");
 
         ui
                 .tableCellHrefClick("eventCode")
@@ -266,13 +250,11 @@ public class EventsManagementTests extends PBBaseTest {
 
                 .tableRowExists("eventNoPriority");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles","7810")
-//                .xmlContains("CASE_TYPE_ID","7810")
-//                .xmlContains("NAME","eventNoPriority")
-//                .xmlContains("IS_TRANS","true");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","7810")
+                .cacheValueContains("CASE_TYPE_ID","7810")
+                .cacheValueContains("NAME","eventNoPriority")
+                .cacheValueContains("IS_TRANS","true");
     }
 
     @Test
@@ -308,33 +290,29 @@ public class EventsManagementTests extends PBBaseTest {
                 .sectionClick("Управление событиями")
                 .buttonClick("Синхронизировать");
 
-//        Object value=jmxHandler.invoke("WCS:group=Services,instance-type=Cache,name=cdp-cache-service",
-//                "get","cdp-event-profiles","111");
-        String cacheService="WCS:group=Services,instance-type=Cache,name=cdp-cache-service";
-
         jmxHandler
-                .invoke(cacheService,
+                .invoke(cdpCacheService,
                 "get","cdp-event-profiles","111")
                         .cacheValueContains("CASE_TYPE_ID","111")
                                 .cacheValueNotContains("NAME","event1LowTrue")
                 .cacheValueNotContains("IS_TRANS","true")
 
-                .invoke(cacheService,"get","cdp-event-profiles","222")
+                .invoke(cdpCacheService,"get","cdp-event-profiles","222")
                 .cacheValueNotContains("CASE_TYPE_ID","222")
                 .cacheValueNotContains("NAME","event2NormalFalse")
                 .cacheValueNotContains("IS_TRANS","false")
 
-                .invoke(cacheService,"get","cdp-event-profiles","333")
+                .invoke(cdpCacheService,"get","cdp-event-profiles","333")
                 .cacheValueNotContains("CASE_TYPE_ID","333")
                 .cacheValueNotContains("NAME","event3HighTrue")
                 .cacheValueNotContains("IS_TRANS","true")
 
-                .invoke(cacheService,"get","cdp-event-profiles","444")
+                .invoke(cdpCacheService,"get","cdp-event-profiles","444")
                 .cacheValueNotContains("CASE_TYPE_ID","444")
                 .cacheValueNotContains("NAME","event4RealtimeFalse")
                 .cacheValueNotContains("IS_TRANS","false")
 
-                .invoke(cacheService,"get","cdp-event-profiles","7810")
+                .invoke(cdpCacheService,"get","cdp-event-profiles","7810")
                 .cacheValueNotContains("CASE_TYPE_ID","7810")
                 .cacheValueNotContains("NAME","eventNoPriority")
                 .cacheValueNotContains("IS_TRANS","true");

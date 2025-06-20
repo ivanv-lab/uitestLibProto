@@ -27,9 +27,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("pb-ui")
 public class PackageEventsManagementTests extends PBBaseTest {
 
+    String cdpCacheService="WCS:group=Services,instance-type=Cache,name=cdp-cache-service";
+
     record CacheValues(String free, String name, String status, String important,
                        String packageCode, String templateName, String translit, String imsiCheck,
-                       String imsiTemplateName, String imsiTranslit, String sendEmail, String sendMSISDN) {}
+                       String imsiTemplateName, String imsiTranslit, String sendEmail, String sendMSISDN) {
+
+        public Map<String, String> returnValues() {
+            Map<String, String> values = new HashMap<>();
+
+            values.put("name", this.name);
+            values.put("status", this.status);
+            values.put("important", this.important);
+            values.put("package-code", this.packageCode);
+            values.put("template-name", this.templateName);
+            values.put("translit", this.translit);
+            values.put("imsi-check", this.imsiCheck);
+            values.put("imsi-template-name", this.imsiTemplateName);
+            values.put("imsi-translit", this.imsiTranslit);
+            values.put("send-unconfirmed-email", this.sendEmail);
+            values.put("send-unconfirmed-msisdn", this.sendMSISDN);
+
+            return values;
+        }
+    }
 
     static Stream<Arguments> packageEventList() {
         return Stream.of(
@@ -137,13 +158,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
 
                 .buttonClickById(UIHandler.ButtonId.save.getId());
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "7810")
-//                .xmlContains("CASE_TYPE_ID", "7810")
-//                .xmlContains("NAME", "eventNoPriority")
-//                .xmlContains("name", "pack1");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","7810")
+                .cacheValueContains("CASE_TYPE_ID", "7810")
+                .cacheValueContains("NAME", "eventNoPriority")
+                .cacheValueContains("name", "pack1");
 
         ui
                 .tableCellHrefClick("eventNoPriority")
@@ -187,13 +206,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .switchCheckboxIs("Отправка клиенту",true)
                 .switchCheckboxIs("Отправка доверительному лицу",true);
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "444")
-//                .xmlContains("CASE_TYPE_ID", "444")
-//                .xmlContains("NAME", "event4RealtimeFalse")
-//                .xmlContains("name", "pack1");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","444")
+                .cacheValueContains("CASE_TYPE_ID", "444")
+                .cacheValueContains("NAME", "event4RealtimeFalse")
+                .cacheValueContains("name", "pack1");
     }
 
     @Test
@@ -214,13 +231,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .buttonClickById(UIHandler.ButtonId.save.getId())
                 .tableRowExists("event2NormalFalse");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "222")
-//                .xmlContains("CASE_TYPE_ID", "222")
-//                .xmlContains("NAME", "event2NormalFalse")
-//                .xmlContains("name", "pack1");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","222")
+                .cacheValueContains("CASE_TYPE_ID", "222")
+                .cacheValueContains("NAME", "event2NormalFalse")
+                .cacheValueContains("name", "pack1");
 
         ui
                 .tableCellHrefClick("event2NormalFalse")
@@ -228,13 +243,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .confirmDelete()
                 .tableRowNotExists("event2NormalFalse");
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "222")
-//                .xmlContains("CASE_TYPE_ID", "222")
-//                .xmlContains("NAME", "event2NormalFalse")
-//                .xmlNotContains("name", "pack1");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","222")
+                .cacheValueContains("CASE_TYPE_ID", "222")
+                .cacheValueContains("NAME", "event2NormalFalse")
+                .cacheValueNotContains("name", "pack1");
 
     }
 
@@ -262,13 +275,11 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .inputSet("Транзакционность", "Нет")
                 .buttonClickById(UIHandler.ButtonId.save.getId());
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "7810")
-//                .xmlContains("CASE_TYPE_ID", "7810")
-//                .xmlContains("NAME", "eventNoPriorityEdited")
-//                .xmlContains("IS_TRANS", "false");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","7810")
+                .cacheValueContains("CASE_TYPE_ID", "7810")
+                .cacheValueContains("NAME", "eventNoPriorityEdited")
+                .cacheValueContains("IS_TRANS", "false");
     }
 
     @Test
@@ -304,12 +315,10 @@ public class PackageEventsManagementTests extends PBBaseTest {
 
                 .buttonClickById(UIHandler.ButtonId.save.getId());
 
-//        cache
-//                .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                .openCache()
-//                .get("cdp-event-profiles", "111")
-//                .xmlContains("CASE_TYPE_ID", "111")
-//                .xmlContains("name", "pack1Edited");
+        jmxHandler.invoke(cdpCacheService,"get",
+                        "cdp-event-profiles","111")
+                .cacheValueContains("CASE_TYPE_ID", "111")
+                .cacheValueContains("name", "pack1Edited");
     }
 
     @Test
@@ -442,20 +451,18 @@ public class PackageEventsManagementTests extends PBBaseTest {
                 .tableCellHrefClick(pack)
                 .buttonClickById("Синхронизировать");
 
-//        cacheValuesMap.forEach((key, values) -> {
-//            Map<String, String> cacheValues = values.returnValues();
-//            cacheValues.forEach((cacheKey, cacheValue) -> {
-//                if (!cacheValue.equals("")) {
-//                    cache
-//                            .cacheService("WCS:group=Services,instance-type=Cache,name=cdp-cache-service")
-//                            .openCache()
-//                            .get("cdp-event-profiles", eventCode)
-//                            .xmlContains("CASE_TYPE_ID", eventCode)
-//                            .xmlContains("NAME", event)
-//                            .xmlContains(cacheKey, cacheValue);
-//                }
-//            });
-//        });
+        cacheValuesMap.forEach((key, values) -> {
+            Map<String, String> cacheValues = values.returnValues();
+            cacheValues.forEach((cacheKey, cacheValue) -> {
+                if (!cacheValue.equals("")) {
+                    jmxHandler.invoke(cdpCacheService,"get",
+                                    "cdp-event-profiles",eventCode)
+                            .cacheValueContains("CASE_TYPE_ID", eventCode)
+                            .cacheValueContains("NAME", event)
+                            .cacheValueContains(cacheKey, cacheValue);
+                }
+            });
+        });
     }
 
     @Test
