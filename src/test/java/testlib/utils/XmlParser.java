@@ -36,6 +36,4 @@ public class XmlParser {
             throw new RuntimeException(e);
         }
     }
-
-
 }
