@@ -70,18 +70,34 @@ public class JmxHandler {
         }
     }
 
+    /**
+     * Проверяет соответствие значения КЭШа по указанному пути с указанным значением
+     * @param path Путь для значения в КЭШе, например "/root/name", будет найдено значение name
+     * @param value Значение для проверки
+     * @return
+     */
     public JmxHandler cacheValueContains(String path, String value) {
         String expectedValue=getValueByXpath(cacheValue,path);
         assertTrue(expectedValue.equals(value));
         return this;
     }
 
+    /**
+     * Проверяет несоответствие значения КЭШа по указанному пути с указанным значением
+     * @param path Путь для значения в КЭШе, например "/root/name", будет найдено значение name
+     * @param value Значение для проверки
+     * @return
+     */
     public JmxHandler cacheValueNotContains(String path, String value){
         String expectedValue=getValueByXpath(cacheValue,path);
         assertFalse(expectedValue.equals(value));
         return this;
     }
 
+    /**
+     * Проверяет, что полученное значение КЭШа пустое
+     * @return
+     */
     public JmxHandler cacheValueIsNull(){
         assertTrue(cacheValue.equals(null));
         return this;
