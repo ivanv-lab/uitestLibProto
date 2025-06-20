@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import testlib.base.NavbarWorker;
 import testlib.base.adm.AdminBaseTest;
 
 @DisplayName("Тестирование страницы Настройки->Клиенты")

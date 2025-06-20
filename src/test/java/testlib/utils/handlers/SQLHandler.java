@@ -4,100 +4,73 @@ import java.sql.*;
 
 public class SQLHandler implements AutoCloseable {
 
-    private static final String POSTGRES_CONN_STRING="jdbc:postgresql://%s:5432/";
-    private static final String ORACLE_CONN_STRING="jdbc:oracle:thin:@%s:1521:wsoft";
+    private static final String ORACLE_JDBC_URL = "jdbc:oracle:thin:@%s:1521:wsoft";
+    private static final String POSTGRES_JDBC_URL = "jdbc:postgresql://%s:5432/msg";
 
-    private final Connection connection;
-    private final Statement statement;
-    private final String dbType;
+    private static Connection connection;
+    public String dbType;
+    private static String dbName;
 
-    public SQLHandler(String dbScheme){
-
-        String username=null, password=null;
-
-        switch (dbScheme){
-            case "msg":{
-                username=PropertyHandler.getProperty("db.msg.user");
-                password=PropertyHandler.getProperty("db.msg.password");
-                break;
-            }
-            case "msg_stat":{
-                username=PropertyHandler.getProperty("db.msg.stat.user");
-                password=PropertyHandler.getProperty("db.msg.stat.password");
-                break;
-            }
-            case "msg_cdp":{
-                username=PropertyHandler.getProperty("db.msg.cdp.user");
-                password=PropertyHandler.getProperty("db.msg.cdp.password");
-                break;
-            }
-        }
-
-        Connection tempConnection = null;
-        Statement tempStatement = null;
-        String tempDbType = null;
-
-        try{
-
-            String url=String.format(ORACLE_CONN_STRING,PropertyHandler.getProperty("base.url"));
-            tempConnection=DriverManager.getConnection(url,username,password);
-            tempDbType="oracle";
-        } catch (SQLException oraEx){
-            try{
-
-                String url=String.format(POSTGRES_CONN_STRING,PropertyHandler.getProperty("base.url"))+"_"+dbScheme;
-                tempConnection=DriverManager.getConnection(url,username,password);
-                tempDbType="postgresql";
-            } catch (SQLException postgresEx){
-                System.err.println();
-                throw new RuntimeException("Ошибка подключения к БД", postgresEx);
-            }
-        }
-
-        try{
-            tempStatement=tempConnection.createStatement();
-        } catch (SQLException e){
-            closeResources(tempConnection);
-            throw new RuntimeException("Не удалось создать Statement", e);
-        }
-
-        this.connection=tempConnection;
-        this.statement=tempStatement;
-        this.dbType=tempDbType;
+    public SQLHandler(String dbName) {
+        this(dbName.equals("msg") ? PropertyHandler.getProperty("db.msg.user") : PropertyHandler.getProperty("db.msg.user") + "_" + dbName,
+                dbName.equals("msg") ? PropertyHandler.getProperty("db.msg.password") : PropertyHandler.getProperty("db.msg.password") + "_" + dbName,
+                dbName);
     }
 
-    public ResultSet query(String query) throws SQLException {
+    private SQLHandler(String username,String password,String dbName){
+        if(this.connection==null && this.dbName.equals(dbName)){
+            Connection tempConnection=null;
+            String tempDbType=null;
 
-        try{
-            if(query.toLowerCase().contains("insert"))
+            try{
+                tempConnection=DriverManager.getConnection(String.format(ORACLE_JDBC_URL,PropertyHandler.getProperty("cache.address")),username,password);
+                tempDbType="oracle";
+            } catch (SQLException oracleEx){
                 try{
-                    statement.executeUpdate(query);
-                } catch (SQLException e){
-                    throw new RuntimeException("Ошибка при выполнении запроса: "+query, e);
+                    tempConnection=DriverManager.getConnection(String.format(POSTGRES_JDBC_URL,PropertyHandler.getProperty("cache.address"))+(dbName.equals("msg")?"":"_"+dbName),
+                            username,password);
+                    tempDbType="postgresql";
+                } catch (SQLException postgresEx){
+                    oracleEx.printStackTrace();
+                    postgresEx.printStackTrace();
+                    System.err.println("Не удалось подключиться к БД");
                 }
+            }
+
+            this.connection=tempConnection;
+            this.dbType=tempDbType;
+            this.dbName=dbName;
+        }
+    }
+
+    public ResultSet query(String query){
+        try(Statement statement=connection.createStatement()){
+            if(query.toLowerCase().contains("insert"))
+                executeQueryNonResult(query);
             else return statement.executeQuery(query);
         } catch (SQLException e){
             e.printStackTrace();
-        } finally {
-            connection.close();
+            throw new RuntimeException("Не удалось выполнить запрос к БД",e);
         }
         return null;
     }
 
-    @Override
-    public void close(){
-        closeResources(statement,connection);
+    public void executeQueryNonResult(String query){
+        try(Statement statement=connection.createStatement()){
+            statement.executeUpdate(query);
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при выполнении запроса без возвращения результата: " + query, e);
+        }
     }
 
-    private void closeResources(AutoCloseable... resources){
-        for(AutoCloseable resource:resources){
-            if(resource!=null){
-                try{
-                    resource.close();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
+    public void close(){
+        try{
+            if(connection!=null)
+                connection.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+            System.err.println("Ошибка при закрытии соединения: " + e.getMessage());
         }
     }
 }

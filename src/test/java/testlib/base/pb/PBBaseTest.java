@@ -1,9 +1,7 @@
 package testlib.base.pb;
 
-import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.BeforeEach;
 import testlib.base.BaseTest;
-import testlib.base.NavbarWorker;
 import testlib.utils.handlers.PropertyHandler;
 
 public class PBBaseTest extends BaseTest {
