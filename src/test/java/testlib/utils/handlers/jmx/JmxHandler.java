@@ -26,21 +26,32 @@ public class JmxHandler {
     SAXParser parser;
     private Object cacheValue;
 
-    public void connect(){
-        try {
-            String domain = "jmxrmi";
-            JMXServiceURL url =
-                    new JMXServiceURL(String.format("service:jmx:rmi:///jndi/rmi://%s:%s/%s", host, port, domain));
-            Map<String, Object> environment = new HashMap<>();
-            environment.put(JMXConnector.CREDENTIALS, new String[]{"jmxadmin", "jmxpwd-wcsd"});
-            jmxConnector = JMXConnectorFactory.connect(url, environment);
-            mBeanServerConnection = jmxConnector.getMBeanServerConnection();
-            parser=factory.newSAXParser();
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new RuntimeException("Ошибка подключения к JMX",e);
-        }
+    public JmxHandler connect() throws IOException {
+        String url=String.format(
+                "service:jmx:rmi:///jndi/rmi://%s:%s/jmxrmi",
+                PropertyHandler.getProperty("cache.address"),
+                PropertyHandler.getProperty("cache.port")
+        );
+
+        this.jmxConnector=JmxConnectionPool.getConnection(url);
+        return this;
     }
+
+//    public void connect(){
+//        try {
+//            String domain = "jmxrmi";
+//            JMXServiceURL url =
+//                    new JMXServiceURL(String.format("service:jmx:rmi:///jndi/rmi://%s:%s/%s", host, port, domain));
+//            Map<String, Object> environment = new HashMap<>();
+//            environment.put(JMXConnector.CREDENTIALS, new String[]{"jmxadmin", "jmxpwd-wcsd"});
+//            jmxConnector = JMXConnectorFactory.connect(url, environment);
+//            mBeanServerConnection = jmxConnector.getMBeanServerConnection();
+//            parser=factory.newSAXParser();
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            throw new RuntimeException("Ошибка подключения к JMX",e);
+//        }
+//    }
 
     public void disconnect(){
         try {

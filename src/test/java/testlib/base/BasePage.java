@@ -11,18 +11,19 @@ import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static testlib.utils.RetryUtils.retry;
 
-public abstract class BasePage implements BaseUIOperationsInterface{
+public abstract class BasePage{
     
     private final int defaultTimeout=Integer.parseInt(PropertyHandler
             .getProperty("timeout.default"));
 
-    protected SelenideElement find(By locator){
+    public SelenideElement find(By locator){
         waitForElementConditions(locator,defaultTimeout,visible);
         return $(locator);
     }
 
-    protected List<String> findCollection(By locator){
+    public List<String> findCollection(By locator){
         waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
         return $$(locator)
                 .asFixedIterable()
@@ -30,46 +31,52 @@ public abstract class BasePage implements BaseUIOperationsInterface{
                 .collect(Collectors.toList());
     }
 
-    protected void click(By locator) {
+    public void click(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
-        find(locator).shouldBe(enabled).click();
+        retry(()->{
+            find(locator).shouldBe(enabled).click();
+            return null;
+        });
     }
 
-    protected void sendKeys(By locator, String text) {
+    public void sendKeys(By locator, String text) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable,interactable);
         find(locator).sendKeys(Keys.CONTROL+"A");
         find(locator).sendKeys(Keys.BACK_SPACE);
         find(locator).sendKeys(text);
     }
 
-    protected String getText(By locator) {
+    public String getText(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getText();
     }
 
-    protected String getValue(By locator) {
+    public String getValue(By locator) {
         waitForElementConditions(locator,defaultTimeout,visible,clickable);
         return find(locator).getValue();
     }
 
     private void waitForElementConditions(By locator,int timeout,WebElementCondition... conditions){
-        for(WebElementCondition condition:conditions){
+        retry(()->{
+            for(WebElementCondition condition:conditions){
             $(locator).shouldBe(condition,Duration.ofSeconds(timeout));
         }
+            return null;
+        });
     }
 
-    protected void login(String login,String password){
+    public void login(String login,String password){
         sendKeys(By.xpath(".//input[@id='login']"),login);
         sendKeys(By.xpath(".//input[@id='password']"),password);
         click(By.xpath(".//button[@id='button_auth']"));
     }
 
-    protected void changeLanguageToRus(){
+    public void changeLanguageToRus(){
         click(By.xpath(".//div[label[@for='language']]//input"));
         click(By.xpath(".//button[div/span[contains(.,'Русский')]]"));
     }
 
-    protected String getAlertText() {
+    public String getAlertText() {
         By alertLocator=By.xpath(".//div[contains(@class,'alert')]/span");
         waitForElementConditions(alertLocator,defaultTimeout,visible,clickable);
         return find(alertLocator).getText();

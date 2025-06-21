@@ -68,34 +68,26 @@ allure {
     version("2.34.0")
 }
 
-///Таски для запуска тестов по классам - категориям
-
-tasks.register("pb-events-1", Test){
-    useJUnitPlatform(){
-        includeTags 'pb-events-1'
+task "pb-custom-1" (type: Test){
+    useJUnitPlatform {
+        includeTags "pb-custom-1"
     }
 }
 
-tasks.register("pb-events-2",Test){
-    useJUnitPlatform(){
-        includeTags 'pb-events-2'
+def numberOfPB=4
+
+for(i in 2..numberOfPB){
+    def taskName="pb-custom-$i"
+    def dependsOnTaskName="pb-custom-${i-1}"
+
+    tasks.register(taskName,Test) {
+        useJUnitPlatform {
+            includeTags "pb-custom-$i"
+        }
+        dependsOn(dependsOnTaskName)
     }
-    dependsOn 'pb-events-1'
 }
 
-tasks.register("pb-packs-1", Test){
-    useJUnitPlatform(){
-        includeTags 'pb-packs-1'
-    }
-}
-
-tasks.register("pb-packs-2",Test){
-    useJUnitPlatform(){
-        includeTags 'pb-packs-2'
-    }
-    dependsOn 'pb-packs-1'
-}
-
-task pb_ui_tests {
-    dependsOn 'pb-events-1', 'pb-events-2', 'pb-packs-1', 'pb-packs-2'
+task runAllPBCustomTasks (type: Test){
+    dependsOn((1..numberOfPB).collect {"pb-custom-$it"})
 }

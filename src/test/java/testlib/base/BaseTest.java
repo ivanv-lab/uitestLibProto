@@ -1,16 +1,26 @@
 package testlib.base;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Screenshots;
 import com.codeborne.selenide.Selenide;
+import io.qameta.allure.Allure;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testlib.utils.TestStatus;
+import testlib.utils.handlers.AllureTestHandler;
 import testlib.utils.handlers.PropertyHandler;
 import testlib.utils.handlers.SQLHandler;
 import testlib.utils.handlers.jmx.JmxHandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class BaseTest {
+@ExtendWith(AllureTestHandler.class)
+public abstract class BaseTest{
 
     protected final Logger log= LoggerFactory.getLogger(getClass());
 
@@ -22,7 +32,7 @@ public abstract class BaseTest {
     public static final SQLHandler cdp=new SQLHandler("cdp");
 
     @BeforeAll
-    void setupSelenide(){
+    void setupSelenide() throws IOException {
 
         String selenoidHost = PropertyHandler.getProperty("selenoid.host");
         String selenoidPort = PropertyHandler.getProperty("selenoid.port");
@@ -49,7 +59,7 @@ public abstract class BaseTest {
     }
 
     @AfterEach
-    void afterTest(){
+    void afterTest(TestInfo testInfo){
         Selenide.clearBrowserCookies();
         Selenide.clearBrowserLocalStorage();
     }
