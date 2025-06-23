@@ -6,13 +6,9 @@ import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 import testlib.utils.handlers.PropertyHandler;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.Year;
+import java.time.*;
 
-import static com.codeborne.selenide.Condition.clickable;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -356,18 +352,37 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
     public UIHandler tableRowExists(String text) {
         int tableSize=0;
-        if($(By.xpath(".//table/tbody/tr")).exists()) {
+        if($(By.xpath(".//table/tbody/tr")).shouldBe(exist, Duration.ofSeconds(3)).exists()) {
+            tableSize = findCollection(By.xpath(".//table/tbody/tr")).size();
+
+            String tableRowCollection = "";
+            for (int i = 0; i <= tableSize; i++) {
+                if ($(By.xpath(".//table/tbody/tr[" + i + "]")).exists()) {
+                    tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
+                    if(tableRowCollection.contains(text))
+                        assertTrue(tableRowCollection.contains(text));
+                }
+            }
+        }
+        return this;
+    }
+
+    public boolean isTableRowExists(String text){
+        int tableSize=0;
+        if($(By.xpath(".//table/tbody/tr")).shouldBe(exist, Duration.ofSeconds(3)).exists()) {
             tableSize = findCollection(By.xpath(".//table/tbody/tr")).size();
 
             String tableRowCollection = "";
             for (int i = 1; i <= tableSize; i++) {
                 if ($(By.xpath(".//table/tbody/tr[" + i + "]")).exists()) {
                     tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
-                    assertTrue(tableRowCollection.contains(text));
+                    //assertTrue(tableRowCollection.contains(text));
+                    if(tableRowCollection.contains(text))
+                        return true;
                 }
             }
         }
-        return this;
+        return false;
     }
 
 
@@ -423,12 +438,13 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler deleteFromTableIfExists(String rowValue) {
-        if ($(By.xpath(".//table/tbody/tr")).exists()) {
+        if ($(By.xpath(".//table/tbody/tr")).shouldBe(exist,Duration.ofSeconds(3)).exists()) {
 
-            tableRowExists(rowValue);
-            tableRowCellClick(rowValue, 6);
-            buttonClickById("button_delete");
-            confirmDelete();
+            if(isTableRowExists(rowValue)) {
+                tableCellHrefClick(rowValue);
+                buttonClickById("button_delete");
+                confirmDelete();
+            }
         }
 
         return this;

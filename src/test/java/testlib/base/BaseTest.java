@@ -60,8 +60,8 @@ public abstract class BaseTest{
 
     @AfterEach
     void afterTest(TestInfo testInfo){
-        Selenide.clearBrowserCookies();
-        Selenide.clearBrowserLocalStorage();
+//        Selenide.clearBrowserCookies();
+//        Selenide.clearBrowserLocalStorage();
     }
 
     @AfterAll
