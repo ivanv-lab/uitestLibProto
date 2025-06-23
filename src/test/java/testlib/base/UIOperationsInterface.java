@@ -219,6 +219,15 @@ public interface UIOperationsInterface extends BaseUIOperationsInterface {
                                              boolean switchPosition, String cardName);
 
     /**
+     * Переключение чекбокса в указанном ряду чекбоксов
+     * @param rowName Наименование ряда чекбоксов
+     * @param checkboxName Наименование чекбокса
+     * @param switchPosition Положение чекбокса: true - вкл., false - выкл.
+     * @return
+     */
+    UIHandler switchCheckboxInRow(String rowName, String checkboxName, boolean switchPosition);
+
+    /**
      * Ввод в указанное поле ввода случайного значения из таблицы, находящейся на странице.
      * Для этого нужно, чтобы Наименование поля ввода совпадало с одним из столбцов таблицы.
      * Например, поле ввода "Адрес" и в таблице должен быть столбец с заголовком "Адрес".

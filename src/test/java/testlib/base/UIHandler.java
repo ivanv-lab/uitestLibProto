@@ -55,8 +55,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler loginAcui(String login,String password){
-        if(!WebDriverRunner.driver().url().equals(PropertyHandler.getProperty("base.URL") + "/acui/login"))
-            Selenide.open(PropertyHandler.getProperty("base.URL") + "/acui/login");
+        Selenide.open(PropertyHandler.getProperty("base.URL") + "/acui/login");
         changeLanguageToRus();
         login(login, password);
         return this;
@@ -108,8 +107,8 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler subSectionClick(String section, String subSection) {
-        click(By.xpath(section + "[a/p[contains(.,'" + section + "')]]/a"));
-        click(By.xpath(subSection + "[span[@class='sidebar-normal' and text()='" + subSection + "']]"));
+        click(By.xpath( "//ul/li[a/p[contains(.,'" + section + "')]]/a"));
+        click(By.xpath( "//ul/li[a/p[contains(.,'"+section+"')]]/a/parent::li/div/ul/li/a[span[@class='sidebar-normal' and text()='"+subSection+"']]"));
         return this;
     }
 
@@ -140,7 +139,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
     public UIHandler inputSet(String inputName, String value) {
         inputClick(inputName);
-        sendKeys(By.xpath(".//label[text()='Приоритет']/parent::div//input"),
+        sendKeys(By.xpath(".//label[text()='"+inputName+"']/parent::div//input"),
                 value);
         return this;
     }
@@ -195,13 +194,13 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
         if (switchPosition) {
             if (find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
                     .exists())
-                click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"));
+                click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]/label"));
         }
 
         if (!switchPosition) {
             if (find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
                     .exists())
-                click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"));
+                click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]/label"));
         }
         return this;
     }
@@ -239,6 +238,21 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
         if (find(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
                 .exists())
             click(By.xpath(".//label[text()='" + checkboxName + "']/parent::div//div[contains(@class,'md-switch-container')]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"));
+        return this;
+    }
+
+    public UIHandler switchCheckboxInRow(String rowName, String checkboxName, boolean switchPosition){
+        if (switchPosition) {
+            if ($(By.xpath(".//label[text()='"+rowName+"']/parent::div//div[contains(@class,'md-switch-container')][parent::div/label[text()='"+checkboxName+"']]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//label[text()='"+rowName+"']/parent::div//div[contains(@class,'md-switch-container')][parent::div/label[text()='"+checkboxName+"']]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and not(contains(@class,'checked'))]/label"));
+        }
+
+        if (!switchPosition) {
+            if ($(By.xpath(".//label[text()='"+rowName+"']/parent::div//div[contains(@class,'md-switch-container')][parent::div/label[text()='"+checkboxName+"']]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]"))
+                    .exists())
+                click(By.xpath(".//label[text()='"+rowName+"']/parent::div//div[contains(@class,'md-switch-container')][parent::div/label[text()='"+checkboxName+"']]//input[@type='checkbox']/ancestor::div[4][contains(@class,'md-switch') and (contains(@class,'checked'))]/label"));
+        }
         return this;
     }
 
@@ -341,13 +355,16 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler tableRowExists(String text) {
-        int tableSize = findCollection(By.xpath(".//table/tbody/tr")).size();
+        int tableSize=0;
+        if($(By.xpath(".//table/tbody/tr")).exists()) {
+            tableSize = findCollection(By.xpath(".//table/tbody/tr")).size();
 
-        String tableRowCollection = "";
-        for (int i = 1; i <= tableSize; i++) {
-            if ($(By.xpath(".//table/tbody/tr[" + i + "]")).exists()) {
-                tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
-                assertTrue(tableRowCollection.contains(text));
+            String tableRowCollection = "";
+            for (int i = 1; i <= tableSize; i++) {
+                if ($(By.xpath(".//table/tbody/tr[" + i + "]")).exists()) {
+                    tableRowCollection = getText(By.xpath(".//table/tbody/tr[" + i + "]"));
+                    assertTrue(tableRowCollection.contains(text));
+                }
             }
         }
         return this;
@@ -406,7 +423,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler deleteFromTableIfExists(String rowValue) {
-        if (!$(By.xpath(".//table/tbody/tr")).exists()) {
+        if ($(By.xpath(".//table/tbody/tr")).exists()) {
 
             tableRowExists(rowValue);
             tableRowCellClick(rowValue, 6);

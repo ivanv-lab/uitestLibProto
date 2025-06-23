@@ -108,4 +108,10 @@ public abstract class BasePage{
             click(By.xpath(".//button[@id='minimizeSidebar']"));
         });
     }
+
+    public boolean isTableExists(){
+        if($(By.xpath(".//table/tbody/tr")).exists())
+            return true;
+        return false;
+    }
 }
