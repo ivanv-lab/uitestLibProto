@@ -21,6 +21,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
      * @delete - Удалить
      * @filterOpen - Открыть фильтры
      * @filterClean - Очистить фильтры
+     * @filterApply - Применить фильтры
      * @save - Сохранить
      * @back - Назад
      */
@@ -29,6 +30,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
         delete("button_delete"),
         filterOpen("button_show_filter"),
         filterClean("button_clear_filter"),
+        filterApply("button_apply_filter"),
         save("button_save"),
         back("button_back");
 
@@ -276,12 +278,14 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler filterSet(String filterInput, String value) {
-        click(By.xpath(".//label[text()='" + filterInput + "']/parent::div//input"));
-        if ($(By.xpath(".//li/button[div/span[normalize-space(text())='" + value + "']]"))
+        if(!$(By.xpath(".//div[@class='filter-wings']//label[text()='" + filterInput + "']/parent::div//input")).isDisplayed())
+            buttonClickById(ButtonId.filterOpen.getId());
+        click(By.xpath(".//div[@class='filter-wings']//label[text()='" + filterInput + "']/parent::div//input"));
+        if ($(By.xpath(".//div[@class='filter-wings']//li/button[div/span[normalize-space(text())='" + value + "']]"))
                 .exists())
-            click(By.xpath(".//li/button[div/span[normalize-space(text())='" + value + "']]"));
+            click(By.xpath(".//div[@class='filter-wings']//li/button[div/span[normalize-space(text())='" + value + "']]"));
         else
-            sendKeys(By.xpath(".//label[text()='" + filterInput + "']/parent::div//input"), value);
+            sendKeys(By.xpath(".//div[@class='filter-wings']//label[text()='" + filterInput + "']/parent::div//input"), value);
 
         buttonClickById("button_apply_filter");
         return this;
@@ -438,7 +442,7 @@ public class UIHandler extends BasePage implements UIOperationsInterface{
 
 
     public UIHandler deleteFromTableIfExists(String rowValue) {
-        if ($(By.xpath(".//table/tbody/tr")).shouldBe(exist,Duration.ofSeconds(3)).exists()) {
+        if ($(By.xpath(".//table/tbody/tr")).is(exist,Duration.ofSeconds(3))) {
 
             if(isTableRowExists(rowValue)) {
                 tableCellHrefClick(rowValue);

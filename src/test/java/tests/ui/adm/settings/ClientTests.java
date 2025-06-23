@@ -43,6 +43,7 @@ public class ClientTests extends AdminBaseTest {
 
         ui
                 .subSectionClick("Настройки", "Клиенты")
+                .filterSet("Название",name)
                 .deleteFromTableIfExists(name)
                 .buttonClickById(UIHandler.ButtonId.create.getId())
                 .inputSet("Название", name)
@@ -58,6 +59,7 @@ public class ClientTests extends AdminBaseTest {
 
         ui
                 .buttonClickById(UIHandler.ButtonId.save.getId())
+                .filterSet("Название",name)
                 .tableRowExists(name);
     }
 }
