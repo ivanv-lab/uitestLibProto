@@ -23,32 +23,41 @@ import java.util.stream.Stream;
 @Execution(ExecutionMode.CONCURRENT)
 public class ClientTests extends AdminBaseTest {
 
-    static Stream<Arguments> clientDataProvider(){
-        return Stream.of(
-                Arguments.of("Wings","SMS,Call,Email,WhatsApp,Viber,Push,Mail Notify,Custom",true,true,true,true,true)
-        );
+    static List<Map<String, String>> clientDataProvider() {
+        return CsvLoader.csvRows("testdata/Clients.csv");
     }
 
     @ParameterizedTest
     @MethodSource("clientDataProvider")
     @Tag("client")
     @Description("Создание клиента")
-    void clientPageAddClientTest(String name,String transports,Boolean status,Boolean avance,
-                                 Boolean multisignature,Boolean templateOnly,Boolean moderation){
+    void clientPageAddClientTest(Map<String, String> clientData) {
+
+        String name = clientData.get("Клиент"),
+                transports = clientData.get("Транспорт");
+        Boolean status = Boolean.valueOf(clientData.get("Статус")),
+                avance = Boolean.valueOf(clientData.get("Авансовая схема взаиморасчетов")),
+                multisignature = Boolean.valueOf(clientData.get("Использовать мультиподпись?")),
+                templateOnly = Boolean.valueOf(clientData.get("Только шаблон")),
+                moderation = Boolean.valueOf(clientData.get("Модерация"));
 
         ui
-                .subSectionClick("Настройки","Клиенты")
+                .subSectionClick("Настройки", "Клиенты")
                 .deleteFromTableIfExists(name)
                 .buttonClickById(UIHandler.ButtonId.create.getId())
-                .inputSet("Название",name)
-                .switchCheckbox("Статус",status)
-                .switchCheckbox("Авансовая схема взаиморасчетов",avance);
+                .inputSet("Название", name)
+                .switchCheckbox("Статус", status)
+                .switchCheckbox("Авансовая схема взаиморасчетов", avance);
 
-        Arrays.stream(transports.split(",")).forEach(s->{
-            ui.switchCheckbox(s,true)
-            .switchCheckboxInRow(s,"Мультиподпись",multisignature)
-                    .switchCheckboxInRow(s,"Только шаблон",templateOnly)
-                    .switchCheckboxInRow(s,"Модерация",moderation);
+        Arrays.stream(transports.split(",")).forEach(s -> {
+            ui.switchCheckbox(s, true)
+                    .switchCheckboxInRow(s, "Мультиподпись", multisignature)
+                    .switchCheckboxInRow(s, "Только шаблон", templateOnly)
+                    .switchCheckboxInRow(s, "Модерация", moderation);
         });
+
+        ui
+                .buttonClickById(UIHandler.ButtonId.save.getId())
+                .tableRowExists(name);
     }
 }
