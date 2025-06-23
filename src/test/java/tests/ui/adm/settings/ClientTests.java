@@ -1,13 +1,12 @@
 package tests.ui.adm.settings;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import testlib.base.UIHandler;
 import testlib.base.adm.AdminBaseTest;
@@ -16,7 +15,6 @@ import testlib.utils.CsvLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @DisplayName("Тестирование страницы Настройки->Клиенты")
 @Tag("client")
@@ -27,10 +25,11 @@ public class ClientTests extends AdminBaseTest {
         return CsvLoader.csvRows("testdata/Clients.csv");
     }
 
+    @Feature("Init-0")
+    @Tag("Init-0")
     @ParameterizedTest
     @MethodSource("clientDataProvider")
-    @Tag("client")
-    @Description("Создание клиента")
+    @Description("Клиенты. Создание клиента")
     void clientPageAddClientTest(Map<String, String> clientData) {
 
         String name = clientData.get("Клиент"),
