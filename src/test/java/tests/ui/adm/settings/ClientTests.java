@@ -39,7 +39,7 @@ public class ClientTests extends AdminBaseTest {
     @ParameterizedTest
     @MethodSource("clientDataProvider")
     @Description("Клиенты. Создание клиента")
-    void clientPageAddClientTest(Map<String, String> clientData) {
+    void clientPageAddClientTest(Map<String, String> clientData) throws SQLException {
 
         String name = clientData.get("Клиент"),
                 transports = clientData.get("Транспорт");
@@ -72,6 +72,25 @@ public class ClientTests extends AdminBaseTest {
                     .tableRowExists(name);
 
         } else if(testsInitMode.equals("api")){
+            String authToken=getToken("acapi","admin@admin.com","Admin");
+
+            ResultSet resultSet1=msg.query("SELECT id from partners where name='"+name+"'");
+            if(resultSet1.next()) {
+                String partnerId = resultSet1.getString(1);
+
+                if (partnerId != null) {
+                    Response response = given()
+                            .header("Authorization", authToken)
+                            .contentType("application/json")
+                            .when()
+                            .delete(PropertyHandler.getProperty("base.URL") + "/acapi/partners/" + partnerId)
+                            .then().extract().response();
+                    response.body().print();
+
+                    assertTrue(response.statusCode() == 200);
+                }
+            }
+            resultSet1.close();
 
             StringBuilder body= new StringBuilder(String.format("""
                     {
@@ -120,8 +139,6 @@ public class ClientTests extends AdminBaseTest {
                         "prepaid" : %s,
                         "status" : %s
                         }""",avance,status.equals(true)?1:0));
-
-            String authToken=getToken("acapi","admin@admin.com","Admin");
 
             Response response=given()
                     .header("Authorization",authToken)

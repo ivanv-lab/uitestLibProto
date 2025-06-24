@@ -80,7 +80,6 @@ someClient;"SMS,Push,Viber,WhatsApp,Email,Call";true;false;false;false;false;"Ad
 ClientWS;"SMS,Call,Email,Push,WhatsApp,Viber,Mail Notify";true;false;false;false;false;"Admin,SMS,Call,Email,Push,WhatsApp,Viber,Mail Notify"
 wwe;"SMS,Call,Email,Push,WhatsApp,Viber,Mail Notify";true;false;false;false;false;"Admin,SMS,Call,Email,Push,WhatsApp,Viber,Mail Notify"
 TestClient;Push;true;false;false;false;false;"Admin,Push"
-ClientAll;"SMS,Push,Viber,WhatsApp,Email,Call";true;false;false;false;false;"Admin,SMS,Push,Viber,WhatsApp,Email,Call"
 ClientGEditSMS;SMS;true;true;false;false;false;"Admin,SMS"
 ClientGEditCall;Call;true;true;false;false;false;"Admin,Call"
 ClientGEditViber;Viber;true;true;false;false;false;"Admin,Viber"
