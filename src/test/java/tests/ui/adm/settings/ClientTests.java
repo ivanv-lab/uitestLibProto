@@ -15,6 +15,7 @@ import testlib.utils.CsvLoader;
 import testlib.utils.handlers.PropertyHandler;
 
 import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ClientTests extends AdminBaseTest {
     @ParameterizedTest
     @MethodSource("clientDataProvider")
     @Description("Клиенты. Создание клиента")
-    void clientPageAddClientTest(Map<String, String> clientData) throws SQLException, InterruptedException {
+    void clientPageAddClientTest(Map<String, String> clientData) {
 
         String name = clientData.get("Клиент"),
                 transports = clientData.get("Транспорт");
@@ -52,25 +53,26 @@ public class ClientTests extends AdminBaseTest {
             ui
                     .subSectionClick("Настройки", "Клиенты")
                     .filterSet("Название", name)
-                    .deleteFromTableIfExists(name);
-//                    .buttonClickById(UIHandler.ButtonId.create.getId())
-//                    .inputSet("Название", name)
-//                    .switchCheckbox("Статус", status)
-//                    .switchCheckbox("Авансовая схема взаиморасчетов", avance);
-//
-//            Arrays.stream(transports.split(",")).forEach(s -> {
-//                ui.switchCheckbox(s, true)
-//                        .switchCheckboxInRow(s, "Мультиподпись", multisignature)
-//                        .switchCheckboxInRow(s, "Только шаблон", templateOnly)
-//                        .switchCheckboxInRow(s, "Модерация", moderation);
-//            });
-//
-//            ui
-//                    .buttonClickById(UIHandler.ButtonId.save.getId())
-//                    .filterSet("Название", name)
-//                    .tableRowExists(name);
+                    .deleteFromTableIfExists(name)
+                    .buttonClickById(UIHandler.ButtonId.create.getId())
+                    .inputSet("Название", name)
+                    .switchCheckbox("Статус", status)
+                    .switchCheckbox("Авансовая схема взаиморасчетов", avance);
+
+            Arrays.stream(transports.split(",")).forEach(s -> {
+                ui.switchCheckbox(s, true)
+                        .switchCheckboxInRow(s, "Мультиподпись", multisignature)
+                        .switchCheckboxInRow(s, "Только шаблон", templateOnly)
+                        .switchCheckboxInRow(s, "Модерация", moderation);
+            });
+
+            ui
+                    .buttonClickById(UIHandler.ButtonId.save.getId())
+                    .filterSet("Название", name)
+                    .tableRowExists(name);
 
         } else if(testsInitMode.equals("api")){
+
             StringBuilder body= new StringBuilder(String.format("""
                     {
                         "name" : \"%s\",
@@ -78,7 +80,28 @@ public class ClientTests extends AdminBaseTest {
                     """,name));
 
             Arrays.stream(transports.split(",")).forEach(s->{
-                String transportId= msg.queryForString("SELECT id from transports where name='" + s + "'");
+                ResultSet resultSet= null;
+                try {
+                    resultSet = msg.query("SELECT id from transports where name='" + s + "'");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    assertTrue(resultSet.next());
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                String transportId=null;
+                try {
+                    transportId = resultSet.getString(1);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 body.append(String.format("""
                         {
                             "id" : %s,
@@ -99,8 +122,6 @@ public class ClientTests extends AdminBaseTest {
                         }""",avance,status.equals(true)?1:0));
 
             String authToken=getToken("acapi","admin@admin.com","Admin");
-
-
 
             Response response=given()
                     .header("Authorization",authToken)

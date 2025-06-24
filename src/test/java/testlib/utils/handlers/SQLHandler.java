@@ -47,16 +47,16 @@ public class SQLHandler implements AutoCloseable {
         }
     }
 
-    public String queryForString(String query){
-        try(Statement statement= connection.createStatement();
-        ResultSet resultSet=statement.executeQuery(query)){
-            if(resultSet.next())
-                return resultSet.getString(1);
-            throw new RuntimeException("Данные отсутствуют");
-        } catch (SQLException e){
+    public ResultSet query(String query) throws SQLException {
+        Statement statement= connection.createStatement();
+        try {
+            if (query.toLowerCase().contains("insert"))
+                executeQueryNonResult(query);
+            else return statement.executeQuery(query);
+        } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Ошибка запроса: " + query, e);
         }
+        return null;
     }
 
     public void executeQueryNonResult(String query){
