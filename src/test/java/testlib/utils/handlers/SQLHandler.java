@@ -1,6 +1,10 @@
 package testlib.utils.handlers;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SQLHandler implements AutoCloseable {
 
@@ -23,17 +27,17 @@ public class SQLHandler implements AutoCloseable {
             String tempDbType=null;
 
             try{
-                tempConnection=DriverManager.getConnection(String.format(ORACLE_JDBC_URL,PropertyHandler.getProperty("cache.address")),username,password);
+                tempConnection=tryOracleConnection(username,password,dbName);
                 tempDbType="oracle";
             } catch (SQLException oracleEx){
                 try{
-                    tempConnection=DriverManager.getConnection(String.format(POSTGRES_JDBC_URL,PropertyHandler.getProperty("cache.address"))+(dbName.equals("msg")?"":"_"+dbName),
-                            username,password);
+                    tempConnection=tryPostgresConnection(username, password, dbName);
                     tempDbType="postgresql";
                 } catch (SQLException postgresEx){
                     oracleEx.printStackTrace();
                     postgresEx.printStackTrace();
                     System.err.println("Не удалось подключиться к БД");
+                    throw new RuntimeException(postgresEx);
                 }
             }
 
@@ -43,16 +47,16 @@ public class SQLHandler implements AutoCloseable {
         }
     }
 
-    public ResultSet query(String query){
-        try(Statement statement=connection.createStatement()){
-            if(query.toLowerCase().contains("insert"))
-                executeQueryNonResult(query);
-            else return statement.executeQuery(query);
+    public String queryForString(String query){
+        try(Statement statement= connection.createStatement();
+        ResultSet resultSet=statement.executeQuery(query)){
+            if(resultSet.next())
+                return resultSet.getString(1);
+            throw new RuntimeException("Данные отсутствуют");
         } catch (SQLException e){
             e.printStackTrace();
-            throw new RuntimeException("Не удалось выполнить запрос к БД",e);
+            throw new RuntimeException("Ошибка запроса: " + query, e);
         }
-        return null;
     }
 
     public void executeQueryNonResult(String query){
@@ -72,5 +76,15 @@ public class SQLHandler implements AutoCloseable {
             e.printStackTrace();
             System.err.println("Ошибка при закрытии соединения: " + e.getMessage());
         }
+    }
+
+    private Connection tryOracleConnection(String username, String password, String dbName) throws SQLException {
+        String url = String.format(ORACLE_JDBC_URL, PropertyHandler.getProperty("cache.address"));
+        return DriverManager.getConnection(url, username, password);
+    }
+
+    private Connection tryPostgresConnection(String username, String password, String dbName) throws SQLException {
+        String url = String.format(POSTGRES_JDBC_URL, PropertyHandler.getProperty("cache.address")) + (dbName.equals("msg") ? "" : "_" + dbName);
+        return DriverManager.getConnection(url, username, password);
     }
 }

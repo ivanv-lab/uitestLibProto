@@ -22,14 +22,28 @@ import java.io.IOException;
 @ExtendWith(AllureTestHandler.class)
 public abstract class BaseTest{
 
+    /**
+     * Логирование операций и ошибок
+     */
     protected final Logger log= LoggerFactory.getLogger(getClass());
 
+    /**
+     * Хэндлеры для UI, JMX и SQL. Создаются один раз, далее переиспользуются
+     * во избежание проблем с подключениями в случае с SQL и JMX, а также для
+     * экономии памяти
+     */
     protected final UIOperationsInterface ui=new UIHandler();
     protected JmxHandler jmxHandler=new JmxHandler();
 
     public static final SQLHandler msg=new SQLHandler("msg");
     public static final SQLHandler stat=new SQLHandler("stat");
     public static final SQLHandler cdp=new SQLHandler("cdp");
+
+    /**
+     * Модификатор выполнения Init-тестов. Может быть UI - через интерфейс,
+     * API - через АПИ, Hybrid - 20% UI, 80% API
+     */
+    protected final String testsInitMode=PropertyHandler.getProperty("tests.init.mode").toLowerCase();
 
     @BeforeAll
     void setupSelenide() throws IOException {

@@ -13,14 +13,10 @@ public class AdminBaseTest extends BaseTest {
     void conditionalLogin(TestInfo testInfo){
 
         if(!testInfo.getTags().contains("no-login")){
-
-//            ui.loginAcui(PropertyHandler.getProperty("admin.login"),
-//                    PropertyHandler.getProperty("admin.password"))
-//
-//            .openSidebar();
-
-            AuthKeeper.touchSession(PropertyHandler.getProperty("base.URL") + "/acui/login",
-                    PropertyHandler.getProperty("admin.login"),PropertyHandler.getProperty("admin.password"));
+            if(testsInitMode.equals("ui")) {
+                AuthKeeper.touchSession(PropertyHandler.getProperty("base.URL") + "/acui/login",
+                        PropertyHandler.getProperty("admin.login"), PropertyHandler.getProperty("admin.password"));
+            }
         } else{
             Selenide.open( PropertyHandler.getProperty("base.URL") + "/acui/login");
         }

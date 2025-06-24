@@ -2,6 +2,7 @@ package tests.ui.adm.settings;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.parallel.Execution;
@@ -11,10 +12,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 import testlib.base.UIHandler;
 import testlib.base.adm.AdminBaseTest;
 import testlib.utils.CsvLoader;
+import testlib.utils.handlers.PropertyHandler;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static testlib.utils.handlers.ApiHandler.getToken;
 
 @DisplayName("Тестирование страницы Настройки->Клиенты")
 @Tag("client")
@@ -30,7 +38,7 @@ public class ClientTests extends AdminBaseTest {
     @ParameterizedTest
     @MethodSource("clientDataProvider")
     @Description("Клиенты. Создание клиента")
-    void clientPageAddClientTest(Map<String, String> clientData) {
+    void clientPageAddClientTest(Map<String, String> clientData) throws SQLException, InterruptedException {
 
         String name = clientData.get("Клиент"),
                 transports = clientData.get("Транспорт");
@@ -40,25 +48,71 @@ public class ClientTests extends AdminBaseTest {
                 templateOnly = Boolean.valueOf(clientData.get("Только шаблон")),
                 moderation = Boolean.valueOf(clientData.get("Модерация"));
 
-        ui
-                .subSectionClick("Настройки", "Клиенты")
-                .filterSet("Название",name)
-                .deleteFromTableIfExists(name)
-                .buttonClickById(UIHandler.ButtonId.create.getId())
-                .inputSet("Название", name)
-                .switchCheckbox("Статус", status)
-                .switchCheckbox("Авансовая схема взаиморасчетов", avance);
+        if(testsInitMode.equals("ui")) {
+            ui
+                    .subSectionClick("Настройки", "Клиенты")
+                    .filterSet("Название", name)
+                    .deleteFromTableIfExists(name);
+//                    .buttonClickById(UIHandler.ButtonId.create.getId())
+//                    .inputSet("Название", name)
+//                    .switchCheckbox("Статус", status)
+//                    .switchCheckbox("Авансовая схема взаиморасчетов", avance);
+//
+//            Arrays.stream(transports.split(",")).forEach(s -> {
+//                ui.switchCheckbox(s, true)
+//                        .switchCheckboxInRow(s, "Мультиподпись", multisignature)
+//                        .switchCheckboxInRow(s, "Только шаблон", templateOnly)
+//                        .switchCheckboxInRow(s, "Модерация", moderation);
+//            });
+//
+//            ui
+//                    .buttonClickById(UIHandler.ButtonId.save.getId())
+//                    .filterSet("Название", name)
+//                    .tableRowExists(name);
 
-        Arrays.stream(transports.split(",")).forEach(s -> {
-            ui.switchCheckbox(s, true)
-                    .switchCheckboxInRow(s, "Мультиподпись", multisignature)
-                    .switchCheckboxInRow(s, "Только шаблон", templateOnly)
-                    .switchCheckboxInRow(s, "Модерация", moderation);
-        });
+        } else if(testsInitMode.equals("api")){
+            StringBuilder body= new StringBuilder(String.format("""
+                    {
+                        "name" : \"%s\",
+                        "transports" : [
+                    """,name));
 
-        ui
-                .buttonClickById(UIHandler.ButtonId.save.getId())
-                .filterSet("Название",name)
-                .tableRowExists(name);
+            Arrays.stream(transports.split(",")).forEach(s->{
+                String transportId= msg.queryForString("SELECT id from transports where name='" + s + "'");
+                body.append(String.format("""
+                        {
+                            "id" : %s,
+                            "multisignature" : %s,
+                            "on_moderation" : %s,
+                            "template_only" : %s
+                        },
+                        """,transportId,multisignature,moderation,templateOnly));
+            });
+
+            body.deleteCharAt(body.length()-1);
+            body.deleteCharAt(body.length()-1);// Удаляем последнюю запятую, если есть транспорты
+
+            body.append(String.format("""
+                        ],
+                        "prepaid" : %s,
+                        "status" : %s
+                        }""",avance,status.equals(true)?1:0));
+
+            String authToken=getToken("acapi","admin@admin.com","Admin");
+
+
+
+            Response response=given()
+                    .header("Authorization",authToken)
+                    .contentType("application/json")
+                    .and()
+                    .body(body.toString())
+                    .when()
+                    .post(PropertyHandler.getProperty("base.URL")+"/acapi/partners")
+                    .then().extract().response();
+            response.body().print();
+
+            assertTrue(response.statusCode()==200);
+        }
     }
 }
