@@ -85,9 +85,8 @@ public class ClientTests extends AdminBaseTest {
                             .when()
                             .delete(PropertyHandler.getProperty("base.URL") + "/acapi/partners/" + partnerId)
                             .then().extract().response();
-                    response.body().print();
 
-                    assertTrue(response.statusCode() == 200);
+                    assertTrue(response.statusCode() == 200,"Ответ: "+response.body().print());
                 }
             }
             resultSet1.close();
@@ -148,9 +147,10 @@ public class ClientTests extends AdminBaseTest {
                     .when()
                     .post(PropertyHandler.getProperty("base.URL")+"/acapi/partners")
                     .then().extract().response();
-            response.body().print();
 
-            assertTrue(response.statusCode()==200);
+            assertTrue(response.statusCode()==200, "Ответ: "+response.body().print());
+        } else if(testsInitMode.equals("hybrid")){
+
         }
     }
 }
