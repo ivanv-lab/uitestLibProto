@@ -17,9 +17,9 @@ public class AuthKeeper {
     }
 
     private static synchronized void refreshSession(String url,
-                                                    String login,String address){
+                                                    String login,String password){
         ui
-                .login(url, login, address)
+                .login(url, login, password)
                 .openSidebar();
     }
 
