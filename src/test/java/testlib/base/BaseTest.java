@@ -37,7 +37,7 @@ public abstract class BaseTest{
 
     public static final SQLHandler msg=new SQLHandler("msg");
     public static final SQLHandler stat=new SQLHandler("stat");
-    public static final SQLHandler cdp=new SQLHandler("cdp");
+    public static final SQLHandler cdp=msg.dbType.equals("oracle")?null:new SQLHandler("cdp");
 
     /**
      * Модификатор выполнения Init-тестов. Может быть UI - через интерфейс,

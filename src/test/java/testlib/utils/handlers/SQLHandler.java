@@ -1,5 +1,8 @@
 package testlib.utils.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +11,11 @@ import java.util.Map;
 
 public class SQLHandler implements AutoCloseable {
 
+    private static final Logger log= LoggerFactory.getLogger(SQLHandler.class);
     private static final String ORACLE_JDBC_URL = "jdbc:oracle:thin:@%s:1521:wsoft";
     private static final String POSTGRES_JDBC_URL = "jdbc:postgresql://%s:5432/msg";
 
-    private static Connection connection=null;
+    private Connection connection=null;
     public String dbType=null;
     private static String dbName="";
 
@@ -36,7 +40,7 @@ public class SQLHandler implements AutoCloseable {
                 } catch (SQLException postgresEx){
                     oracleEx.printStackTrace();
                     postgresEx.printStackTrace();
-                    System.err.println("Не удалось подключиться к БД");
+                    log.info("Не удалось подключиться к БД", oracleEx, postgresEx);
                     throw new RuntimeException(postgresEx);
                 }
             }
@@ -50,9 +54,14 @@ public class SQLHandler implements AutoCloseable {
     public ResultSet query(String query) throws SQLException {
         Statement statement= connection.createStatement();
         try {
-            if (query.toLowerCase().contains("insert"))
+            if (query.toLowerCase().contains("insert")) {
+                log.info("Отправляем запрос без возврата ResultSet: "+query);
                 executeQueryNonResult(query);
-            else return statement.executeQuery(query);
+            }
+            else {
+                log.info("Отправляем запрос с возвращением ResultSet: "+query);
+                return statement.executeQuery(query);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,6 +70,7 @@ public class SQLHandler implements AutoCloseable {
 
     public void executeQueryNonResult(String query){
         try(Statement statement=connection.createStatement()){
+            log.info("Отправляем запрос без возврата ResultSet: "+query);
             statement.executeUpdate(query);
         } catch (SQLException e){
             e.printStackTrace();
@@ -74,7 +84,7 @@ public class SQLHandler implements AutoCloseable {
                 connection.close();
         } catch (SQLException e){
             e.printStackTrace();
-            System.err.println("Ошибка при закрытии соединения: " + e.getMessage());
+            log.info("Ошибка при закрытии соединения: " + e.getMessage());
         }
     }
 
